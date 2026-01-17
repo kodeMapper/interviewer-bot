@@ -1,0 +1,44 @@
+AI INTERVIEW FEEDBACK REPORT
+============================
+
+Q1 [Java]: How would you design a thread-safe Singleton class?
+   You Said: we will create a thread object and use generics
+   Expected: Use double-checked locking, static inner helper class, or Enum singleton.
+   Score: 37/100
+
+Q2 [Java]: Explain the concept of OOP in Java.
+   You Said: It is object-oriented programming through which we can reuse R code.
+   Expected: OOP uses objects and classes, focusing on encapsulation, inheritance, polymorphism.
+   Score: 42/100
+
+Q3 [Java]: A production list is throwing NullPointerException occasionally. How do you handle this efficiently?
+   You Said: I don't know we shall use some glasses maybe.
+   Expected: Check for nulls before access, use Optional, or basic if-checks.
+   Score: 1/100
+
+Q4 [Java]: How would you handle a memory leak in a Java application?
+   You Said: we should use car paste connector
+   Expected: Use a profiler (like VisualVM) to analyze heap dump and find objects retaining memory.
+   Score: 0/100
+
+Q5 [Java]: What is the difference between JDK, JRE, and JVM?
+   You Said: JDK is Java Development Kit. It contains JRE and JBM. JRE is Java runtime development and JBM is Java Virtual Machine.
+   Expected: JDK is for development, JRE for running, JVM executes bytecode.
+   Score: 83/100
+
+Q6 [Java]: Explain the difference between HashMap and Hashtable.
+   You Said: HashMap contains key value pairs while hash table contains unique values.
+   Expected: HashMap is non-synchronized and allows nulls; Hashtable is synchronized.
+   Score: 72/100
+
+Q7 [General]: Tell me more about what you know.
+   You Said: that's it I don't know more
+   Expected: General knowledge.
+   Score: 26/100
+
+Q8 [Java]: Scenario: You need to read a 10GB file in Java with only 2GB RAM. How do you do it?
+   You Said: We can't read it.
+   Expected: Use Streams or memory-mapped files to read line-by-line instead of loading all at once.
+   Score: 2/100
+
+FINAL SCORE: 32/100

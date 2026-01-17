@@ -1,0 +1,24 @@
+# AI Smart Interviewer - Dependencies
+# Python 3.10+ recommended
+
+# Core ML / Deep Learning
+torch>=2.0.0
+numpy>=1.24.0,<2.0.0
+
+# NLP / Embeddings
+sentence-transformers>=2.2.0
+transformers>=4.30.0
+huggingface_hub>=0.20.0
+
+# Data Processing
+scikit-learn>=1.2.0
+
+# Visualization
+matplotlib>=3.7.0
+
+# Audio Processing (for voice interview feature)
+sounddevice>=0.4.6
+openai-whisper>=20230314
+
+# Windows TTS (Windows only)
+pywin32>=306; sys_platform == 'win32'
