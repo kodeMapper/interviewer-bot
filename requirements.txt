@@ -2,23 +2,25 @@
 # Python 3.10+ recommended
 
 # Core ML / Deep Learning
-torch>=2.0.0
-numpy>=1.24.0,<2.0.0
+torch>=2.2.2
+numpy>=1.26.4
+tensorflow>=2.16.1 
+tf-keras>=2.16.0 # Critical for Keras 3 compatibility with Transformers
 
 # NLP / Embeddings
-sentence-transformers>=2.2.0
-transformers>=4.30.0
-huggingface_hub>=0.20.0
+sentence-transformers>=2.6.0
+transformers>=4.40.0
+huggingface_hub>=0.22.0
 
 # Data Processing
-scikit-learn>=1.2.0
+scikit-learn>=1.4.0
 
 # Visualization
-matplotlib>=3.7.0
+matplotlib>=3.8.3
 
 # Audio Processing (for voice interview feature)
-sounddevice>=0.4.6
-openai-whisper>=20230314
+sounddevice>=0.5.0
+openai-whisper>=20231117
 
 # Windows TTS (Windows only)
 pywin32>=306; sys_platform == 'win32'

@@ -62,14 +62,25 @@ class InterviewController:
         self.active_tasks = 0
         self.lock = threading.Lock()
         
+        # Context State for Adaptiveness (Counter-Questioning)
+        self.context_keywords = queue.Queue() # Keywords found in previous answer
+        self.used_keywords = set() # To prevent repeating same topic
+        self.stop_signal = False
+        self.skip_signal = False
+        self.stop_phrases = ["stop interview", "terminate", "end session", "abort"]
+        self.skip_phrases = ["don't know", "skip", "no idea", "pass", "next question"]
+        
         # Session State
         self.state = InterviewState.INTRO
         self.skills_queue = []
         self.current_topic = ""
         self.questions_asked_count = 0
         self.asked_q_hashes = set()
+        self.asked_q_hashes = set()
         self.report_card = []
         self.is_running = False
+        self.report_generated = False # Flag for idempotency
+        self.checkout_asked = False   # Flag for final question
         
         # Start Background Worker
         self.executor = ThreadPoolExecutor(max_workers=1)
@@ -85,7 +96,7 @@ class InterviewController:
                 break
 
     def _background_processor(self):
-        """Consumer Thread: Transcribes and Judges"""
+        """Consumer Thread: Transcribes, Extracing Keywords, and Judges"""
         print("   [Background Worker Started]")
         while True:
             try:
@@ -97,6 +108,42 @@ class InterviewController:
                 # 1. Transcribe
                 text = self._transcribe_internal(audio)
                 
+                # 1.5 Extract Keywords & Intents
+                text_lower = text.lower()
+                
+                # Check Stop Signals
+                for phrase in self.stop_phrases:
+                    if phrase in text_lower:
+                        print(f"   [Intent Detected] STOP Signal: '{text}'")
+                        self.stop_signal = True
+                        break
+                
+                # Check Skip Signals
+                if not self.stop_signal:
+                    for phrase in self.skip_phrases:
+                        if phrase in text_lower:
+                            print(f"   [Intent Detected] SKIP Signal: '{text}'")
+                            self.skip_signal = True
+                            break
+                
+                # Check Keywords (Simple substring match against known keys)
+                from core.question_bank import KEYWORD_INDEX
+                found_keywords = []
+                for kw in KEYWORD_INDEX.keys():
+                    # Simple heuristic: exact word match to avoid false positives
+                    if kw in text_lower:
+                        found_keywords.append(kw)
+                
+                    if kw in text_lower:
+                        found_keywords.append(kw)
+                
+                if found_keywords:
+                    # Pick one relevant keyword to follow up on
+                    # We pick the longest one assuming it's most specific (e.g. 'react hooks' > 'hooks')
+                    best_kw = max(found_keywords, key=len)
+                    self.context_keywords.put(best_kw)
+                    print(f"   🔍 [Context] Keywords: {found_keywords} -> Queued: '{best_kw}'")
+
                 # 2. Judge
                 score, is_correct = self.judge.evaluate(text, expected)
                 
@@ -118,7 +165,10 @@ class InterviewController:
 
     def speak(self, text):
         print(f"🤖 BOT: {text}")
-        self.speaker.Speak(text)
+        try:
+            self.speaker.Speak(text)
+        except Exception as e:
+            print(f"   [TTS Error] Could not speak: {e}")
 
     def listen(self):
         q = queue.Queue()
@@ -149,15 +199,19 @@ class InterviewController:
         return self._transcribe_internal(audio)
 
     def get_unique_question(self, topic):
+        from core.question_bank import get_all_questions
         options = get_all_questions(topic)
         random.shuffle(options)
         for q, ans in options:
             if q not in self.asked_q_hashes:
                 self.asked_q_hashes.add(q)
                 return q, ans
-        return "Tell me more about what you know.", "General knowledge."
+        return None, None  # Return None if exhausted instead of loop
 
     def generate_report(self):
+        if self.report_generated: return # Idempotency check
+        self.report_generated = True
+        
         print("⏳ Waiting for pending transcriptions...")
         self.processing_queue.join() # Wait for all background tasks
         
@@ -182,6 +236,24 @@ class InterviewController:
         
         # Verbal Feedback
         self.provide_verbal_feedback()
+
+    def ask_checkout_question(self):
+        """Asks the final open-ended question if not already asked."""
+        if self.checkout_asked or self.stop_signal: return
+
+        self.checkout_asked = True
+        final_q = "Before we finish, please describe your practical experience with these technologies."
+        self.speak(final_q)
+        
+        # We need to listen, but softly handle if audio fails
+        try:
+            audio = self.listen()
+            if len(audio) > 0:
+                self.active_tasks += 1
+                self.processing_queue.put((audio, final_q, "Practical usage summary.", "Final"))
+                print(f"   -> Answer queued for processing ({self.active_tasks} pending)...")
+        except Exception as e:
+            print(f"   [Checkout Error] Could not record answer: {e}")
 
     def run_loop(self):
         try:
@@ -210,34 +282,84 @@ class InterviewController:
             
             # --- PHASE 2: ASYNC LOOP ---
             while self.is_running:
+                # 0. Check Stop Signals (From Background Thread)
+                if self.stop_signal:
+                    self.speak("Fine, here is your feedback.")
+                    self.generate_report()
+                    self.is_running = False
+                    break
+                
+                if self.skip_signal:
+                    # self.speak("Alright, moving on.") 
+                    # Removing verbal cue to prevent flow collision as per user request
+                    self.skip_signal = False # Reset
+                    # Proceed to ask next question immediately (loop continues)
+
                 # 1. Ask Question
                 if self.state == InterviewState.DEEP_DIVE or self.state == InterviewState.MIX_ROUND:
                     if self.state == InterviewState.DEEP_DIVE:
                         topic = self.current_topic
                     else:
                         # RESTRICTED MIX ROUND: Only ask about known skills + General logic
-                        pool = self.skills_detected + ["General"] # e.g. ["Java", "General"]
+                        pool = self.skills_detected + ["General"] 
                         topic = random.choice(pool)
-                        # Ensure we don't ask meaningless "General" questions if the bank doesn't support it well, 
-                        # but for now we rely on the bank having the topic or falling back.
-                        # Actually safe fallback: If topic not in bank, it returns a generic Q.
                         
-                    q, expected = self.get_unique_question(topic)
+                    q, expected = None, None
+                    transition_phrase = ""
                     
-                    # DELAY: 2 Seconds as requested
-                    time.sleep(2)
-                    self.speak(q)
+                    # --- ADAPTIVE LOGIC: Check Context Queue ---
+                    from core.question_bank import get_question_by_keyword
                     
-                    # 2. Record (Blocking)
-                    audio = self.listen()
+                    if not self.context_keywords.empty():
+                        last_keyword = self.context_keywords.get()
+                        
+                        if last_keyword not in self.used_keywords:
+                            res = get_question_by_keyword(last_keyword, topic, allowed_topics=self.skills_detected)
+                            
+                            if res and res[1] not in self.asked_q_hashes:
+                                print(f"   🔀 [Adapt] Counter-questioning on '{last_keyword}'")
+                                self.used_keywords.add(last_keyword)
+                                q, expected = res[1], res[2]
+                                self.asked_q_hashes.add(q)
+                                # Randomize transition for natural flow
+                                transitions = [
+                                    f"Going back to what you mentioned about {last_keyword}. ",
+                                    f"You touched on {last_keyword} earlier. ",
+                                    f"Related to your point about {last_keyword}. ",
+                                    f"Speaking of {last_keyword}. "
+                                ]
+                                transition_phrase = random.choice(transitions)
+                        else:
+                            print(f"   ⏭️ [Adapt] Skipping already used keyword: '{last_keyword}'")
                     
-                    # 3. Submit to Background (Instant)
-                    self.active_tasks += 1
-                    self.processing_queue.put((audio, q, expected, topic))
-                    print(f"   -> Answer queued for processing ({self.active_tasks} pending)...")
+                    # Default Random if no context match
+                    if not q:
+                        q, expected = self.get_unique_question(topic)
                     
-                    # 4. Decide Next Move (Immediately)
-                    self.questions_asked_count += 1
+                    # Handle Exhaustion
+                    if not q: 
+                        # Topic exhausted or get_unique returned None
+                        if self.state == InterviewState.DEEP_DIVE:
+                             # Force Move Next Topic
+                             self.questions_asked_count = QUESTIONS_PER_TOPIC + 1 
+                        else:
+                             break # Stop if Mix round exhausted (rare)
+                    else:
+                        # DELAY: 2 Seconds as requested
+                        time.sleep(2)
+                        full_q = transition_phrase + q
+                        self.speak(full_q)
+                        
+                        # 2. Record (Blocking)
+                        audio = self.listen()
+                        
+                        # 3. Submit to Background (Instant)
+                        self.active_tasks += 1
+                        self.processing_queue.put((audio, q, expected, topic))
+                        print(f"   -> Answer queued for processing ({self.active_tasks} pending)...")
+                        
+                        # 4. Decide Next Move (Immediately)
+                        self.questions_asked_count += 1
                     
                     # Logic for transitions
                     if self.state == InterviewState.DEEP_DIVE:
@@ -254,13 +376,19 @@ class InterviewController:
                                 
                     elif self.state == InterviewState.MIX_ROUND:
                         if self.questions_asked_count >= 3:
-                            self.speak("Interview complete. Generating report.")
-                            self.generate_report()
+                            # ask final checkout question (handled in finally now)
                             break
                             
         except KeyboardInterrupt:
             print("\n🛑 Terminated")
-            self.generate_report()
+        except Exception as e:
+            print(f"\n❌ Unexpected Error in Interview Loop: {e}")
+            import traceback
+            traceback.print_exc()
+        finally:
+            self.ask_checkout_question() # Ensure this runs (unless stop signal)
+            self.speak("Interview complete. Generating feedback...")
+            self.generate_report() # Ensure report is ALWAYS generated on exit
             
         # Cleanup
         self.processing_queue.put(None)

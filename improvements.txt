@@ -1,4 +1,0 @@
-Feedback at later, not everytime. only ask question
-Put the processing at backend, maintain sheet of question, given answer, correct answer
-overall score report
-1st question -> (backend started for tags) -> 2nd question (hardcoded, not related to 1st ques) Meanwhile, 1st ques is processing and finding for new question --> next question (adaptive)

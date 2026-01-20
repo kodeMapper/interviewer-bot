@@ -29,16 +29,24 @@ We successfully built and trained a custom MLP Neural Network from scratch.
 *   **Training:** Achieved ~100% accuracy on validation set using Adam optimizer (learning rate 0.001).
 *   **Outcome:** The bot no longer "guesses"; it *understands* technical contexts (e.g., distinguishing "Java" from "JavaScript").
 
-### 🟢 Phase 2: The "Flow" & Integration (Completed) ✅
-We optimized the system into a Zero-Latency Asynchronous Architecture.
-1.  **Async Pipeline:** Separation of "Listening" (Main Thread) and "Thinking" (Background Thread) enables instant questioning.
-2.  **Adaptive Logic:**
-    *   **Intro Analysis:** The Brain (MLP) scans your intro to build a custom syllabus.
-    *   **Drill Down:** It loops through topics, asking 5 deep questions per skill.
-    *   **The "Judge":** We implemented a Semantic Evaluator (SentenceTransformer) that grades answers based on *meaning* (Cosine Similarity), not keywords.
-3.  **Optimization:**
-    *   **Speech:** Tuned Whisper (`medium`) to balance accuracy with legacy robustness.
-    *   **Feedback:** Generates a detailed report (`interview_feedback.txt`) + Verbal feedback for mistakes.
+### 🟢 Phase 2: The "Flow" & Adaptive Logic (Completed) ✅
+We optimized the system into a Zero-Latency Asynchronous Architecture with **Lagged Adaptive Priority Queue**.
+
+#### 1. The Approach: "Lagged Adaptive Priority Queue"
+*   **The Problem:** Traditional bots wait for you to finish, then think, then speak. This causes 3-4s awkward silence.
+*   **Our Solution:** The bot asks Q2 *immediately* while your answer to Q1 is still being processed in the background. 
+*   **The "Lag":** Adaptiveness is applied to *future* questions. If you mention "Threads" in Q1, the bot detects it and queues a Threading question for Q3 (since Q2 is already commanded).
+*   **Why:** This creates a seamless, human-like flow where the conversation never stops, yet still feels responsive to your keywords.
+
+#### 2. Advanced Control Logic
+*   **Smart Skip:** Distinguishes between "I don't know" (Skip Question) and "Stop Interview" (Terminate).
+*   **Topic Guardrails:** Prevents "Cross-Topic Pollution" (e.g., won't ask React questions in a Java interview even if you mention 'components').
+*   **Idempotent Reporting:** Guarantees feedback generation even if the system crashes or networks fail.
+
+#### 3. Automated Testing Suite
+*   **Mock Controller:** We built a simulation framework (`tests/`) that runs full interviews without a microphone.
+*   **Scenarios:** "The Ideal Candidate", "The Quitter", "The Mixed Signal".
+*   **Benefit:** Allows regression testing of logic without speaking into the mic for 15 minutes.
 
 ### 🔴 Phase 3: The "Eye" - Proctoring System (Planned) 🚧
 This is the next major step. We will build a **Convolutional Neural Network (CNN)** to detect if the candidate is cheating.
