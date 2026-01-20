@@ -16,3 +16,11 @@ __pycache__/
 # OS files
 Thumbs.db
 .DS_Store
+
+*.pdf
+*.txt
+*.zip
+*.docx
+
+extract_docx_text.py
+extract_pdf.py
