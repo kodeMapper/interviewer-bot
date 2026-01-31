@@ -49,6 +49,44 @@ Speech-to-Text accuracy depends on three factors:
 ### Q: Are we actually doing "Deep Learning" if we use pre-trained models?
 **Yes, because we built the critical components from scratch.**
 
+---
+
+## 4. Resume Parsing & Question Generation Logic
+
+### Q: Why was the generator only returning 2 or 9 questions when I asked for 20?
+This was due to two distinct failures in the `question_generator.py` pipeline:
+
+1.  **JSON Truncation / "Extra Data" Error:**
+    *   **The Problem:** The LLM (Gemini) would sometimes output valid JSON followed by conversational filler (e.g., "Here is your JSON..."), or it would wrap the output in markdown code blocks (` ```json ... `). The strict Python `json.loads()` parser would crash on this "Extra data".
+    *   **The Fix:** We implemented a **Robust JSON Extractor** that strictly uses regex to isolate the substring between the *first* `{` and the *last* `}`. This discards all noise before and after the actual data.
+
+2.  **Type Mismatch (Silent Failure):**
+    *   **The Problem:** The prompt instructed the LLM to generate "Deep Dive" or "Tradeoff" questions, but our internal Python code used an `Enum` that only accepted strict keys like "PROJECT" or "SCENARIO". This caused a `ValueError` during parsing.
+    *   **The Result:** The loop caught the error and silently skipped the question. If *all* questions were skipped, the system fell back to a primitive Regex extractor that could only scrape 9 questions from the text.
+    *   **The Fix:** We added a **Type Mapping Layer** that translates the LLM's vocabulary (e.g., "deep_dive") into our internal system vocabulary (e.g., "PROJECT") before validation.
+
+### Q: Why was the generator returning only 4-5 questions even after the above fixes?
+**The Problem: Token Limit Truncation**
+*   Even though Gemini was generating 20 questions, the response was being **cut off mid-sentence** due to the `max_tokens` limit (originally 8192).
+*   The raw response file showed the 5th question ending abruptly: `"Candidate should discuss resource constraints` (incomplete).
+*   The `_repair_json` function would then "fix" this by closing the brackets early, resulting in only 4 valid questions.
+
+**The Fix:**
+1.  **Increased `max_tokens`:** Changed from `8192` → `16384` in `gemini_client.py`.
+2.  **Increased `timeout`:** Changed from `90s` → `120s` for longer generation times.
+3.  **Leaner Output Format:** Simplified the prompt's JSON schema:
+    *   Removed verbose `why_this_question` field
+    *   Reduced `expected_answer` to "2-3 key points only"
+    *   Limited `follow_ups` to 1 instead of 2
+    *   Reduced `keywords` to "3-5 max"
+    *   This cut per-question token usage from ~400 to ~200 tokens.
+4.  **Set target to 10 questions:** Optimal balance between coverage and reliability.
+
+### Q: How do we debug "Bad Responses" from the AI?
+*   **Raw Logging:** Every time the generator runs, it saves the *exact* raw string returned by Gemini to `gemini_raw_response.txt` (overwritten each run).
+*   **Why this is safe:** It's a small text file (~20KB) that only exists for debugging. It doesn't affect runtime performance.
+*   **How to use it:** If questions are missing or malformed, open this file to see exactly what Gemini returned (e.g., truncated JSON, markdown wrappers, or hallucinations).
+
 1.  **What we USED (The Tools):**
     *   *Whisper & SentenceTransformers:* These require massive Google-scale compute to train. It is standard academic practice to use these as "Backbones."
 2.  **What we BUILT (The Syllabus Requirements):**
