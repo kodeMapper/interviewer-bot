@@ -1,27 +1,20 @@
 # Virtual environments
 venv/
-.venv/
+env_proc/
+
+# Datasets
+dataset/
+datasets/
+external_dataset/
+my_dataset/
+# Trained models
+*.pth
+*.pkl
+*.h5
 
 # Python cache
 __pycache__/
 *.pyc
 
-# Environment variables
-.env
-
-# IDE
-.vscode/
-.idea/
-
-# OS files
-Thumbs.db
-.DS_Store
-
-*.pdf
-*.txt
-*.zip
-*.docx
-
-extract_docx_text.py
-extract_pdf.py
-progress.md
+# Temp
+temp/
