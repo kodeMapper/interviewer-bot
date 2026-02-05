@@ -18,3 +18,31 @@ __pycache__/
 
 # Temp
 temp/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+*.pdf
+*.txt
+*.zip
+*.docx
+
+extract_docx_text.py
+extract_pdf.py
+progress.md
+
+/dataset
+/env_proc
+/external_dataset
+/proctoring/my_dataset
+/proctoring/external_dataset
+/proctoring/env_proc
+/proctoring/dataset
