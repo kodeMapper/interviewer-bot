@@ -1,10 +1,23 @@
 # Virtual environments
 venv/
-.venv/
+env_proc/
+
+# Datasets
+dataset/
+datasets/
+external_dataset/
+my_dataset/
+# Trained models
+*.pth
+*.pkl
+*.h5
 
 # Python cache
 __pycache__/
 *.pyc
+
+# Temp
+temp/
 
 # Environment variables
 .env
@@ -25,3 +38,11 @@ Thumbs.db
 extract_docx_text.py
 extract_pdf.py
 progress.md
+
+/dataset
+/env_proc
+/external_dataset
+/proctoring/my_dataset
+/proctoring/external_dataset
+/proctoring/env_proc
+/proctoring/dataset
