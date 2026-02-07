@@ -1,5 +1,140 @@
 # AI Smart Interviewer & Proctoring System
-### A Syllabus-Compliant Deep Learning Implementation
+### A Syllabus-Compliant Deep Learning Implementation | MERN Web Application
+
+---
+
+## 🚀 Quick Start (Web Application)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Terminal 1: ML Service       │  Terminal 2: Backend    │  Terminal 3: UI  │
+│  cd ml-service                │  cd server              │  cd client        │
+│  .\venv\Scripts\activate      │  npm run dev            │  npm run dev      │
+│  uvicorn main:app --port 8000 │                         │                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      ↓
+                         Open http://localhost:3000
+```
+
+| Service | Port | Technology |
+|---------|------|------------|
+| Frontend | 3000 | React + Vite |
+| Backend | 5001 | Express + Socket.io |
+| ML Service | 8000 | FastAPI (wraps original Python ML) |
+
+---
+
+## 📋 Interview Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         INTERVIEW FLOW (User Journey)                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌──────────┐    ┌─────────────────────────────────────────────────────┐   │
+│  │  START   │───▶│  RESUME UPLOAD (optional PDF/DOCX)                  │   │
+│  └──────────┘    └────────────────────┬────────────────────────────────┘   │
+│                                       │                                     │
+│                                       ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  🔄 BACKGROUND: Resume analysis + Question generation via Gemini  │    │
+│  │     (Extracts skills, projects, experience → Generates 15-20 Qs)  │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                       │                                     │
+│                                       ▼ (parallel)                          │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  🎤 "Tell me about yourself / What skills do you have?"           │    │
+│  │     → User introduces themselves                                   │    │
+│  │     → ML Model detects topics (Java, Python, React, etc.)         │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                       │                                     │
+│                                       ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  📚 ADAPTIVE QUESTIONING from Local Dataset                       │    │
+│  │     (5 questions per detected skill from 330-question bank)       │    │
+│  │     → While waiting for resume questions to be ready              │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                       │                                     │
+│                                       ▼ (resume questions ready)            │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  📝 RESUME DEEP DIVE (15-20 personalized questions)               │    │
+│  │     → "Tell me about your ML project..."                          │    │
+│  │     → "Why did you choose React over Vue?"                        │    │
+│  │     → "What would break if your system scaled 10x?"               │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                       │                                     │
+│                                       ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  🎯 MIX ROUND (5 rapid-fire questions from all topics)            │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                       │                                     │
+│                                       ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  👋 SIGNOUT: "Any questions for us?" → Generate Report → END     │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🏗️ System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              SYSTEM ARCHITECTURE                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐  │
+│   │                    FRONTEND (React + Vite) :3000                    │  │
+│   │  ┌─────────────┐  ┌──────────────┐  ┌────────────────────────────┐ │  │
+│   │  │ Resume      │  │ Microphone   │  │ Real-time Chat Display     │ │  │
+│   │  │ Upload      │  │ (Web Speech) │  │ (Socket.io)                │ │  │
+│   │  └─────────────┘  └──────────────┘  └────────────────────────────┘ │  │
+│   └────────────────────────────────┬────────────────────────────────────┘  │
+│                                    │ WebSocket + REST                       │
+│                                    ▼                                        │
+│   ┌─────────────────────────────────────────────────────────────────────┐  │
+│   │                  BACKEND (Express + Socket.io) :5001                │  │
+│   │  ┌─────────────┐  ┌──────────────┐  ┌────────────────────────────┐ │  │
+│   │  │ Resume      │  │ Interview    │  │ Answer Evaluation          │ │  │
+│   │  │ Service     │  │ State Machine│  │ (calls ML Service)         │ │  │
+│   │  │ (pdf-parse) │  │ + Question   │  │                            │ │  │
+│   │  │ + Gemini    │  │ Bank (330 Q) │  │                            │ │  │
+│   │  └─────────────┘  └──────────────┘  └────────────────────────────┘ │  │
+│   └────────────────────────────────┬────────────────────────────────────┘  │
+│                                    │ HTTP                                   │
+│                                    ▼                                        │
+│   ┌─────────────────────────────────────────────────────────────────────┐  │
+│   │                  ML SERVICE (FastAPI) :8000                         │  │
+│   │  ┌───────────────────────────────────────────────────────────────┐ │  │
+│   │  │  WRAPPER ONLY - imports from original backend/                │ │  │
+│   │  │                                                               │ │  │
+│   │  │  /predict-intent  → IntentPredictor (custom MLP)              │ │  │
+│   │  │  /evaluate        → AnswerEvaluator (SentenceTransformer)     │ │  │
+│   │  └───────────────────────────────────────────────────────────────┘ │  │
+│   └────────────────────────────────┬────────────────────────────────────┘  │
+│                                    │ Python imports                         │
+│                                    ▼                                        │
+│   ┌─────────────────────────────────────────────────────────────────────┐  │
+│   │              ORIGINAL BACKEND (Python) - NOT MODIFIED              │  │
+│   │  ┌─────────────┐  ┌──────────────────┐  ┌───────────────────────┐ │  │
+│   │  │ backend/ml/ │  │ backend/core/    │  │ backend/resume/       │ │  │
+│   │  │ • MLP Model │  │ • Question Bank  │  │ • Parser (optional)   │ │  │
+│   │  │ • Trainer   │  │ • Answer Eval    │  │ • GPT Client          │ │  │
+│   │  │ • Predictor │  │                  │  │                       │ │  │
+│   │  └─────────────┘  └──────────────────┘  └───────────────────────┘ │  │
+│   └─────────────────────────────────────────────────────────────────────┘  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Key Points:**
+- The Express `server/` handles resume parsing (Node.js pdf-parse) and question generation (Gemini API)
+- The `ml-service/` is a thin FastAPI wrapper that imports the ORIGINAL Python classes from `backend/`
+- The original `backend/` Python code is **NOT modified** - it's imported as-is for ML inference
+
+---
 
 ## 1. Project Overview & Story
 This project began as a standard "Voice-to-Text" bot using pre-built libraries. However, upon reviewing the **Deep Learning Course Syllabus**, we realized that simply *using* existing AI (like Whisper) does not demonstrate the required understanding of how Neural Networks actually "learn."
@@ -454,6 +589,30 @@ GPT_API_KEY=sk-proj-xxxxx...
 
 ## 10. Quick Start
 
+### Option A: MERN Web Application (Recommended)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Terminal 1: ML Service       │  Terminal 2: Backend    │  Terminal 3: UI  │
+│  cd ml-service                │  cd server              │  cd client        │
+│  .\venv\Scripts\activate      │  npm install            │  npm install      │
+│  pip install -r requirements  │  npm run dev            │  npm run dev      │
+│  uvicorn main:app --port 8000 │                         │                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+Open http://localhost:3000 in your browser.
+
+| Component | Technology | Port |
+|-----------|------------|------|
+| **Frontend** | React + Vite + Web Speech API | 3000 |
+| **Backend** | Express.js + Socket.io + MongoDB | 5001 |
+| **ML Service** | FastAPI (wraps original `backend/`) | 8000 |
+
+> **Important:** The deep learning models (`IntentClassifier`, `AnswerEvaluator`) are **NOT reimplemented**. The FastAPI service simply imports and exposes them as HTTP endpoints.
+
+### Option B: Original Python CLI (Backend Only)
+
 ```bash
 # 1. Activate virtual environment
 cd "C:\Users\acer\Desktop\DL Project"
@@ -463,9 +622,93 @@ cd "C:\Users\acer\Desktop\DL Project"
 pip install -r requirements.txt
 
 # 3. Run the interviewer
-# Without resume:
-python backend/core/interview_controller.py
-
-# With resume:
 python backend/core/interview_controller.py --resume "path/to/resume.pdf"
+```
+
+---
+
+## 11. Skills & Topics
+
+### A. ML Model Trained Topics (7 Fixed)
+The custom MLP classifier in `backend/ml/` is trained to detect these 7 topics from user speech:
+
+| Topic | Example Keywords |
+|-------|------------------|
+| Java | Spring Boot, JVM, Maven, Hibernate |
+| Python | Django, Flask, Pandas, NumPy |
+| JavaScript | Node.js, Express, npm, TypeScript |
+| React | Hooks, Redux, Next.js, JSX |
+| SQL | MySQL, PostgreSQL, Oracle, queries |
+| Machine Learning | scikit-learn, regression, classification |
+| Deep Learning | PyTorch, TensorFlow, CNN, RNN |
+
+These are used for **adaptive questioning** from the local 330-question bank.
+
+### B. Resume-Based Dynamic Skills (Unlimited)
+When a resume is uploaded, the system extracts **ANY skill** mentioned and generates personalized questions:
+
+- Technologies from projects (Docker, Kubernetes, AWS, etc.)
+- Frameworks from experience (Angular, Vue, Flask, etc.)
+- Domain knowledge (Finance, Healthcare, E-commerce)
+- Soft skills from leadership sections
+
+**The flow blends both sources:**
+1. While resume questions are being generated in background → Ask from local bank
+2. Once ready → Switch to personalized resume questions
+3. After resume questions → Continue with detected skills from local bank
+
+---
+
+## 12. Known Issues & Planned Fixes
+
+> 📋 For detailed implementation plans, see [PROBLEMS_SOLUTION_PLAN.md](PROBLEMS_SOLUTION_PLAN.md)
+
+| Issue | Status | Description |
+|-------|--------|-------------|
+| **Intro Message Cutoff** | 🔴 Open | The intro message sometimes gets interrupted by the first question due to TTS-to-question timing issues |
+| **Resume Question Validation** | 🔴 Open | Gemini sometimes returns question types not in MongoDB enum (e.g., `achievements`, `education`) causing validation errors |
+| **Speech Recognition Accuracy** | 🟡 Known | Web Speech API accuracy varies by browser/network; Chrome recommended |
+| **Audio Interrupt Handling** | 🟡 Known | Loud noises can interfere with TTS/STT flow |
+| **Evaluation Precision** | 🟡 Planned | Current cosine similarity may need keyword weighting for technical questions |
+
+### Temporary Workarounds
+
+1. **Intro Cutoff**: Wait for the intro message to finish before the first question loads
+2. **Resume Validation**: If questions fail validation, fallback questions are automatically used
+3. **Speech Accuracy**: Use Chrome browser; speak clearly with minimal background noise
+
+---
+
+## 13. Directory Structure
+
+```
+interviewer-bot/
+├── backend/                    # ORIGINAL Python ML Code (NOT MODIFIED)
+│   ├── core/                   # Question bank, answer evaluator
+│   ├── ml/                     # Custom MLP classifier (PyTorch)
+│   │   ├── models/saved/       # Trained intent_model.pth
+│   │   └── training/           # IntentPredictor
+│   └── resume/                 # Resume parser (optional, Gemini integration)
+│
+├── ml-service/                 # FastAPI WRAPPER (imports from backend/)
+│   ├── main.py                 # Exposes /predict-intent, /evaluate endpoints
+│   └── requirements.txt        # FastAPI + original ML dependencies
+│
+├── server/                     # Express.js Backend
+│   ├── src/
+│   │   ├── services/           # Resume parsing, question generation, interview flow
+│   │   ├── socket/             # WebSocket handlers
+│   │   └── models/             # MongoDB schemas
+│   └── .env                    # PORT=5001, GEMINI_API_KEY
+│
+├── client/                     # React Frontend
+│   ├── src/
+│   │   ├── components/         # MicrophoneButton, ResumeUpload, etc.
+│   │   ├── hooks/              # useSpeechRecognition, useSpeechSynthesis
+│   │   └── pages/              # Home, Interview, Report
+│   └── vite.config.js          # Proxy to backend:5001
+│
+├── README.md                   # This file
+├── RUN_GUIDE.md               # Detailed setup instructions
+└── requirements.txt           # Original Python dependencies
 ```

@@ -1,27 +1,46 @@
-# Virtual environments
+# Dependencies
+node_modules/
+/server/node_modules
+/client/node_modules
 venv/
 .venv/
+env/
 
-# Python cache
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Environment variables
+# Build outputs
+/client/dist
+/client/build
+/server/dist
+
+# Environment & Secrets
 .env
+.env.*
+secrets.txt
+frontend/secrets.txt
+backend/secrets.txt
 
-# IDE
+# System / IDE
+.DS_Store
+Thumbs.db
 .vscode/
 .idea/
 
-# OS files
-Thumbs.db
-.DS_Store
+# Project Specific
+server/uploads/
+temp-interviewer-bot/
+backend/ml/data/processed/
+*.log
 
-*.pdf
-*.txt
-*.zip
-*.docx
-
+# Legacy / Misc
 extract_docx_text.py
 extract_pdf.py
 progress.md
+
+# Document files (Explicitly allowed)
+!requirements.txt
+!problemsAfterMigration.txt

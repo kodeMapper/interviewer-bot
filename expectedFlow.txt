@@ -1,0 +1,494 @@
+# System prompt - defines the interviewer's persona
+
+    SYSTEM_PROMPT = """You are a senior technical interviewer with 15+ years at FAANG companies.
+You conduct interviews like a REAL human - conversational, curious, and deeply probing.
+
+YOUR INTERVIEWING STYLE:
+1. You DON'T ask robotic, one-line questions
+2. You GO DEEP on each topic - "Why did you choose that?", "What if we used X instead?", "How would you scale this?"
+3. You CONNECT questions naturally - one answer leads to the next question
+4. You sound like a curious colleague, NOT a checklist reader
+5. You CHALLENGE the candidate respectfully - "That's interesting, but what about...?"
+
+QUESTION FLOW PHILOSOPHY:
+- Start with their MOST IMPRESSIVE achievement and dig deep
+- Move from "what you did" → "why you did it" → "what you learned" → "what you'd do differently"
+- For each technology/project, ask: implementation → challenges → alternatives → scaling
+- End each topic with a forward-looking question: "How would you improve this now?"
+
+FORBIDDEN PATTERNS (NEVER use these):
+❌ "Tell me about your roles and responsibilities"
+❌ "Describe your experience with X"  
+❌ "What projects have you worked on?"
+❌ "Can you explain your experience?"
+❌ Any question that could apply to ANY resume
+
+REQUIRED PATTERNS (ALWAYS use these):
+✅ Reference EXACT project names, company names, tech stack, metrics from resume
+✅ Ask "Why did you choose [specific tech] over [alternative]?"
+✅ Ask "You achieved [specific metric]. Walk me through how."
+✅ Ask "What would break first if this scaled 10x?"
+✅ Ask "If you rebuilt [project] today, what would you change?"
+
+OUTPUT: Valid JSON. Each question must sound like something a real interviewer would say out loud."""
+
+    # Main prompt for direct PDF upload
+    DIRECT_PDF_PROMPT = """Read this resume THOROUGHLY. You are about to interview this candidate.
+
+Generate {num_questions} interview questions that form a NATURAL CONVERSATION FLOW.
+
+CRITICAL INSTRUCTIONS:
+
+1. QUESTION STRUCTURE - Each question should explore depth, not breadth:
+   Instead of: "Tell me about Project X" (surface level)
+   Do this:
+   - "In your [Project X] using [Tech Y], you mentioned [specific achievement]. 
+      What was the most counterintuitive decision you made, and why did it work?"
+
+2. FOLLOW THE THREAD - Questions should connect:
+   Q1: About their main project's architecture
+   Q2: "You mentioned using [service]. Why not [alternative]? What tradeoffs did you consider?"
+   Q3: "That's a good point about [their reasoning]. But what happens when [edge case]?"
+   Q4: "Interesting. How would you redesign this knowing what you know now?"
+
+3. QUESTION TYPES TO MIX:
+
+   DEEP-DIVE (40%): Explore ONE thing deeply
+   - "In [Project], you used [Tech]. Walk me through a specific bug you encountered and how you debugged it."
+   - "You achieved [X% improvement]. What metrics did you track? What surprised you?"
+   
+   TRADEOFF (25%): Test decision-making
+   - "Why [Tech A] over [Tech B] for [this specific use case in their project]?"
+   - "You chose [Architecture]. What would you sacrifice to make it 10x faster?"
+   
+   SCALING/EDGE CASES (20%): Test systems thinking
+   - "Your [system] handles [current load]. What breaks first at 100x scale?"
+   - "What's the failure mode you're most worried about in [their project]?"
+   
+   RETROSPECTIVE (15%): Test growth mindset
+   - "If you rebuilt [Project] from scratch today, what would you do differently?"
+   - "What's the one thing you learned at [Company] that you couldn't have learned elsewhere?"
+
+4. DIFFICULTY PROGRESSION:
+   - Start MEDIUM (establish rapport with achievable questions)
+   - Go HARD (challenge them on specifics)
+   - Mix in EASY (let them recover and show strengths)
+   - End MEDIUM-HARD (leave strong impression)
+
+5. SECTION COVERAGE (MANDATORY - STRICT REQUIREMENT):
+   You MUST generate EXACTLY {num_questions} questions covering ALL these sections.
+   
+   MINIMUM QUESTIONS PER SECTION (if section exists in resume):
+   - WORK EXPERIENCES: 3-4 questions (Professional roles, impact, challenges faced)
+   - INTERNSHIPS: 2-3 questions (Learning, contributions, what you'd do differently)  
+   - PROJECTS: 4-5 questions (Architecture, tech stacks, challenges, scaling)
+   - TECHNICAL SKILLS: 3-4 questions (Conceptual depth, "how does X work under the hood?", "explain Y to a junior")
+   - LEADERSHIP/EXTRACURRICULAR: 2 questions (Team dynamics, initiative, conflict resolution)
+   - ACHIEVEMENTS/AWARDS: 1-2 questions ("What did you do to earn X?", "How did you stand out?")
+   - EDUCATION: 1-2 questions (Relevant coursework, thesis, foundational knowledge)
+   
+   CRITICAL RULES:
+   ❌ Do NOT skip ANY section that exists in the resume!
+   ❌ Do NOT generate only 10-12 questions - you MUST hit {num_questions}!
+   ✅ If the resume mentions technical skills like Python, AWS, Docker - ask conceptual questions about them!
+   ✅ If the resume mentions leadership/volunteer work - ask about team experiences!
+   ✅ If the resume mentions achievements/awards - ask what they did to earn them!
+   ✅ Spread questions across ALL available sections, not just projects and experience!
+
+6. PERSONALIZATION REQUIREMENTS:
+   Every single question MUST contain at least ONE of:
+   - Exact company name from their resume
+   - Exact project name from their resume
+   - Exact technology/tool from their resume
+   - Exact metric/achievement from their resume
+   
+   If the resume mentions "Improved API latency by 40%", your question should say "40%", not "improved latency"
+
+OUTPUT FORMAT (JSON) - KEEP IT CONCISE:
+{{
+    "summary": "1-2 sentence candidate profile",
+    "questions": [
+        {{
+            "question": "The full question text",
+            "type": "deep_dive|tradeoff|scaling|retrospective|behavioral",
+            "difficulty": "easy|medium|hard",
+            "expected_answer": "2-3 key points only",
+            "section": "experience|projects|skills|internships|leadership|achievements|education",
+            "keywords": ["3-5 keywords max"],
+            "follow_ups": ["1 follow-up question"]
+        }}
+    ]
+}}
+
+CRITICAL: Generate ALL {num_questions} questions. Do NOT stop early. Output complete valid JSON.
+
+NOW READ THE RESUME AND GENERATE {num_questions} QUESTIONS:"""
+
+
+
+
+
+    # Text-based prompt (when PDF upload not available)
+    GENERATION_PROMPT_TEMPLATE = """
+You are interviewing a candidate. Here is their resume:
+
+RESUME CONTENT:
+{resume_text}
+
+PARSED INFORMATION:
+- Skills: {skills}
+- Experience Entries: {experience_count}
+- Projects: {project_count}
+- Education: {education}
+- Apparent Seniority: {seniority}
+
+Generate {num_questions} questions following the NATURAL INTERVIEW FLOW approach.
+
+Remember:
+1. Go DEEP, not wide - multiple questions on the SAME topic exploring different angles
+2. EVERY question must reference SPECIFIC names/numbers from this resume
+3. Sound like a real human interviewer, not a robot reading a checklist
+4. Include follow-ups for each question
+5. Test: implementation → decision-making → scaling → learning
+
+QUESTION DISTRIBUTION:
+- 40% Deep-dive into specific projects/experiences  
+- 25% Tradeoff and decision questions
+- 20% Scaling and edge case scenarios
+- 15% Retrospective and growth questions
+
+SECTION COVERAGE:
+Ensure the questions span across all available sections:
+- Work Experience & Internships
+- Personal & Academic Projects
+- Technical Skills (Theoretical & Practical)
+- Leadership & Soft Skills
+- Educational Background
+
+OUTPUT as JSON with the structure specified above."""
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+LOGS:
+
+[INIT] Initializing AI Interviewer (Async Mode + Resume)...
+✅ TTS Ready (single voice, sync mode)
+
+[INIT] Loading Whisper 'medium'...
+✅ Whisper STT Ready
+[PREDICTOR] Loading embedding model: all-MiniLM-L6-v2
+[PREDICTOR] Model loaded successfully on cpu
+[PREDICTOR] Labels: ['Java', 'Python', 'JavaScript', 'React', 'SQL', 'Machine_Learning', 'Deep_Learning']
+[JUDGE] Initializing Evaluation Engine (SentenceTransformer)...
+✅ Judge Ready
+   [Resume] Found at: C:\Users\acer\Desktop\DL Project\resume.pdf
+
+[RESUME] Initializing resume module...
+   [ResumeBank] Initialized
+C:\Users\acer\Desktop\DL Project\backend\resume\gemini_client.py:123: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+   [Gemini] Client initialized with model: models/gemini-2.5-flash (legacy SDK)
+✅ Resume module ready (GPT enabled)
+   [Background Worker Started]
+
+
+=== AI INTERVIEWER (Async Mode + Resume) ===
+
+🤖 BOT: Hello. I am your AI Interviewer. I have your resume and will ask personalized questions.        
+
+   [Resume BG] Starting resume processing: C:\Users\acer\Desktop\DL Project\resume.pdf
+   [Resume BG] Using direct PDF upload to Gemini (best accuracy)...
+   [Main] Resume processing started in background...
+🤖 BOT: Let's begin. Please introduce yourself and list your technical skills.
+   [Resume BG] Extracted 2186 chars using pdf_direct (conf: 100.0%)
+   [Resume BG] Found: 34 skills, 4 projects, 0 experiences
+   [Resume BG] Generating questions via Gemini (direct PDF mode)...
+   [Generator] Uploading resume directly to Gemini...
+   [Gemini] Uploading file: resume.pdf...
+   [Gemini] File uploaded. Generating response...
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+⏳ Transcribing (Blocking for Intro)...
+   Plan: ['Java']
+🤖 BOT: I see you know Java. Let me ask a few warmup questions while I analyze your resume.
+🤖 BOT: Difference between Checked and Unchecked exceptions?
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Warmup answer queued (1 pending)...
+🤖 BOT: What is the try-with-resources statement?
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Generator] 📝 Raw response saved to 'C:\Users\acer\Desktop\DL Project\gemini_raw_response.txt'
+   [Generator] JSON parsed. Found 20 raw questions.
+   [Generator] Generated 20 questions in 38.0s (direct PDF mode)
+   [ResumeBank] Added 20 questions (total: 20)
+   [Resume] 🎯 Questions ready! Transitioning when appropriate...
+   [Resume BG] ✅ Added 20 questions to bank
+   [Resume BG] 📁 Questions stored in: ResumeQuestionBank (in-memory priority queue)
+   [ResumeBank] Generation marked complete
+   [Resume BG] Processing complete.
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Warmup answer queued (2 pending)...
+   [Main] Resume questions ready! Transitioning...
+🤖 BOT: I've analyzed your resume. Let's dive deeper into your experience.
+   🔍 [Context] Keywords: ['exceptions', 'exceptions', 'checked', 'checked', 'unchecked', 'unchecked'] -> Queued: 'exceptions'
+
+   [Processed] Q: Difference between Checked and... | Ans: Checked exceptions are checked... | Score: 74
+🤖 BOT: Let me ask you about Prince, your 'Food Delivery Website' project sounds quite comprehensive, using React, MongoDB, and NodeJS. Could you walk me through the most significant architectural decision you made when designing the backend for features like 'search, add to cart and checkout,' and why you chose that particular approach over alternatives?
+   🔍 [Context] Keywords: ['statement', 'statement', 'state', 'state'] -> Queued: 'statement'
+
+   [Processed] Q: What is the try-with-resources... | Ans: Drive with resources statement... | Score: 26
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: Sticking with the 'Food Delivery Website,' you integrated 'search' functionality. How did you optimize the search queries in MongoDB to ensure a fast and responsive user experience, particularly as the number of available food items grows significantly?
+
+   [Processed] Q: Prince, your 'Food Delivery We... | Ans: yes mongo dp my favorite... | Score: 38      
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: For your 'YouTube Comment Analyzer,' you mentioned achieving a '92% accuracy' in sentiment analysis. Could you elaborate on how you measured this accuracy? What specific metrics did you use, and what challenges did you face in labeling or obtaining ground truth data for training/testing your model?     
+
+   [Processed] Q: Sticking with the 'Food Delive... | Ans: we will use thresholding and d... | Score: 9 
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: You used the YouTube API for the 'YouTube Comment Analyzer.' What were some of the constraints or rate limits you encountered with the API, and how did you design your application to gracefully handle those limitations without impacting user experience?
+
+   [Processed] Q: For your 'YouTube Comment Anal... | Ans: ... | Score: 0
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: Based on your resume, In your 'Java OOP' banking system, you implemented core functions like 'create account, deposit money, withdraw money and also calculate the returns.' What were the key object-oriented principles you focused on to ensure the system was robust, maintainable, and extensible for new features like loan applications or different account types?
+
+   [Processed] Q: You used the YouTube API for t... | Ans: ... | Score: 0
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+..
+   [Processed] Q: You secured '2nd rank in a Mat... | Ans: ... | Score: 0
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: You've listed 'Bootstrap' as a framework. For a project like your 'Food Delivery Website,' what were the main reasons for choosing Bootstrap for the UI/UX, and what were some of its limitations that you had to work around to achieve a unique or specific design aesthetic?
+   🔍 [Context] Keywords: ['than', 'than'] -> Queued: 'than'
+
+   [Processed] Q: Considering your B.Tech in CSE... | Ans: Thank you.... | Score: 8
+   -> Resume answer queued (1 pending)...
+🤖 BOT: Considering your B.Tech in CSE (Data Science), how do you envision the role of a data scientist evolving in the next 5-10 years, especially with advancements in AI and automation? What skills do you think will become most critical?
+
+   [Processed] Q: You secured '2nd rank in a Mat... | Ans: ... | Score: 0
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>>
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: You've listed 'Bootstrap' as a framework. For a project like your 'Food Delivery Website,' what were the main reasons for choosing Bootstrap for the UI/UX, and what were some of its limitations that you had to work around to achieve a unique or specific design aesthetic?
+   🔍 [Context] Keywords: ['than', 'than'] -> Queued: 'than'
+
+   [Processed] Q: Considering your B.Tech in CSE... | Ans: Thank you.... | Score: 8
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>>
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: You've listed 'Bootstrap' as a framework. For a project like your 'Food Delivery Website,' what were the main reasons for choosing Bootstrap for the UI/UX, and what were some of its limitations that you had to work around to achieve a unique or specific design aesthetic?
+   🔍 [Context] Keywords: ['than', 'than'] -> Queued: 'than'
+
+   [Processed] Q: Considering your B.Tech in CSE... | Ans: Thank you.... | Score: 8
+
+   [Processed] Q: Considering your B.Tech in CSE... | Ans: Thank you.... | Score: 8
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>>
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: Based on your resume, Thinking about the 'Food Delivery Website' again, if you wanted to implement a real-time notification system for order status updates (e.g., 'Your order is out for delivery!'), how would you design this using your current tech stack of React, MongoDB, and NodeJS?
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>>
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: Based on your resume, Thinking about the 'Food Delivery Website' again, if you wanted to implement a real-time notification system for order status updates (e.g., 'Your order is out for delivery!'), how would you design this using your current tech stack of React, MongoDB, and NodeJS?
+🤖 BOT: Based on your resume, Thinking about the 'Food Delivery Website' again, if you wanted to implement a real-time notification system for order status updates (e.g., 'Your order is out for delivery!'), how would you design this using your current tech stack of React, MongoDB, and NodeJS?
+nt a real-time notification system for order status updates (e.g., 'Your order is out for delivery!'), how would you design this using your current tech stack of React, MongoDB, and NodeJS?
+
+
+   [Processed] Q: You've listed 'Bootstrap' as a... | Ans: ... | Score: 0
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>>
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+🤖 BOT: If you were asked to mentor a junior developer who is just starting with full-stack development using the MERN stack (MongoDB, Express.js, React, Node.js), what's the single most important piece of advice you would give them based on your experience with projects like the 'Food Delivery Website'?       
+
+   [Processed] Q: Thinking about the 'Food Deliv... | Ans: ... | Score: 0
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Resume answer queued (1 pending)...
+   [Main] Resume questions exhausted. Total asked: 20
+   [Main] Sufficient resume coverage. Switching to local question bank.
+   [Main] Skills for local questions: ['Java', 'JavaScript', 'General', 'SQL', 'Python']
+🤖 BOT: Now let me ask you some more questions from our side.
+🤖 BOT: Compare Synchronized block vs ReentrantLock.
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Answer queued for processing (2 pending)...
+🤖 BOT: Explain Generics and Type Erasure.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+
+
+   [Processed] Q: If you were asked to mentor a ... | Ans: ... | Score: 0
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>>    🔍 [Context] Keywords: ['than', 'than'] -> Queued: 'than'
+
+   [Processed] Q: Compare Synchronized block vs ... | Ans: Thank you.... | Score: 6
+
+⏹️ Stopped
+   -> Answer queued for processing (16 pending)...
+   ⏭️ [Adapt] Skipping already used keyword: 'than'
+🤖 BOT: What is Pickling?
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+🛑 Terminated
+🤖 BOT: Before we finish, please describe your practical experience with these technologies.
+
+   [Processed] Q: Explain Generics and Type Eras... | Ans: man says... | Score: 0
+
+🎤 LISTENING... (Press ENTER to stop)
+   [Recording] Press ENTER when done >>> 
+⏹️ Stopped
+   -> Answer queued for processing (16 pending)...
+🤖 BOT: Interview complete. Generating feedback...
+⏳ Waiting for pending transcriptions...
+
+   [Processed] Q: When might a Subquery be faste... | Ans: ... | Score: 0
+   🔍 [Context] Keywords: ['than', 'than'] -> Queued: 'than'
+
+   [Processed] Q: Explain the String Pool and wh... | Ans: Thank you.... | Score: 6
+   🔍 [Context] Keywords: ['than', 'than'] -> Queued: 'than'
+
+   [Processed] Q: How would you handle a memory ... | Ans: Thank you.... | Score: 0
+
+   [Processed] Q: How does the Garbage Collector... | Ans: ... | Score: 0
+
+   [Processed] Q: Scenario: You need to read a 1... | Ans: ... | Score: 0
+
+.
+.
+.
+.
+.
+.
+.
+.
+   [Processed] Q: What is a Self Join?... | Ans: you... | Score: 3
+
+
+   [Processed] Q: What is a Self Join?... | Ans: you... | Score: 3
+
+   [Processed] Q: Explain ACID properties.... | Ans: you... | Score: 6
+
+   [Processed] Q: Difference between COALESCE an... | Ans: ... | Score: 0
+
+   [Processed] Q: Explain the use of decorators ... | Ans: ... | Score: 0
+
+   [Processed] Q: Explain the Iterator Protocol.... | Ans: you you you stop now... | Score: 18
+
+   [Processed] Q: Before we finish, please descr... | Ans: ... | Score: 0
+
+📄 Report generated: interview_feedback.txt
+
+📢 Verbal Feedback Phase...
+🤖 BOT: I noticed some areas for improvement.
+🤖 BOT: Regarding What is the try-with-resources statement?...
+🤖 BOT: You said: Drive with resources statements are new
+🤖 BOT: A better answer would be: Automatically closes resources (like streams/connections) implementing AutoCloseable.
+🤖 BOT: Regarding Sticking with the 'Food Delivery Website,' you integrated 'search' functionality. How did you optimize the search queries in MongoDB to ensure a fast and responsive user experience, particularly as the number of available food items grows significantly?...
+🤖 BOT: You said: we will use thresholding and debouncing to do that
+🤖 BOT: A better answer would be: Discussing indexing strategies (text indexes, compound indexes), aggregation pipelines, and potentially external search services or caching mechanisms.
+🤖 BOT: Regarding For your 'YouTube Comment Analyzer,' you mentioned achieving a '92% accuracy' in sentiment analysis. Could you elaborate on how you measured this accuracy? What specific metrics did you use, and what challenges did you face in labeling or obtaining ground truth data for training/testing your model?...
+🤖 BOT: You said:
+🤖 BOT: A better answer would be: Explaining evaluation metrics (precision, recall, F1-score, accuracy), data labeling process, and challenges with subjective human language or sarcasm.
+
+
+
+
+resume upload --> warmup quesions (from qb) --> until resume processing and question forming in background --> resume questions loaded --> ask one by one --> transcibtion in bg --> after resume round end, ask questions based on the keywords the user spoke/mentioned in the resume (10-15 questions) --> cntl+c ends the interview at anytime. --> feedback generated
+
+
+
+
+-----------------------------------------------------------------------------
+
+Expected Flow Now:
+Start Interview → Bot says: "Hello. I am your AI Interviewer..."
+Skill Prompt → "Let's begin. Please introduce yourself and list your technical skills."
+User speaks → "I know Java and Python" → ML service detects ['Java', 'Python']
+Transition → "I see you know Java, Python. Let me ask a few warmup questions while I analyze your resume."
+Warmup Questions (3-5) from local QB for Java/Python
+When Gemini Ready → "I've analyzed your resume. Let's dive deeper..."
+Resume Questions (up to 20 personalized questions)
+After Resume Round → "Now let me ask you some more questions from our side."
+Deep Dive → More questions from local QB + counter-questioning based on keywords user mentioned
+
+
+
+------------------------------------------------------------------------------

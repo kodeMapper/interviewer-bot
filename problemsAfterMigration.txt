@@ -1,0 +1,21 @@
+1. when interview starts - 
+it goes like: `Hello! I am your AI Interviewer. Based on your selection, I will be asking you questions on ${skillList}. Let me start with a few warmup questions while I analyze your resume in the background. Get ready!`
+
+the above sentence does not gets complete. immidiatly the model starts asking questions. sometimes, it gets partially completed.
+
+2. sometimes, there is a problem with processing the question sets from the gemini. logs are as follows:
+📝 ✅ Gemini response received (25763 chars)
+📝 Parsed 20 questions from Gemini (PDF mode)
+✅ Generated 20 resume-based questions using gemini-2.5-flash (PDF mode)
+[Resume BG] Generated 20 questions in 55.9s
+[Resume BG] ❌ Error generating questions: Session validation failed: resumeQuestions.16.type: `achievements` is not a valid enum value for path `type`., resumeQuestions.17.type: `education` is not a valid enum value for path `type`.
+[Resume BG] ⚠️ Using fallback questions (18)
+
+
+3. accuracy of speech detection is low. i speak in indian ascent. maybe thats the reason it does not recognize my words.
+
+4. sometimes bot high volume voice --> interrupt --> normal voice 
+
+5. evaluation should be better. check the deep learning model, that is it evaluating the answers correctly or not. at last also state that (by training the deep learning model if not), how much confident/scared/nervous/etc the candidate was.
+
+6. final score and avg scores are diffrent, why?
