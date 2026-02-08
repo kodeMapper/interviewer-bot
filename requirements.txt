@@ -3,7 +3,7 @@
 
 # Core ML / Deep Learning
 torch>=2.2.2
-numpy>=1.26.4
+numpy>=1.26.4,<2.0.0
 tensorflow>=2.16.1 
 tf-keras>=2.16.0 # Critical for Keras 3 compatibility with Transformers
 

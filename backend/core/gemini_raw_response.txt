@@ -1,0 +1,92 @@
+{
+  "summary": "Sarang Gade is a promising full-stack developer with a strong academic background and practical experience across diverse projects, from real-time ML systems to IoT and web automation. Their resume highlights a solid grasp of React, Node.js, Python, and various databases, coupled with a proactive approach to automation and leadership in technical environments.",
+  "questions": [
+    {
+      "question": "Sarang, your PulseAI - Health Risk Prediction System caught my eye, especially achieving 86.7% accuracy and 94.5% high-risk recall using Gradient Boosting for maternal health. Could you walk me through the most significant challenge you faced in achieving those specific metrics, perhaps in data preprocessing or model training, and how you overcame it?",
+      "type": "deep_dive",
+      "difficulty": "hard",
+      "expected_answer": "Candidate should discuss data quality, imbalance issues, feature engineering challenges, or fine-tuning Gradient Boosting parameters. Mentioning cross-validation strategies or handling false positives/negatives would be a plus.",
+      "section": "projects",
+      "keywords": [
+        "PulseAI",
+        "Gradient Boosting",
+        "86.7% accuracy",
+        "94.5% high-risk recall",
+        "data preprocessing",
+        "model training"
+      ],
+      "follow_ups": [
+        "What other models did you consider besides Gradient Boosting, and why did you settle on it for this specific problem?",
+        "How did you define and measure 'high-risk recall' in practice?"
+      ],
+      "why_this_question": "Tests understanding of ML concepts, practical application, and problem-solving under specific metric constraints."
+    },
+    {
+      "question": "That's a very clear explanation. You deployed the PulseAI frontend on Vercel and the backend on Render for real-time cloud-based predictions. Why did you choose Vercel for the frontend and Render for the backend, and what were the key considerations or trade-offs between them, or perhaps against a unified deployment strategy?",
+      "type": "tradeoff",
+      "difficulty": "medium",
+      "expected_answer": "Candidate should discuss Vercel's strengths for static/serverless frontends (CDN, ease of deployment for Next.js/React) and Render's capabilities for persistent backend services (databases, long-running processes). Trade-offs might include cost, configuration complexity, or latency between services.",
+      "section": "projects",
+      "keywords": [
+        "PulseAI",
+        "Vercel",
+        "Render",
+        "deployment",
+        "frontend",
+        "backend",
+        "trade-offs"
+      ],
+      "follow_ups": [
+        "Did you encounter any specific challenges in managing the communication or security between your Vercel frontend and Render backend?",
+        "If you had to consolidate to a single platform, which one would you choose and what would be the implications?"
+      ],
+      "why_this_question": "Evaluates knowledge of modern deployment platforms, architectural decision-making, and understanding of distributed systems."
+    },
+    {
+      "question": "Moving to another impressive project, the Stamped Management System, you achieved 90% accuracy, 28-50 FPS inference, and sub-100ms alert latency for real-time surveillance. The sub-100ms alert latency is particularly challenging for real-time video processing. How did you architect the multi-cam pipeline and data flow to ensure such low latency, especially when dealing with YOLOv8 and Haar Cascade detections?",
+      "type": "deep_dive",
+      "difficulty": "hard",
+      "expected_answer": "Candidate should explain the architecture, mentioning parallel processing for multiple cameras, optimized data transfer (e.g., streaming protocols, efficient frame handling), hardware acceleration if any, and potentially techniques to minimize processing overhead for YOLOv8 and Haar Cascade.",
+      "section": "projects",
+      "keywords": [
+        "Stamped Management System",
+        "90% accuracy",
+        "28-50 FPS inference",
+        "sub-100ms alert latency",
+        "multi-cam pipeline",
+        "YOLOv8",
+        "Haar Cascade",
+        "real-time surveillance"
+      ],
+      "follow_ups": [
+        "What was the most significant bottleneck you identified in achieving that sub-100ms latency, and how did you address it?",
+        "How did you handle false positives or negatives in a real-time system where immediate alerts are critical?"
+      ],
+      "why_this_question": "Probes into real-time system design, computer vision pipeline optimization, and performance considerations."
+    },
+    {
+      "question": "Your Personal Portfolio (Automated System) is quite innovative, detecting new GitHub activity and auto-triggering Vercel redeploys. Could you explain the mechanism of how your system detects new GitHub activity and the specifics of the GitHub API integrations? What was the most challenging part of ensuring reliable automation for those redeploys?",
+      "type": "deep_dive",
+      "difficulty": "medium",
+      "expected_answer": "Candidate should describe using GitHub webhooks or polling the GitHub API for events. The automation challenge might involve handling rate limits, ensuring idempotency of redeploys, error handling for API failures, or managing Vercel deployment hooks.",
+      "section": "projects",
+      "keywords": [
+        "Personal Portfolio (Automated System)",
+        "GitHub activity",
+        "Vercel redeploys",
+        "GitHub API",
+        "automation",
+        "Next.js",
+        "Express.js"
+      ],
+      "follow_ups": [
+        "You mentioned persistent image handling. Can you elaborate on why this was necessary and how you implemented it?",
+        "How did you handle the security of your GitHub API tokens and Vercel deployment keys within this automated system?"
+      ],
+      "why_this_question": "Tests understanding of API integration, automation workflows, and CI/CD principles."
+    },
+    {
+      "question": "In your GPS and Health Monitoring System, you integrated an ESP32 for real-time data streaming to a Node.js backend. What were the unique challenges of working with embedded systems like ESP32 compared to purely software development, particularly regarding data transmission reliability and power efficiency?",
+      "type": "deep_dive",
+      "difficulty": "medium",
+      "expected_answer": "Candidate should discuss resource constraints

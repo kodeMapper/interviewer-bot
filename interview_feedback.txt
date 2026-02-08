@@ -1,0 +1,29 @@
+AI INTERVIEW FEEDBACK REPORT
+============================
+
+CANDIDATE PROFILE (from Resume):
+Prince Maurya is an aspiring software engineer with a strong academic background in CSE (Data Science), demonstrating proficiency across multiple programming languages, frameworks, and database technologies through diverse academic projects. He also exhibits leadership and teamwork qualities through extracurricular involvement and positions of responsibility.
+
+RESUME-BASED QUESTIONS:
+   Generated: 20
+   Asked: 1
+   By Type: {'conceptual': 1, 'experience': 3, 'project': 6, 'scenario': 3, 'behavioral': 6}
+
+Q1 [Java]: What is the difference between JDK, JRE, and JVM?
+   You Said: 
+   Expected: JDK is for development, JRE for running, JVM executes bytecode.
+   Score: 0/100
+
+Q2 [Java]: Differentiate between Stack and Heap memory.
+   You Said: 
+   Expected: Stack stores local variables/method calls (LIFO); Heap stores objects (global access).
+   Score: 0/100
+
+Q3 [Java]: Explain the concept of OOP in Java.
+   You Said: 
+   Expected: OOP uses objects and classes, focusing on encapsulation, inheritance, polymorphism.
+   Score: 0/100
+
+========================================
+FINAL SCORE: 0/100
+   General Questions: 0/100 (3 questions)

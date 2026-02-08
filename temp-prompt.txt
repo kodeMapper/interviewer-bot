@@ -1,0 +1,216 @@
+You are an engineering assistant. The repository has already been merged: the migrated MERN code exists in `client/` and `server/`, an ml-service exists in `ml-service/`, and the legacy Flask proctoring and other Python code exists under `proctoring/` or `backend/`. Your job is to **organize the integrated directory into a professional, maintainable structure, stabilize runtime behavior, document the system, and create non-destructive changes** that preserve all current functionality.
+
+IMPORTANT RULES (non-negotiable)
+1. Work from the project root only.
+2. Never push to `main`. Create a new branch for every change: `integration/agent-<iso-timestamp>`.
+3. Do not delete the Flask proctoring code or any other code without explicit human approval and a documented feature-parity review.
+4. Prefer `git mv` for reorganizing files (to preserve history). If files must be copied, leave originals and create a migration note; do not remove originals yet.
+5. Read these files before making changes:
+   - `README_MERN.md`
+   - `PROBLEMS_SOLUTION_PLAN.md`
+   - `problemsAfterMigration.txt`
+   - `RUN_GUIDE.md` (if present)
+   - `README.md`
+6. Run and verify services locally before committing. Commit only changes that pass local smoke tests.
+
+GOAL
+Rearrange the repository into a clear, professional layout and deliver:
+- isolated environments per service,
+- clear run instructions,
+- API inventory & contracts,
+- nondestructive adapters where needed,
+- documentation and a migration plan for later deletion of legacy code.
+
+DESIRED FINAL LAYOUT (logical example)
+project-root/
+├─ adaptive-questioning/
+│  ├─ client/            # React app (from client/)
+│  └─ server/            # Node backend (from server/)
+├─ proctoring/
+│  └─ flask-app/         # Flask code (from proctoring/ or backend/)
+├─ ml-service/           # Python ML service (whisper etc.)
+├─ docs/
+│  ├─ inventory.md
+│  ├─ api-contracts.md
+│  ├─ migration-notes.md
+│  └─ RUN_GUIDE.md       # updated run instructions
+├─ scripts/              # helper scripts (smoke tests, start-all)
+├─ .env.example          # examples per service (client/, server/, ml-service/, proctoring/)
+└─ .github/workflows/    # optional CI configs (smoke + lint)
+
+IMMEDIATE STEPS (run in order)
+
+1) CREATE WORK BRANCH
+Run:
+```bash
+git checkout -b integration/agent-$(date -Iseconds)
+````
+
+2. INVENTORY & READ
+
+* Run:
+
+```bash
+git status --porcelain
+git log --oneline --graph -n 30
+```
+
+* Read the required files listed in IMPORTANT RULES.
+* Produce `docs/inventory.md` that lists:
+
+  * top-level folders and their purpose
+  * services, entrypoints, dev dependencies, and expected ports
+  * any duplicated functionality (mark for review)
+
+3. STRUCTURE THE REPO (non-destructive, prefer git mv)
+
+* If the repo is already mostly in `client/`, `server/`, `ml-service/`, and `proctoring/`, create a proper grouping:
+
+  * Use `git mv` to move `client/` + `server/` into `adaptive-questioning/client` and `adaptive-questioning/server` **only if** this preserves paths required by CI or Dockerfiles. If moving breaks scripts, document and create adapters instead.
+* Create `docs/`, `scripts/` folders if missing.
+* For each move, use:
+
+```bash
+git mv <oldpath> <newpath>
+git add -A
+git commit -m "chore(structure): move X to new canonical layout (preserve history)"
+```
+
+* If moving is risky, create wrapper/adapters and leave originals in place; document the migration plan in `docs/migration-notes.md`.
+
+4. ISOLATE DEPENDENCIES
+   For each service, ensure it has its own environment and dependency file:
+
+* Node services: `client/package.json` and `server/package.json` must exist and include `start`, `dev`, `build` scripts.
+* Python services:
+
+  * `ml-service/requirements.txt` present and pinned.
+  * `proctoring/requirements.txt` present.
+  * Create per-service venvs and document creation steps in `RUN_GUIDE.md`.
+
+Commands examples:
+
+```bash
+# Node
+cd adaptive-questioning/client
+npm ci
+
+cd ../server
+npm ci
+
+# Python (ml-service)
+cd ../../ml-service
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Unix: source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+5. RUN & VERIFY (smoke tests)
+
+* Start services and hit health endpoints. Document commands used and results.
+* Example smoke sequence:
+
+  1. Start ml-service (port X)
+  2. Start server (port Y)
+  3. Start client (port Z)
+  4. Visit client in browser or curl health endpoints
+  5. Start Flask proctoring separately and verify it serves its endpoints
+* Add small `scripts/smoke-check.sh` (or `.ps1`) that:
+
+  * verifies ports
+  * hits `/health` or equivalent
+  * exits non-zero on failure
+
+6. API CONTRACTS & ADAPTERS
+
+* Create `docs/api-contracts.md` with request/response shapes for:
+
+  * client ↔ server
+  * server ↔ ml-service
+  * any interactions with proctoring Flask app
+* If the React client expects endpoints not present in Flask, implement **adapters** in `adaptive-questioning/server/src/adapters/` that forward/translate requests to Flask or ml-service instead of editing Flask. Example:
+
+```js
+// server/src/adapters/proctoringAdapter.js
+// forwards client requests to Flask proctoring service and adapts payloads
+```
+
+7. DOCUMENTATION
+
+* Update `README.md` and `docs/RUN_GUIDE.md` with per-service instructions, example env vars, and exact start commands.
+* Create `client/.env.example`, `server/.env.example`, `ml-service/.env.example`, `proctoring/.env.example` listing required variables.
+
+8. LINT, TEST, & CI
+
+* Run available test scripts and lint:
+
+```bash
+# client
+cd adaptive-questioning/client
+npm test || echo "no tests"
+
+# server
+cd ../server
+npm test || echo "no tests"
+
+# python lint (optional)
+cd ../../ml-service
+# ruff or flake8 if available
+```
+
+* Add minimal GitHub Actions workflow in `.github/workflows/smoke.yml` that:
+
+  * installs Node and Python
+  * runs smoke-check script
+  * runs linters
+
+9. COMMITTING & PR
+
+* For each logical change, create a short-lived branch `integration/agent-fix-<short-desc>` if needed.
+* Commit with precise messages.
+* Push branches:
+
+```bash
+git push origin integration/agent-$(date -Iseconds)
+```
+
+* Create PR titled: `integration: reorganize repo & stabilize services` with:
+
+  * list of changes
+  * verification steps performed
+  * remaining risks and manual checks required
+
+DELIVERABLES (what you must produce on the branch)
+
+1. `docs/inventory.md` — service inventory and duplicates.
+2. `docs/api-contracts.md` — API shapes and owners.
+3. `docs/migration-notes.md` — decisions, moves, and what to delete later.
+4. `docs/RUN_GUIDE.md` — per-service run steps and env setup.
+5. `scripts/smoke-check.sh` or `.ps1`.
+6. Any adapter code under `adaptive-questioning/server/src/adapters/`.
+7. Branch(es) pushed to origin with clear commit history.
+
+ERROR HANDLING RULES
+
+* If you encounter dependency conflicts (example: NumPy / Numba), **do not** upgrade global environments. Create or fix a per-service venv and pin versions. Document version changes in `docs/migration-notes.md`.
+* If changes break a service during verification, revert that commit locally, create a fix branch, and continue; do not force-push or merge to `main`.
+* If you cannot reconcile an API contract automatically, stop and produce a short report with exact failing calls, payloads, and suggested adapter transformations.
+
+REPORTING
+After finishing the initial pass, produce a single JSON or markdown report at `docs/integration-report.md` listing:
+
+* Branch name(s) created
+* Files moved (with git mv references)
+* Smoke test commands and outputs
+* Known issues with reproduction steps
+* Suggested next steps for human reviewers (including any destructive removals proposed)
+
+Begin by:
+
+1. creating the branch,
+2. running the inventory steps and producing `docs/inventory.md`,
+3. producing a short status report (one paragraph per service) and any immediate runtime errors you see.
+
+If you need clarification at any point, produce a precise question and stop. Do not perform large destructive refactors without explicit approval.
+

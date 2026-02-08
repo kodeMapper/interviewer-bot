@@ -11,7 +11,7 @@ import winsound  # For buzzer sound on Windows
 current_status = {"status": "SAFE", "reason": "SAFE"}
 latest_frame = None
 running = True   # 🔥 Always running from start
-camera_index = 1  # Default to external camera (USB)
+camera_index = 0  # Default to internal camera
 buzzer_active = False  # 🔥 Track buzzer state
 buzzer_thread = None  # 🔥 Thread for buzzer sound
 
@@ -40,7 +40,7 @@ model = EyeCNN().to(DEVICE)
 model.load_state_dict(torch.load("eye_cnn_final.pth", map_location=DEVICE))
 model.eval()
 
-face_cascade = cv2.CascadeClassifier("haarcascades/haarcascade_frontalface_default.xml")
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
 # ===================== PARAMETERS =====================
 PRED_HISTORY = deque(maxlen=20)

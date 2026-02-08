@@ -55,6 +55,7 @@ app.use('/api/interview', require('./routes/interview.routes'));
 app.use('/api/questions', require('./routes/question.routes'));
 app.use('/api/resume', require('./routes/resume.routes'));
 app.use('/api/session', require('./routes/session.routes'));
+app.use('/api/proctoring', require('./routes/proctoring.routes'));
 
 // Error handling
 app.use(notFoundHandler);

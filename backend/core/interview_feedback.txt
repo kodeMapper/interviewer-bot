@@ -1,0 +1,35 @@
+AI INTERVIEW FEEDBACK REPORT
+============================
+
+CANDIDATE PROFILE (from Resume):
+Prince Maurya is a B.Tech CSE (Data Science) student with a strong academic record and a diverse portfolio of academic projects utilizing the MERN stack and Java. They also demonstrate leadership and extracurricular involvement.
+
+RESUME-BASED QUESTIONS:
+   Generated: 20
+   Asked: 2
+   By Type: {'conceptual': 3, 'project': 4, 'scenario': 2, 'behavioral': 6, 'theoretical': 1, 'experience': 2}
+
+Q1 [Python]: Difference between 'is' and '=='?
+   You Said: 
+   Expected: 'is' checks identity (same memory address); '==' checks equality (same value).
+   Score: 0/100
+
+Q2 [Python]: What is Pickling?
+   You Said: Wassup with the question-
+   Expected: Serializing a Python object structure into a byte stream for storage or transmission.
+   Score: 1/100
+
+Q3 [Python]: Explain the 'with' statement and Context Managers.
+   You Said: 
+   Expected: Ensures resources (files, locks) are properly acquired and released (setup/teardown logic).
+   Score: 0/100
+
+Q4 [Resume:projects]: Prince, looking at your 'Food Delivery Website' project, you mentioned developing it using React, MongoDB, and NodeJS. Could you walk me through a specific design decision you made regarding the database schema in MongoDB for handling the 'add to cart' and 'checkout' features? Why did you opt for a NoSQL approach like MongoDB over a relational database like MySQL, especially for managing transactional data like orders?
+   You Said: and is favorites and
+   Expected: Discuss schema design for cart/orders, embedding vs referencing documents, and justify MongoDB choice (flexibility, scalability for specific use case) vs. SQL ( ACID, structured data).
+   Score: 12/100
+
+========================================
+FINAL SCORE: 3/100
+   Resume Questions: 12/100 (1 questions)
+   General Questions: 0/100 (3 questions)
