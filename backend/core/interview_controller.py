@@ -983,13 +983,14 @@ class InterviewController:
                             break
                             
         except KeyboardInterrupt:
-            print("\n🛑 Terminated")
+            print("\n🛑 Interview terminated by user (Ctrl+C)")
+            self.stop_signal = True  # Ensure stop signal is set
         except Exception as e:
             print(f"\n❌ Unexpected Error in Interview Loop: {e}")
             import traceback
             traceback.print_exc()
         finally:
-            self.ask_checkout_question() # Ensure this runs (unless stop signal)
+            # Skip checkout question - go directly to report generation
             self.speak("Interview complete. Generating feedback...")
             self.generate_report() # Ensure report is ALWAYS generated on exit
             

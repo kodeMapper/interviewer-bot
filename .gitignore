@@ -3,8 +3,21 @@ node_modules/
 /server/node_modules
 /client/node_modules
 venv/
+
 .venv/
 env/
+
+env_proc/
+
+# Datasets
+dataset/
+datasets/
+external_dataset/
+my_dataset/
+# Trained models
+*.pth
+*.pkl
+*.h5
 
 # Python
 __pycache__/
@@ -18,6 +31,10 @@ __pycache__/
 /server/dist
 
 # Environment & Secrets
+# Temp
+temp/
+
+# Environment variables
 .env
 .env.*
 secrets.txt
@@ -41,6 +58,16 @@ extract_docx_text.py
 extract_pdf.py
 progress.md
 
+
 # Document files (Explicitly allowed)
 !requirements.txt
 !problemsAfterMigration.txt
+
+/dataset
+/env_proc
+/external_dataset
+/proctoring/my_dataset
+/proctoring/external_dataset
+/proctoring/env_proc
+/proctoring/dataset
+
