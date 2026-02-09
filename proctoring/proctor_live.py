@@ -2,6 +2,14 @@ import cv2
 import torch
 import time
 import numpy as np
+import os
+import sys
+
+# Ensure script directory is in sys.path so we can import local modules (eye_cnn_model)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+
 from collections import deque
 from eye_cnn_model import EyeCNN
 import threading
@@ -34,11 +42,29 @@ def set_camera(index):
     print(f"Camera switched to index {index}")
 
 # ===================== DEVICE =====================
+# Auto-detect CUDA, fallback to CPU if loading fails
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-model = EyeCNN().to(DEVICE)
-model.load_state_dict(torch.load("eye_cnn_final.pth", map_location=DEVICE))
-model.eval()
+try:
+    print(f"[PROCTOR] Attempting to load EyeCNN model on {DEVICE}...")
+    model_path = os.path.join(current_dir, "eye_cnn_final.pth")
+    model = EyeCNN().to(DEVICE)
+    model.load_state_dict(torch.load(model_path, map_location=DEVICE))
+    model.eval()
+    print(f"[PROCTOR] Success! Model loaded on {DEVICE}")
+
+except Exception as e:
+    print(f"[PROCTOR] ⚠️ Failed to load on {DEVICE}: {e}")
+    if DEVICE == "cuda":
+        print("[PROCTOR] 🔄 Falling back to CPU...")
+        DEVICE = "cpu"
+        model = EyeCNN().to(DEVICE)
+        model.load_state_dict(torch.load(model_path, map_location=DEVICE))
+        model.eval()
+        print(f"[PROCTOR] Success! Model loaded on fallback {DEVICE}")
+    else:
+        # If it failed on CPU, we really have a problem
+        raise e
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 

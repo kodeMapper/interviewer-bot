@@ -58,6 +58,11 @@ extract_docx_text.py
 extract_pdf.py
 progress.md
 
+# Runtime & Generated Files
+**/gemini_raw_response.txt
+**/interview_feedback.txt
+temp-prompt.txt
+test_whisper_medium.py
 
 # Document files (Explicitly allowed)
 !requirements.txt

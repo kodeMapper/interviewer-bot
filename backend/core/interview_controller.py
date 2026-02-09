@@ -14,12 +14,42 @@ Phase 2.75: Resume Upload Integration
 
 import sys
 import os
+import gc
+
+# --- ADD NVIDIA DLLs TO PATH (Fix for ctranslate2/faster-whisper on Windows) ---
+# Faster-Whisper uses CTranslate2, which links against CUDA 12 libraries.
+# On Windows, these DLLs (installed via pip) are not automatically in the system PATH.
+try:
+    base_nvidia_path = os.path.join(sys.prefix, 'Lib', 'site-packages', 'nvidia')
+    print(f"[DEBUG] Searching for NVIDIA libraries in: {base_nvidia_path}")
+    
+    if os.path.exists(base_nvidia_path):
+        for directory in os.listdir(base_nvidia_path):
+            # Check 'bin' (common) and 'lib' (sometimes used)
+            for sub in ['bin', 'lib']:
+                dll_dir = os.path.join(base_nvidia_path, directory, sub)
+                if os.path.isdir(dll_dir):
+                    print(f"[DEBUG] Adding DLL directory: {dll_dir}")
+                    if hasattr(os, 'add_dll_directory'):
+                        os.add_dll_directory(dll_dir)
+                    # Also append to PATH for good measure (legacy support)
+                    os.environ['PATH'] = dll_dir + os.pathsep + os.environ['PATH']
+    else:
+        print("[WARNING] 'nvidia' site-packages directory not found. CUDA libraries might be missing.")
+
+except Exception as e:
+    print(f"[Warning] Failed to add NVIDIA DLLs: {e}")
+# -------------------------------------------------------------------------------
+
+# Optimize PyTorch memory allocation for 4GB VRAM GPU
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
+
 import time
 import queue
 import threading
 import numpy as np
 import sounddevice as sd
-import whisper
+from faster_whisper import WhisperModel
 import win32com.client
 import torch
 import random
@@ -47,7 +77,7 @@ except ImportError as e:
     RESUME_MODULE_AVAILABLE = False
 
 # ================= CONFIG =================
-WHISPER_MODEL_SIZE = "medium"  # User requested exact match to old system
+WHISPER_MODEL_SIZE = "medium"  # Now using faster-whisper INT8 (fits in 4GB VRAM)
 SAMPLE_RATE = 16000
 QUESTIONS_PER_TOPIC = 5
 RESUME_QUESTIONS_TARGET = 20  # Target 18-22 resume-based questions (covering all sections)
@@ -79,9 +109,18 @@ class InterviewController:
         print("✅ TTS Ready (single voice, sync mode)")
         
         # 2. Whisper (Loaded but used in background)
-        print(f"\n[INIT] Loading Whisper '{WHISPER_MODEL_SIZE}'...")
-        self.stt_model = whisper.load_model(WHISPER_MODEL_SIZE)
-        print("✅ Whisper STT Ready")
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"\n[INIT] Loading faster-whisper '{WHISPER_MODEL_SIZE}' on {device.upper()} (INT8)...")
+        
+        try:
+            # Using faster-whisper with INT8 compute type to save ~50% VRAM
+            self.stt_model = WhisperModel(WHISPER_MODEL_SIZE, device=device, compute_type="int8")
+            print(f"✅ faster-whisper '{WHISPER_MODEL_SIZE}' Ready on {device.upper()}")
+        except Exception as e:
+            print(f"❌ Error loading faster-whisper: {e}")
+            raise e
+
+
         
         # 3. Brains
         self.router = IntentPredictor()
@@ -553,11 +592,15 @@ class InterviewController:
         return np.concatenate(chunks, axis=0).flatten()
 
     def _transcribe_internal(self, audio):
-        """Actual Whisper inference (Blocking)"""
+        """Actual faster-whisper inference (Blocking)"""
         if len(audio) == 0: return ""
-        audio = audio.astype(np.float32)
-        res = self.stt_model.transcribe(audio, fp16=False, language="en")
-        return res["text"].strip()
+        if audio.dtype != np.float32:
+            audio = audio.astype(np.float32)
+        
+        # faster-whisper returns a generator of segments
+        segments, info = self.stt_model.transcribe(audio, beam_size=5, language="en")
+        text = " ".join([segment.text for segment in segments])
+        return text.strip()
 
     def transcribe_blocking(self, audio):
         """For Intro only - we need result immediately"""
