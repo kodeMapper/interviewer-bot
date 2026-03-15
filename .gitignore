@@ -49,6 +49,10 @@ reports/videos/
 reports/snapshots/
 reports/packages/
 
+# Local datasets
+dataset/
+my_dataset/
+
 # Optional large model/checkpoint files
 # Uncomment if you don't want to version models
 # *.pth
