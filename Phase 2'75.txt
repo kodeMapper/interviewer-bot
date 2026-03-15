@@ -1,0 +1,18 @@
+This is the phase between 2.5 and 3 (read README)
+
+PHASE 2.75 (imp step) - 
+We have to introduce something better way to understand user's skills, experience, education, acheivements, hobbies and other things. so that i am thinking of 'Resume upload' functionality.
+
+the flow would be like as follows:
+user would upload the resume --> text would got extracted --> feed that text to chatgpt api, with prompt - frame 15-20 industry level interview questions and answers for this resume. cover all the types of questions - theorotical, conceptual, puzzle, scenario based, any other type. Frame questions on each section - experiences, internships, skills listed, any projects, leaderships, etc ---> this question answers would stored as question bank of resume. it might possible, candidate has not much content in his resume, then dont push to frame unneccessary/boring questions.
+
+
+the bot will behave as follows - 
+START --> ask for resume --> user would upload resume --> (text extraction, api call, question framing,.... would be going on in background) ask for introdunction of the candidate and hos skills (as normally the bot does) --> Now the bot has 2 set of refernces (resume based questions and the skills that candidate said) --> now the bot will ask questions based on the resume (experiences, internships, skills listed, any projects, etc) --> if the resume does not contain much content for which many questions can be asked, then use our prior questioning method (read README) --> at last, try to give overall confidence score (using proper method) with the feedback so that one can determine how much confident the candidate was.
+
+
+general things - 
+1. we have to look for less lantency and hence natural behavioural of the bot. so till the resume question set get created, ask questions using existing method (local problem set)
+2. Now the bot complexity is increased very much. async calls, adaptivness and now this resume thing might get collid. hence take care that everything goes fine and smooth. any process should not counter any other process.
+3. while asking resume questions, the adaptive questioning should be still there. 
+4. if u think the model would grow too much, use moduler approach to write the code

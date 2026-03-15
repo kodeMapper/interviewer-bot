@@ -1,0 +1,15 @@
+# ML Microservice for AI Smart Interviewer
+# FastAPI wrapper for ORIGINAL Python ML code
+# 
+# NOTE: This service imports from backend/, so the original
+# requirements.txt packages must also be installed!
+
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.5.3
+python-dotenv>=1.0.0
+
+# These are ALSO in the main requirements.txt but needed here for clarity
+sentence-transformers>=2.2.2
+torch>=2.1.2
+numpy>=1.26.3
