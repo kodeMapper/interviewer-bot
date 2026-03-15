@@ -1,0 +1,5 @@
+timestamp,offset_seconds,event_type,status,reason,note,snapshot_file
+2026-03-15T14:12:45,0,SESSION_STARTED,SAFE,SAFE,Proctoring session started,
+2026-03-15T14:12:47,2,VIDEO_RECORDING,SAFE,SAFE,Video recording started,
+2026-03-15T14:12:53,8,ALERT_TRIGGERED,ALERT,NO FACE,Violation detected,session_20260315_141245_no_face_1773564173.jpg
+2026-03-15T14:13:00,15,SESSION_ENDED,ALERT,NO FACE,Proctoring session stopped,

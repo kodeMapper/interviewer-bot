@@ -1,0 +1,8 @@
+# Proctoring Service Dependencies
+# Install: pip install -r requirements.txt
+
+Flask>=3.0,<4
+flask-cors>=4.0,<5
+opencv-python>=4.9,<5
+torch>=2.2
+numpy>=1.26

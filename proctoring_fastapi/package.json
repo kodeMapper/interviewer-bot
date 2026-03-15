@@ -1,0 +1,22 @@
+{
+  "name": "ai-smart-interviewer-monorepo",
+  "version": "1.0.0",
+  "description": "AI Smart Interviewer - MERN Stack Monorepo",
+  "private": true,
+  "scripts": {
+    "install:all": "cd server && npm install && cd ../client && npm install && cd ../ml-service && pip install -r requirements.txt",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev:ml": "cd ml-service && uvicorn main:app --reload --port 8000",
+    "build:client": "cd client && npm run build",
+    "start:server": "cd server && npm start",
+    "start:ml": "cd ml-service && uvicorn main:app --host 0.0.0.0 --port 8000",
+    "seed": "cd server && npm run seed",
+    "test": "cd server && npm test && cd ../client && npm test"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

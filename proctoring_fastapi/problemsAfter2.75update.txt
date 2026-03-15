@@ -1,0 +1,4 @@
+audio problem
+sometimes, low audio --> silence (interrupt for a while) --> normal
+
+move backend to nodejs/express instead of flask?

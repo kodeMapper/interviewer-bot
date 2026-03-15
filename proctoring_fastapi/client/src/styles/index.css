@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #0ea5e9;
+  --primary-dark: #0284c7;
+  --secondary: #64748b;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+    Oxygen, Ubuntu, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  min-height: 100vh;
+  color: #f1f5f9;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Microphone animation */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+}
+
+.mic-listening {
+  animation: pulse-ring 1.5s ease-in-out infinite;
+}
+
+/* Voice wave animation */
+@keyframes voice-wave {
+  0%, 100% {
+    height: 10px;
+  }
+  50% {
+    height: 30px;
+  }
+}
+
+.voice-bar {
+  animation: voice-wave 0.8s ease-in-out infinite;
+}
+
+.voice-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.voice-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.voice-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.voice-bar:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9, #0284c7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 
+    rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+}
+
+.btn-secondary {
+  @apply bg-secondary-700 hover:bg-secondary-600 text-white font-medium py-2 px-4 
+    rounded-lg transition-all duration-200;
+}
+
+/* Card styles */
+.card {
+  @apply bg-secondary-800/50 backdrop-blur-sm border border-secondary-700 
+    rounded-xl p-6 shadow-xl;
+}
+
+/* Skill badge */
+.skill-badge {
+  @apply px-3 py-1 rounded-full text-sm font-medium bg-primary-500/20 
+    text-primary-300 border border-primary-500/30;
+}
+
+/* Score display */
+.score-excellent {
+  @apply text-green-400;
+}
+
+.score-good {
+  @apply text-blue-400;
+}
+
+.score-average {
+  @apply text-yellow-400;
+}
+
+.score-poor {
+  @apply text-red-400;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply w-8 h-8 border-4 border-primary-500/30 border-t-primary-500 
+    rounded-full animate-spin;
+}
