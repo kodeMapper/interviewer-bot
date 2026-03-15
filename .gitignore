@@ -1,78 +1,59 @@
-# Dependencies
-node_modules/
-/server/node_modules
-/client/node_modules
-venv/
-
-.venv/
-env/
-
-env_proc/
-
-# Datasets
-dataset/
-datasets/
-external_dataset/
-my_dataset/
-# Trained models
-*.pth
-*.pkl
-*.h5
-
-# Python
+# Python cache and bytecode
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 
-# Build outputs
-/client/dist
-/client/build
-/server/dist
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
 
-# Environment & Secrets
-# Temp
-temp/
 
-# Environment variables
+# Build and packaging artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test and coverage outputs
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Type checker / linter caches
+.mypy_cache/
+.ruff_cache/
+.pyre/
+
+# Environment files
 .env
 .env.*
-secrets.txt
-frontend/secrets.txt
-backend/secrets.txt
 
-# System / IDE
-.DS_Store
-Thumbs.db
+# IDE/editor files
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# Project Specific
-server/uploads/
-temp-interviewer-bot/
-backend/ml/data/processed/
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
 
-# Legacy / Misc
-extract_docx_text.py
-extract_pdf.py
-progress.md
+# Local reports/artifacts
+reports/videos/
+reports/snapshots/
+reports/packages/
 
-# Runtime & Generated Files
-**/gemini_raw_response.txt
-**/interview_feedback.txt
-temp-prompt.txt
-test_whisper_medium.py
+# Local datasets
+dataset/
+my_dataset/
 
-# Document files (Explicitly allowed)
-!requirements.txt
-!problemsAfterMigration.txt
-
-/dataset
-/env_proc
-/external_dataset
-/proctoring/my_dataset
-/proctoring/external_dataset
-/proctoring/env_proc
-/proctoring/dataset
-
+# Optional large model/checkpoint files
+# Uncomment if you don't want to version models
+# *.pth
+# *.pt
