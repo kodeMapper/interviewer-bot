@@ -9,6 +9,11 @@ venv/
 env/
 ENV/
 
+# JS dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
 
 # Build and packaging artifacts
 build/
@@ -48,6 +53,7 @@ Thumbs.db
 reports/videos/
 reports/snapshots/
 reports/packages/
+server/uploads/
 
 # Local datasets
 dataset/
@@ -76,6 +82,7 @@ test_whisper_medium.py
 /proctoring/external_dataset
 /proctoring/env_proc
 /proctoring/dataset
+progress.md
 
 # Optional large model/checkpoint files
 # Uncomment if you don't want to version models
