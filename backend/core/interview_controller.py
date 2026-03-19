@@ -150,6 +150,8 @@ class InterviewController:
         self.is_running = False
         self.report_generated = False # Flag for idempotency
         self.checkout_asked = False   # Flag for final question
+        # Guard to prevent state transitions while user is still answering.
+        self.awaiting_user_answer = False
         
         # ===== PHASE 2.75: RESUME INTEGRATION =====
         # Resolve resume path to absolute path
@@ -400,6 +402,10 @@ class InterviewController:
                 "keywords": q.keywords
             }
         return None
+
+    def _has_ready_resume_questions(self) -> bool:
+        """True when resume mode is enabled and generated questions are available."""
+        return bool(self.resume_enabled and self.resume_bank and self.resume_bank.has_questions())
     
     def _get_local_question_for_warmup(self) -> Optional[tuple]:
         """Get a local question for warmup phase."""
@@ -591,6 +597,14 @@ class InterviewController:
         if not chunks: return np.array([])
         return np.concatenate(chunks, axis=0).flatten()
 
+    def _listen_for_answer(self):
+        """Listen wrapper that marks the controller as waiting for user input."""
+        self.awaiting_user_answer = True
+        try:
+            return self.listen()
+        finally:
+            self.awaiting_user_answer = False
+
     def _transcribe_internal(self, audio):
         """Actual faster-whisper inference (Blocking)"""
         if len(audio) == 0: return ""
@@ -689,7 +703,7 @@ class InterviewController:
         
         # We need to listen, but softly handle if audio fails
         try:
-            audio = self.listen()
+            audio = self._listen_for_answer()
             if len(audio) > 0:
                 self.active_tasks += 1
                 self.processing_queue.put((audio, final_q, "Practical usage summary.", "Final"))
@@ -715,7 +729,7 @@ class InterviewController:
             self.speak("Let's begin. Please introduce yourself and list your technical skills.")
             
             # --- PHASE 1: INTRO (Blocking) ---
-            audio = self.listen()
+            audio = self._listen_for_answer()
             intro_text = self.transcribe_blocking(audio)
             
             conf_topics = self.router.predict_with_scores(intro_text, threshold=0.3)
@@ -737,7 +751,7 @@ class InterviewController:
                         break
                     
                     # Check if resume questions ready
-                    if self.resume_generation_complete.is_set() and self.resume_bank.has_questions():
+                    if self._has_ready_resume_questions():
                         print("   [Main] Resume questions ready! Transitioning...")
                         break
                     
@@ -748,7 +762,7 @@ class InterviewController:
                     if q:
                         time.sleep(1)
                         self.speak(q)
-                        audio = self.listen()
+                        audio = self._listen_for_answer()
                         
                         self.active_tasks += 1
                         self.processing_queue.put((audio, q, expected, topic))
@@ -786,6 +800,19 @@ class InterviewController:
                     self.generate_report()
                     self.is_running = False
                     break
+
+                # 0.5 Resume fast-switch: before asking any next local question,
+                # jump to resume questions as soon as they are ready.
+                if (
+                    self.state != InterviewState.RESUME_DEEP_DIVE
+                    and self._has_ready_resume_questions()
+                    and not self.awaiting_user_answer
+                ):
+                    print("   [Main] Resume questions ready! Switching immediately to resume deep dive...")
+                    self.state = InterviewState.RESUME_DEEP_DIVE
+                    self.questions_asked_count = 0
+                    self.speak("I've analyzed your resume. Let's dive deeper into your experience.")
+                    continue
                 
                 if self.skip_signal:
                     self.skip_signal = False # Reset
@@ -809,7 +836,7 @@ class InterviewController:
                         full_q = prefix + resume_q["question"] if prefix else resume_q["question"]
                         self.speak(full_q)
                         
-                        audio = self.listen()
+                        audio = self._listen_for_answer()
                         
                         self.active_tasks += 1
                         self.processing_queue.put((
@@ -835,7 +862,7 @@ class InterviewController:
                             # Not enough questions asked - PROMPT USER
                             self.speak("That covers the main points from your resume. What else do you do? Any other technologies or projects you'd like to discuss?")
                             
-                            audio = self.listen()
+                            audio = self._listen_for_answer()
                             response_text = self.transcribe_blocking(audio)
                             print(f"   [User Response] '{response_text}'")
                             
@@ -988,7 +1015,7 @@ class InterviewController:
                         self.speak(full_q)
                         
                         # 2. Record (Blocking)
-                        audio = self.listen()
+                        audio = self._listen_for_answer()
                         
                         # 3. Submit to Background (Instant)
                         self.active_tasks += 1

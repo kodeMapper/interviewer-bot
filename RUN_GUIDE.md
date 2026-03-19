@@ -1,151 +1,133 @@
-# Interviewer Bot - MERN Migration Run Guide
+﻿# Interviewer Bot - Run Guide (Windows)
 
-This guide provides step-by-step instructions to set up and run the migrated MERN application.
+This repository contains multiple services. Start each service in a separate terminal.
 
-## 🏗️ Architecture Overview
+## Services and Ports
 
-The system has been migrated to a modern web stack while preserving the original Deep Learning core:
+- Frontend (React + Vite): http://localhost:3000
+- Backend (Express + Socket.io): http://localhost:5001
+- ML Service (FastAPI): http://localhost:8000
+- Proctoring FastAPI (optional): http://127.0.0.1:5000
 
-1.  **Frontend**: React (Vite) for the user interface.
-2.  **Backend**: Express.js (Node.js) for business logic and socket management.
-3.  **ML Wrapper**: FastAPI (Python) service that wraps your *existing* Deep Learning code.
+## First-Time Setup
 
-> **Important**: The original ML Logic in `backend/` and `core/` is **NOT** rewritten. The `ml-service` simply imports and exposes it as an HTTP API.
-
-## 🔌 Port Summary
-
-| Service | Port | Local URL | Description |
-| :--- | :--- | :--- | :--- |
-| **Frontend** | `3000` | `http://localhost:3000` | The user interface |
-| **Backend Server** | `5001` | `http://localhost:5001` | API & WebSocket Server |
-| **ML Service** | `8000` | `http://localhost:8000` | Python Wrapper |
-| **MongoDB** | `27017` | `mongodb://localhost:27017/interviewer_bot` | Database |
-
-> ⚠️ **Note**: Port 5000 is often used by Windows system services. The backend defaults to **5001** to avoid conflicts.
-
----
-
-## 🚀 Setup & Installation
-
-You need to set up three separate parts. Open a terminal in the root project directory.
-
-### 1. ML Service (Python)
-
-This service requires the original dependencies plus FastAPI.
+### 1) Root Python environment (CLI interviewer)
 
 ```powershell
-cd ml-service
-# Create virtual environment
+cd C:\Users\acer\Desktop\DL Project
 python -m venv venv
-
-# Activate (Windows)
-.\venv\Scripts\activate
-
-# Install dependencies (includes FastAPI + original ML libs)
+.\venv\Scripts\Activate.ps1
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 2. Backend Server (Node.js)
+### 2) ML service environment
 
 ```powershell
-cd server
+cd C:\Users\acer\Desktop\DL Project\ml-service
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 3) Backend and frontend dependencies
+
+```powershell
+cd C:\Users\acer\Desktop\DL Project\server
+npm install
+
+cd C:\Users\acer\Desktop\DL Project\client
 npm install
 ```
 
-### 3. Frontend Client (React)
+### 4) Proctoring dependencies (optional)
 
 ```powershell
-cd client
-npm install
+cd C:\Users\acer\Desktop\DL Project\proctoring_fastapi
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
----
+## Start Commands
 
-## ▶️ Running the Application
-
-You must run these services in **3 separate terminal windows** simultaneously.
-
-### Terminal 1: Start ML Service
+### Terminal A: ML service
 
 ```powershell
-cd ml-service
-.\venv\Scripts\activate
-uvicorn main:app --reload --port 8000
+cd C:\Users\acer\Desktop\DL Project\ml-service
+.\venv\Scripts\Activate.ps1
+uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
-### Terminal 2: Start Backend Server
+### Terminal B: Backend
 
 ```powershell
-cd server
+cd C:\Users\acer\Desktop\DL Project\server
 npm run dev
 ```
 
-### Terminal 3: Start Frontend Client
+### Terminal C: Frontend
 
 ```powershell
-cd client
+cd C:\Users\acer\Desktop\DL Project\client
 npm run dev
 ```
 
----
+### Terminal D: Proctoring (optional)
 
-## ⚠️ Important Configurations
-
-### Environment Variables
-
-**Server (`server/.env`)**
- Ensure these point to the correct services:
-```env
-PORT=5001
-MONGO_URI=mongodb://localhost:27017/interviewer_bot
-ML_SERVICE_URL=http://localhost:8000
-CLIENT_URL=http://localhost:3000
+```powershell
+cd C:\Users\acer\Desktop\DL Project\proctoring_fastapi
+.\venv\Scripts\Activate.ps1
+python server.py
 ```
 
-**Client (`client/.env`)**
-```env
-VITE_API_URL=http://localhost:5001
+## Health Checks
+
+```powershell
+Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8000/health | Select-Object -ExpandProperty Content
+Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5001/health | Select-Object -ExpandProperty Content
+Invoke-WebRequest -UseBasicParsing http://localhost:3000 | Select-Object -ExpandProperty StatusCode
+Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5000/status | Select-Object -ExpandProperty Content
 ```
 
-### Common Issues
+## Port Conflict Fixes
 
-1.  **ModuleNotFoundError in ML Service**:
-    *   The `ml-service/main.py` uses `sys.path.append("..")` to find `backend.core`. Ensure you run uvicorn from *inside* the `ml-service` folder, but the project structure remains intact relative to the parent folder.
+### Free backend port 5001
 
-2.  **Port Conflicts**:
-    *   If port 3000 or 5001 is taken, update the respective `.env` file and `vite.config.js`.
+```powershell
+Get-NetTCPConnection -LocalPort 5001 -State Listen | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }
+```
 
-3.  **Data Persistence**:
-    *   Ensure MongoDB is running locally before starting the server (or use MongoDB Atlas cloud).
+### Free ML port 8000
 
-4.  **Microphone Not Working**:
-    *   Ensure you're using Chrome/Edge (Firefox has limited Web Speech API support).
-    *   Grant microphone permissions when prompted.
-    *   The mic button is only enabled after a question is loaded.
+```powershell
+Get-NetTCPConnection -LocalPort 8000 -State Listen | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }
+```
 
----
+### Free frontend port 3000
 
-## 🎯 Skills & Topics
+```powershell
+Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }
+```
 
-### Fixed ML Topics (7)
-The custom PyTorch MLP classifier detects these 7 topics from your introduction:
-- Java, Python, JavaScript, React, SQL, Machine Learning, Deep Learning
+## Environment Variables
 
-### Dynamic Resume Skills (Unlimited)
-When you upload a resume, Gemini/GPT generates questions for **any skill** found:
-- Technologies mentioned in projects
-- Frameworks from work experience
-- Domain-specific knowledge
+Use these values at minimum:
 
-The system blends both sources seamlessly.
+- server/.env:
+  - PORT=5001
+  - MONGODB_URI=<your-mongodb-uri>
+  - ML_SERVICE_URL=http://localhost:8000
+  - CLIENT_URL=http://localhost:3000
+  - GEMINI_API_KEY=<your-key>
 
----
+- client/.env:
+  - VITE_API_URL=http://localhost:5001
 
-## 📋 Interview Flow
+## Notes
 
-1. **INTRO** → Select skills + optional resume upload
-2. **RESUME_WARMUP** → 3 easy questions from resume (if uploaded)
-3. **RESUME_DEEP_DIVE** → 15-20 personalized resume questions
-4. **DEEP_DIVE** → 5 questions per selected skill
-5. **MIX_ROUND** → 5 rapid-fire mixed questions
-6. **FINISHED** → Score report generated
+- Run uvicorn from inside ml-service so backend imports resolve correctly.
+- The original Python ML logic remains in backend/ and is loaded by ml-service.
+- Proctoring is separate and optional during MERN interview flow.

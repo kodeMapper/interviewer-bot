@@ -30,7 +30,7 @@ This project runs locally and serves a browser UI from FastAPI.
 - `dataset_loader.py`, `train_pretrain.py`, `train_finetune.py`: Training pipeline
 - `people_detector.py`: YOLO-based multi-person utility
 - `capture_dataset.py`, `collect_images.py`: Dataset collection utilities
-- `PROCTORING_SYSTEM_EXPLAINED.md`: Extended architecture explanation
+- `docs/PROCTORING_FULL_DEEP_DIVE.md`: Extended architecture explanation
 
 ## Requirements
 
@@ -56,7 +56,7 @@ Main dependencies:
 ## Quick Start (Windows CMD)
 
 ```cmd
-cd /d E:\ritesh_exp\proctoring_fastapi
+cd /d C:\Users\acer\Desktop\DL Project\proctoring_fastapi
 python -m pip install -r requirements.txt
 python server.py
 ```

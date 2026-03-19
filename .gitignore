@@ -62,13 +62,10 @@ my_dataset/
 # Runtime & Generated Files
 **/gemini_raw_response.txt
 **/interview_feedback.txt
-temp-prompt.txt
-**/test_runner.py
-industry_bots*
-expectedFlow.txt
 python310.exe
 proctoring_fastapi/proctoring_fastapi/python310.exe
 proctoring_fastapi/proctoring_fastapi/reports/
+proctoring_fastapi/reports/
 test_whisper_medium.py
 
 # Document files (Explicitly allowed)

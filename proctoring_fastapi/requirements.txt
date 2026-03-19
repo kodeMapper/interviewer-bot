@@ -1,18 +1,18 @@
-# SecureProctor AI dependencies
+﻿# SecureProctor AI dependencies
 # Install: pip install -r requirements.txt
 
-# Main API backend (server.py)
+# Main API backend
 fastapi>=0.115,<1
 uvicorn>=0.30,<1
 pydantic>=2.7,<3
 
-# Legacy backend (app.py)
-Flask>=3.0,<4
+# Legacy Flask backend (compatibility)
+flask>=3.0,<4
 flask-cors>=4.0,<5
 
 # Vision + ML
 opencv-python>=4.9,<5
-torch>=2.2
-numpy>=1.26
+numpy>=1.26,<2.0
+torch>=2.2,<3
 mediapipe>=0.10,<0.11
 ultralytics>=8.2,<9
