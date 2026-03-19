@@ -53,30 +53,6 @@ reports/packages/
 dataset/
 my_dataset/
 
-# Runtime & Generated Files
-**/gemini_raw_response.txt
-**/interview_feedback.txt
-temp-prompt.txt
-**/test_runner.py
-industry_bots*
-expectedFlow.txt
-python310.exe
-proctoring_fastapi/proctoring_fastapi/python310.exe
-proctoring_fastapi/proctoring_fastapi/reports/
-test_whisper_medium.py
-
-# Document files (Explicitly allowed)
-!requirements.txt
-!problemsAfterMigration.txt
-
-/dataset
-/env_proc
-/external_dataset
-/proctoring/my_dataset
-/proctoring/external_dataset
-/proctoring/env_proc
-/proctoring/dataset
-
 # Optional large model/checkpoint files
 # Uncomment if you don't want to version models
 # *.pth

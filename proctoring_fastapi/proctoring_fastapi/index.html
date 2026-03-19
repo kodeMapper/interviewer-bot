@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureProctor AI - Advanced Proctoring System</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.css">
+</head>
+
+<body>
+
+<!-- Toast Notifications -->
+<div id="toastContainer" class="toast-container"></div>
+
+<div class="app">
+
+  <!-- ================= HEADER ================= -->
+  <header class="header">
+    <div class="header-content">
+
+      <div class="logo-section">
+        <div class="logo-icon">
+          <i class="fas fa-shield-alt"></i>
+          <div class="logo-glow"></div>
+        </div>
+        <div class="header-text">
+          <h1>SecureProctor AI</h1>
+          <p class="subtitle">Advanced Exam Proctoring System</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+
+        <!-- Settings button removed -->
+
+        <button id="themeToggle" class="header-btn theme-toggle" title="Toggle Theme">
+          <i class="fas fa-moon"></i>
+        </button>
+
+        <div id="status" class="status safe">
+          <div class="status-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="status-text">
+            <div class="status-label">SAFE</div>
+            <div class="status-time" id="sessionTime">00:00:00</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main-content">
+
+    <!-- LEFT SECTION -->
+    <section class="video-section">
+
+      <div class="video-card">
+        <div class="video-header">
+          <h2><i class="fas fa-camera"></i> Live Camera Feed</h2>
+          <div class="camera-indicator">
+            <span class="pulse"></span> LIVE
+          </div>
+        </div>
+
+        <div class="video-container">
+          <img id="cameraFeed" class="video-feed" alt="Camera Feed" />
+          <div class="video-overlay" id="videoOverlay"></div>
+
+          <div class="video-effects">
+            <div class="corner-marker top-left"></div>
+            <div class="corner-marker top-right"></div>
+            <div class="corner-marker bottom-left"></div>
+            <div class="corner-marker bottom-right"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-container">
+
+        <div class="stat-box">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+            <div class="icon-bg"></div>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Duration</div>
+            <div class="stat-value" id="duration">00:00</div>
+          </div>
+        </div>
+
+        <div class="stat-box alert-stat" id="violationBox">
+          <div class="stat-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div class="icon-bg"></div>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Violations</div>
+            <div class="stat-value" id="violationCount">0</div>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon">
+            <i class="fas fa-wifi"></i>
+            <div class="icon-bg"></div>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Status</div>
+            <div class="stat-value status-badge" id="connectionStatus">Connected</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ACTIVITY CHART -->
+      <div class="chart-card">
+        <div class="card-header">
+          <h2><i class="fas fa-chart-line"></i> Activity Timeline</h2>
+        </div>
+        <div class="card-body">
+          <canvas id="activityChart" height="40"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT SECTION -->
+    <section class="control-section">
+
+      <!-- Camera Selection -->
+      <div class="control-card">
+        <div class="card-header">
+          <h2><i class="fas fa-cog"></i> Configuration</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="cameraSelect">
+              <i class="fas fa-video"></i> Select Camera
+            </label>
+            <select id="cameraSelect" class="select-input">
+              <option value="">Loading cameras...</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Session Metadata -->
+      <div class="control-card">
+        <div class="card-header">
+          <h2><i class="fas fa-id-badge"></i> Session Details</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="candidateName"><i class="fas fa-user"></i> Candidate Name</label>
+            <input id="candidateName" class="select-input" type="text" placeholder="Enter candidate name">
+          </div>
+          <div class="form-group">
+            <label for="rollNumber"><i class="fas fa-hashtag"></i> Roll Number</label>
+            <input id="rollNumber" class="select-input" type="text" placeholder="Enter roll number">
+          </div>
+          <div class="form-group">
+            <label for="subjectName"><i class="fas fa-book"></i> Subject</label>
+            <input id="subjectName" class="select-input" type="text" placeholder="Enter subject">
+          </div>
+          <div class="form-group">
+            <label for="examId"><i class="fas fa-fingerprint"></i> Exam ID</label>
+            <input id="examId" class="select-input" type="text" placeholder="Enter exam ID">
+          </div>
+          <button id="saveMetaBtn" class="btn btn-primary" type="button">
+            <i class="fas fa-floppy-disk"></i> Save Details
+          </button>
+        </div>
+      </div>
+
+      <!-- Detection Toggles -->
+      <div class="control-card">
+        <div class="card-header">
+          <h2><i class="fas fa-eye"></i> Detection Settings</h2>
+        </div>
+        <div class="card-body">
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="darkCheck" checked>
+            <span class="checkbox-custom"></span>
+            <span class="label-text">
+              <i class="fas fa-moon"></i> Dark Environment
+            </span>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="faceCheck" checked>
+            <span class="checkbox-custom"></span>
+            <span class="label-text">
+              <i class="fas fa-face-smile"></i> Face Detection
+            </span>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="gazeCheck" checked>
+            <span class="checkbox-custom"></span>
+            <span class="label-text">
+              <i class="fas fa-eye"></i> Gaze Tracking
+            </span>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="multiCheck" checked>
+            <span class="checkbox-custom"></span>
+            <span class="label-text">
+              <i class="fas fa-users"></i> Multiple People
+            </span>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- Pre-check -->
+      <div class="control-card">
+        <div class="card-header">
+          <h2><i class="fas fa-clipboard-check"></i> Session Pre-check</h2>
+        </div>
+        <div class="card-body">
+          <ul class="precheck-list" id="precheckList">
+            <li id="checkBackend"><i class="fas fa-circle-notch"></i> Backend reachability</li>
+            <li id="checkCamera"><i class="fas fa-circle-notch"></i> Camera availability</li>
+            <li id="checkSettings"><i class="fas fa-circle-notch"></i> Detection settings sync</li>
+            <li id="checkStream"><i class="fas fa-circle-notch"></i> Stream readiness</li>
+          </ul>
+          <button id="runPrecheckBtn" class="btn btn-primary" type="button">
+            <i class="fas fa-vial"></i> Run Pre-check
+          </button>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="action-buttons">
+        <button id="startBtn" class="btn btn-primary btn-lg">
+          <i class="fas fa-play"></i> Start Proctoring
+        </button>
+
+        <button id="stopBtn" class="btn btn-danger btn-lg">
+          <i class="fas fa-stop"></i> Stop
+        </button>
+      </div>
+
+      <div class="action-buttons action-single">
+        <button id="downloadPackageBtn" class="btn btn-primary btn-lg" type="button">
+          <i class="fas fa-file-zipper"></i> Download Report Package
+        </button>
+      </div>
+
+      <!-- Violation Log -->
+      <div class="control-card log-card">
+        <div class="card-header">
+          <h2><i class="fas fa-list"></i> Violation Log</h2>
+          <button id="clearLog" class="clear-btn" title="Clear Log">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+
+        <div class="card-body">
+          <ul id="log" class="log-list"></ul>
+
+          <div id="emptyLog" class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-inbox"></i>
+            </div>
+            <p>No violations yet</p>
+            <small>All clear! Keep it up</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-card">
+        <div class="card-header">
+          <h2><i class="fas fa-images"></i> Alert Snapshots</h2>
+        </div>
+        <div class="card-body">
+          <div id="snapshotGallery" class="snapshot-gallery"></div>
+          <div id="emptySnapshots" class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-camera"></i>
+            </div>
+            <p>No snapshots captured yet</p>
+            <small>Alert images will appear here</small>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2026 SecureProctor AI</p>
+      <div class="footer-stats">
+        <span><i class="fas fa-server"></i> Server Active</span>
+        <span id="fpsBadge"><i class="fas fa-gauge"></i> 30 FPS</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
