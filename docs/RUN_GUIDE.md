@@ -72,6 +72,8 @@ curl http://localhost:8000/health
 
 ## 2. Backend Server Setup (Node.js)
 
+*Note: For the new detailed API documentation hub, refer to [docs/swagger-user-guide.md](swagger-user-guide.md).*
+
 ```powershell
 # Navigate to server
 cd server

@@ -16,7 +16,7 @@ from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # Add the backend directory to Python path to import original modules
 BACKEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "backend")
@@ -66,12 +66,44 @@ async def lifespan(app: FastAPI):
     print("👋 ML Service shutting down")
 
 
+OPENAPI_TAGS = [
+    {
+        "name": "System",
+        "description": "Service health and model readiness checks.",
+    },
+    {
+        "name": "Answer Evaluation",
+        "description": "Semantic answer scoring against an expected answer.",
+    },
+    {
+        "name": "Intent Detection",
+        "description": "Topic prediction and ranked intent scoring for interview text.",
+    },
+    {
+        "name": "Diagnostics",
+        "description": "Model metadata and runtime inspection.",
+    },
+]
+
+
 # Create FastAPI app
 app = FastAPI(
-    title="AI Interviewer ML Service",
-    description="FastAPI wrapper for the ORIGINAL Python ML implementations",
+    title="SkillWise — ML Service",
+    description=(
+        "SkillWise ML inference service — wraps the original PyTorch intent classifier and\n"
+        "SentenceTransformer answer evaluator.\n\n"
+        "Use this Swagger UI to test answer scoring, topic prediction, model health, and runtime diagnostics."
+    ),
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    openapi_tags=OPENAPI_TAGS,
+    swagger_ui_parameters={
+        "displayRequestDuration": True,
+        "docExpansion": "list",
+        "defaultModelsExpandDepth": 2,
+        "filter": True,
+        "tryItOutEnabled": True,
+    },
 )
 
 # CORS middleware
@@ -87,9 +119,9 @@ app.add_middleware(
 # ==================== Request/Response Models ====================
 
 class EvaluateRequest(BaseModel):
-    user_answer: str
-    expected_answer: str
-    keywords: List[str] = []
+    user_answer: str = Field(..., description="Candidate answer text")
+    expected_answer: str = Field(..., description="Reference answer text")
+    keywords: List[str] = Field(default_factory=list, description="Optional supporting keywords")
 
 
 class EvaluateResponse(BaseModel):
@@ -98,8 +130,8 @@ class EvaluateResponse(BaseModel):
 
 
 class IntentRequest(BaseModel):
-    text: str
-    threshold: float = 0.5
+    text: str = Field(..., description="Source text to classify")
+    threshold: float = Field(default=0.5, description="Minimum confidence threshold")
 
 
 class IntentResponse(BaseModel):
@@ -121,7 +153,12 @@ class HealthResponse(BaseModel):
 
 # ==================== Endpoints ====================
 
-@app.get("/health", response_model=HealthResponse)
+@app.get(
+    "/health",
+    response_model=HealthResponse,
+    tags=["System"],
+    summary="Check ML service health",
+)
 async def health_check():
     """Health check endpoint"""
     return HealthResponse(
@@ -131,7 +168,12 @@ async def health_check():
     )
 
 
-@app.post("/evaluate", response_model=EvaluateResponse)
+@app.post(
+    "/evaluate",
+    response_model=EvaluateResponse,
+    tags=["Answer Evaluation"],
+    summary="Evaluate a candidate answer",
+)
 async def evaluate_answer(request: EvaluateRequest):
     """
     Evaluate user answer against expected answer.
@@ -159,7 +201,12 @@ async def evaluate_answer(request: EvaluateRequest):
         raise HTTPException(status_code=500, detail=f"Evaluation error: {str(e)}")
 
 
-@app.post("/predict-intent", response_model=IntentResponse)
+@app.post(
+    "/predict-intent",
+    response_model=IntentResponse,
+    tags=["Intent Detection"],
+    summary="Predict interview topics from text",
+)
 async def predict_intent(request: IntentRequest):
     """
     Predict which topics the text relates to.
@@ -191,7 +238,12 @@ async def predict_intent(request: IntentRequest):
         raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
 
 
-@app.post("/predict")
+@app.post(
+    "/predict",
+    response_model=PredictWithScoresResponse,
+    tags=["Intent Detection"],
+    summary="Return ranked topic predictions with scores",
+)
 async def predict_with_scores(request: IntentRequest):
     """
     Predict topics with confidence scores.
@@ -216,7 +268,11 @@ async def predict_with_scores(request: IntentRequest):
         raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
 
 
-@app.get("/model-info")
+@app.get(
+    "/model-info",
+    tags=["Diagnostics"],
+    summary="Inspect loaded model metadata",
+)
 async def model_info():
     """Get information about the loaded models"""
     info = {

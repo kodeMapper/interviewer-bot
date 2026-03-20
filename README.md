@@ -19,7 +19,7 @@
 | Service | Port | Technology |
 |---------|------|------------|
 | Frontend | 3000 | React + Vite |
-| Backend | 5001 | Express + Socket.io |
+| Backend | 5001 | Express + Socket.io (See [Swagger Docs](docs/swagger-user-guide.md)) |
 | ML Service | 8000 | FastAPI (wraps original Python ML) |
 
 ---

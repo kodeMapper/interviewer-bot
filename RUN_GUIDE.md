@@ -5,7 +5,8 @@ This repository contains multiple services. Start each service in a separate ter
 ## Services and Ports
 
 - Frontend (React + Vite): http://localhost:3000
-- Backend (Express + Socket.io): http://localhost:5001
+- Backend (Express + Socket.io): http://localhost:5001 
+  - *Note: For comprehensive API documentation, refer to the [Swagger User Guide](docs/swagger-user-guide.md).*
 - ML Service (FastAPI): http://localhost:8000
 - Proctoring FastAPI (optional): http://127.0.0.1:5000
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Server Entry Point
  * Initializes database, socket server, and starts HTTP server
  */
@@ -35,7 +35,7 @@ async function startServer() {
       console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
-║   🎤 AI Smart Interviewer Server                           ║
+║   🎯 SkillWise — Interviewer Bot                           ║
 ║                                                            ║
 ║   Status: Running                                          ║
 ║   Port: ${config.port}                                           ║
@@ -46,6 +46,7 @@ async function startServer() {
 ║   Endpoints:                                               ║
 ║   - Health: http://localhost:${config.port}/health               ║
 ║   - API: http://localhost:${config.port}/api                     ║
+║   - Docs: http://localhost:${config.port}/api/docs               ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
       `);
@@ -91,12 +92,3 @@ process.on('SIGINT', () => {
 
 // Start the server
 startServer();
-// restart
-
-// restart-gemini-fix
-
-// restart-prompts-fix
-
-// restart-models-fix
-
-// models-fixed-2026

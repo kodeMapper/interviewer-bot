@@ -10,10 +10,22 @@ const morgan = require('morgan');
 const path = require('path');
 
 const { config } = require('./config/environment');
+const { getOpenApiDocument, renderSwaggerUiHtml } = require('./docs/openapi');
 const errorHandler = require('./middleware/errorHandler');
 const notFoundHandler = require('./middleware/notFoundHandler');
 
 const app = express();
+
+// Documentation routes are served before helmet so the embedded Swagger assets load cleanly.
+app.get('/api/docs/openapi.json', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.json(getOpenApiDocument());
+});
+
+app.get('/api/docs', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.type('html').send(renderSwaggerUiHtml('/api/docs/openapi.json'));
+});
 
 // Security middleware
 app.use(helmet());

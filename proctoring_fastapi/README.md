@@ -64,6 +64,8 @@ python server.py
 Open:
 
 - `http://127.0.0.1:5000`
+- `http://127.0.0.1:5000/docs`
+- `http://127.0.0.1:5000/api-docs`
 
 ## How to Use
 
@@ -72,6 +74,20 @@ Open:
 3. Select your external camera index.
 4. Click **Start Proctoring**.
 5. Monitor `SAFE/ALERT` state and violation log.
+
+## API Documentation
+
+- `http://127.0.0.1:5000/docs` - SecureProctor FastAPI Swagger
+- `http://127.0.0.1:5000/redoc` - SecureProctor ReDoc
+- `http://127.0.0.1:5000/api-docs` - Docs hub with links to the other local APIs
+- `http://localhost:5001/api/docs` - Express interview backend Swagger
+- `http://localhost:8000/docs` - ML service Swagger
+
+## Recommended Local Ports
+
+- `5000` - SecureProctor FastAPI
+- `5001` - Express interview backend
+- `8000` - ML service
 
 ## API Endpoints
 

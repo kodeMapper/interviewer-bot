@@ -17,7 +17,7 @@ This project has been migrated from a Python CLI application to a modern MERN st
                             │ HTTP/WebSocket
 ┌───────────────────────────▼─────────────────────────────────┐
 │                   Server (Express.js)                       │
-│                         Port: 5000                          │
+│                         Port: 5001                          │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │
 │  │   REST API   │  │  Socket.io   │  │  Interview State │   │
 │  │   Routes     │  │   Server     │  │     Machine      │   │
@@ -109,9 +109,10 @@ npm run dev
 ### 5. Access the Application
 
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:5000/api
-- Backend Health: http://localhost:5000/health
+- Backend API: http://localhost:5001/api
+- Backend Health: http://localhost:5001/health
 - ML Service Docs: http://localhost:8000/docs
+- **Swagger Documentation API Guide**: See [docs/swagger-user-guide.md](docs/swagger-user-guide.md)
 
 ## Interview Flow
 
