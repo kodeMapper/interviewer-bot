@@ -1,281 +1,4697 @@
 [
-  {"text":"umm i think java has classes and objects uh not fully sure","label":["Java"]},
-  {"text":"JVM runs bytecode simple","label":["Java"]},
-  {"text":"i built a project with java focusing on oops principles and collections","label":["Java"]},
-  {"text":"java memory model with heap and stack basically","label":["Java"]},
-  {"text":"uh java inheritance polymorphism encapsulation abstraction","label":["Java"]},
-  {"text":"worked on hashmaps arraylist linkedlist in java","label":["Java"]},
-  {"text":"java streams lambda expressions","label":["Java"]},
-  {"text":"i am familiar with garbage collection in jvm","label":["Java"]},
-  {"text":"oops concepts mostly","label":["Java"]},
-  {"text":"java uses strong typing","label":["Java"]},
-  {"text":"actually java interfaces vs abstract classes","label":["Java"]},
-  {"text":"i coded in java for backend logic","label":["Java"]},
-  {"text":"synchronization multithreading in java","label":["Java"]},
-  {"text":"uh collections framework like set list map","label":["Java"]},
-  {"text":"java bytecode portability","label":["Java"]},
-  {"text":"i am comfortable with core java","label":["Java"]},
-  {"text":"java exception handling checked unchecked","label":["Java"]},
-  {"text":"basically jvm does jit compilation","label":["Java"]},
-  {"text":"java mostly","label":["Java"]},
-  {"text":"i used spring later but core java first","label":["Java"]},
-  {"text":"java oops heavy","label":["Java"]},
-  {"text":"umm java threads locks","label":["Java"]},
-  {"text":"familiar with java 8 features","label":["Java"]},
-  {"text":"java is verbose but safe","label":["Java"]},
-  {"text":"collections generics in java","label":["Java"]},
-
-  {"text":"i mostly script in python for automation","label":["Python"]},
-  {"text":"python syntax is simple","label":["Python"]},
-  {"text":"uh pandas numpy basics","label":["Python"]},
-  {"text":"i built a project with python data analysis","label":["Python"]},
-  {"text":"python lists dicts tuples","label":["Python"]},
-  {"text":"actually i utilize python for scripting tasks","label":["Python"]},
-  {"text":"python indentation based","label":["Python"]},
-  {"text":"i worked on numpy arrays","label":["Python"]},
-  {"text":"python is interpreted","label":["Python"]},
-  {"text":"umm python loops functions","label":["Python"]},
-  {"text":"pandas dataframe operations","label":["Python"]},
-  {"text":"python virtualenv pip","label":["Python"]},
-  {"text":"i coded in python for backend","label":["Python"]},
-  {"text":"python exception handling","label":["Python"]},
-  {"text":"uh python is dynamically typed","label":["Python"]},
-  {"text":"python scripting mostly","label":["Python"]},
-  {"text":"familiar with matplotlib also","label":["Python"]},
-  {"text":"python generators","label":["Python"]},
-  {"text":"i use python for rapid prototyping","label":["Python"]},
-  {"text":"python easy","label":["Python"]},
-  {"text":"actually numpy broadcasting","label":["Python"]},
-  {"text":"python decorators","label":["Python"]},
-  {"text":"python mostly for data","label":["Python"]},
-  {"text":"i worked on csv processing in python","label":["Python"]},
-  {"text":"python is flexible","label":["Python"]},
-
-  {"text":"javascript async await promises","label":["JavaScript"]},
-  {"text":"uh dom manipulation","label":["JavaScript"]},
-  {"text":"js closures hoisting","label":["JavaScript"]},
-  {"text":"i coded in javascript for frontend","label":["JavaScript"]},
-  {"text":"javascript is loosely typed","label":["JavaScript"]},
-  {"text":"event loop in javascript","label":["JavaScript"]},
-  {"text":"js es6 features","label":["JavaScript"]},
-  {"text":"i worked on fetch api","label":["JavaScript"]},
-  {"text":"basically javascript runs in browser","label":["JavaScript"]},
-  {"text":"arrow functions","label":["JavaScript"]},
-  {"text":"javascript callbacks","label":["JavaScript"]},
-  {"text":"js promises","label":["JavaScript"]},
-  {"text":"i built ui logic with javascript","label":["JavaScript"]},
-  {"text":"uh javascript closures","label":["JavaScript"]},
-  {"text":"javascript single threaded","label":["JavaScript"]},
-  {"text":"dom events","label":["JavaScript"]},
-  {"text":"js var let const","label":["JavaScript"]},
-  {"text":"javascript mostly","label":["JavaScript"]},
-  {"text":"i am familiar with async programming in js","label":["JavaScript"]},
-  {"text":"javascript json handling","label":["JavaScript"]},
-  {"text":"uh javascript timers","label":["JavaScript"]},
-  {"text":"js modules","label":["JavaScript"]},
-  {"text":"javascript dynamic","label":["JavaScript"]},
-  {"text":"i worked on browser apis","label":["JavaScript"]},
-  {"text":"javascript closures scoping","label":["JavaScript"]},
-
-  {"text":"react functional components hooks","label":["React"]},
-  {"text":"uh useState useEffect","label":["React"]},
-  {"text":"virtual dom diffing","label":["React"]},
-  {"text":"i built ui with react","label":["React"]},
-  {"text":"react state management","label":["React"]},
-  {"text":"props and components","label":["React"]},
-  {"text":"react is declarative","label":["React"]},
-  {"text":"i worked on react hooks","label":["React"]},
-  {"text":"react component lifecycle","label":["React"]},
-  {"text":"uh react rerendering","label":["React"]},
-  {"text":"react context api","label":["React"]},
-  {"text":"i coded in react for frontend","label":["React"]},
-  {"text":"react mostly","label":["React"]},
-  {"text":"virtual dom","label":["React"]},
-  {"text":"react uses jsx","label":["React"]},
-  {"text":"state vs props","label":["React"]},
-  {"text":"i am familiar with react router","label":["React"]},
-  {"text":"react hooks simplified","label":["React"]},
-  {"text":"uh react memoization","label":["React"]},
-  {"text":"react performance optimization","label":["React"]},
-  {"text":"react controlled components","label":["React"]},
-  {"text":"i worked on react forms","label":["React"]},
-  {"text":"react single page app","label":["React"]},
-  {"text":"react components reuse","label":["React"]},
-  {"text":"basically react ui","label":["React"]},
-
-  {"text":"select join where clause","label":["SQL"]},
-  {"text":"uh sql normalization","label":["SQL"]},
-  {"text":"acid properties","label":["SQL"]},
-  {"text":"i wrote complex joins","label":["SQL"]},
-  {"text":"sql group by having","label":["SQL"]},
-  {"text":"sql primary foreign keys","label":["SQL"]},
-  {"text":"i worked on relational schema","label":["SQL"]},
-  {"text":"sql indexing","label":["SQL"]},
-  {"text":"transactions commit rollback","label":["SQL"]},
-  {"text":"uh sql subqueries","label":["SQL"]},
-  {"text":"sql mostly","label":["SQL"]},
-  {"text":"i am familiar with mysql","label":["SQL"]},
-  {"text":"sql constraints","label":["SQL"]},
-  {"text":"joins inner left right","label":["SQL"]},
-  {"text":"sql data integrity","label":["SQL"]},
-  {"text":"i used sql for backend","label":["SQL"]},
-  {"text":"sql normalization forms","label":["SQL"]},
-  {"text":"uh select star","label":["SQL"]},
-  {"text":"sql views","label":["SQL"]},
-  {"text":"stored procedures","label":["SQL"]},
-  {"text":"sql triggers","label":["SQL"]},
-  {"text":"i worked on queries","label":["SQL"]},
-  {"text":"sql database design","label":["SQL"]},
-  {"text":"acid ensures consistency","label":["SQL"]},
-  {"text":"sql joins mostly","label":["SQL"]},
-
-  {"text":"linear regression classification","label":["Machine_Learning"]},
-  {"text":"uh supervised learning","label":["Machine_Learning"]},
-  {"text":"i built ml model using sklearn","label":["Machine_Learning"]},
-  {"text":"clustering kmeans","label":["Machine_Learning"]},
-  {"text":"ml preprocessing feature scaling","label":["Machine_Learning"]},
-  {"text":"i worked on decision trees","label":["Machine_Learning"]},
-  {"text":"machine learning pipeline","label":["Machine_Learning"]},
-  {"text":"uh train test split","label":["Machine_Learning"]},
-  {"text":"ml evaluation metrics","label":["Machine_Learning"]},
-  {"text":"classification vs regression","label":["Machine_Learning"]},
-  {"text":"i coded ml in python","label":["Machine_Learning"]},
-  {"text":"machine learning basics","label":["Machine_Learning"]},
-  {"text":"sklearn models","label":["Machine_Learning"]},
-  {"text":"unsupervised clustering","label":["Machine_Learning"]},
-  {"text":"ml overfitting underfitting","label":["Machine_Learning"]},
-  {"text":"i am familiar with cross validation","label":["Machine_Learning"]},
-  {"text":"machine learning algorithms","label":["Machine_Learning"]},
-  {"text":"uh naive bayes","label":["Machine_Learning"]},
-  {"text":"ml feature engineering","label":["Machine_Learning"]},
-  {"text":"machine learning mostly","label":["Machine_Learning"]},
-  {"text":"logistic regression","label":["Machine_Learning"]},
-  {"text":"ml model training","label":["Machine_Learning"]},
-  {"text":"sklearn preprocessing","label":["Machine_Learning"]},
-  {"text":"machine learning predictions","label":["Machine_Learning"]},
-  {"text":"ml classification task","label":["Machine_Learning"]},
-
-  {"text":"neural networks layers","label":["Deep_Learning"]},
-  {"text":"uh backpropagation","label":["Deep_Learning"]},
-  {"text":"cnn for images","label":["Deep_Learning"]},
-  {"text":"i trained deep models","label":["Deep_Learning"]},
-  {"text":"activation functions relu sigmoid","label":["Deep_Learning"]},
-  {"text":"deep learning gradient descent","label":["Deep_Learning"]},
-  {"text":"i worked on tensorflow","label":["Deep_Learning"]},
-  {"text":"deep learning vs ml","label":["Deep_Learning"]},
-  {"text":"uh vanishing gradients","label":["Deep_Learning"]},
-  {"text":"deep neural networks","label":["Deep_Learning"]},
-  {"text":"cnn pooling convolution","label":["Deep_Learning"]},
-  {"text":"i am familiar with pytorch","label":["Deep_Learning"]},
-  {"text":"deep learning training","label":["Deep_Learning"]},
-  {"text":"loss functions","label":["Deep_Learning"]},
-  {"text":"deep learning mostly","label":["Deep_Learning"]},
-  {"text":"backprop chain rule","label":["Deep_Learning"]},
-  {"text":"deep nets","label":["Deep_Learning"]},
-  {"text":"uh dropout regularization","label":["Deep_Learning"]},
-  {"text":"cnn feature maps","label":["Deep_Learning"]},
-  {"text":"deep learning models","label":["Deep_Learning"]},
-  {"text":"i worked on image classification","label":["Deep_Learning"]},
-  {"text":"deep learning optimization","label":["Deep_Learning"]},
-  {"text":"relu helps","label":["Deep_Learning"]},
-  {"text":"deep learning training loop","label":["Deep_Learning"]},
-  {"text":"neural network weights","label":["Deep_Learning"]},
-
-  {"text":"i know java but prefer python for scripting","label":["Java","Python"]},
-  {"text":"java vs javascript type system","label":["Java","JavaScript"]},
-  {"text":"react frontend with sql backend","label":["React","SQL"]},
-  {"text":"ml models built using python","label":["Machine_Learning","Python"]},
-  {"text":"deep learning is advanced ml","label":["Deep_Learning","Machine_Learning"]},
-  {"text":"javascript with react","label":["JavaScript","React"]},
-  {"text":"python with sql for data analysis","label":["Python","SQL"]},
-  {"text":"java backend sql database","label":["Java","SQL"]},
-  {"text":"react uses javascript","label":["React","JavaScript"]},
-  {"text":"ml in python using sklearn","label":["Machine_Learning","Python"]},
-  {"text":"cnn implemented in python","label":["Deep_Learning","Python"]},
-  {"text":"java and python both oop","label":["Java","Python"]},
-  {"text":"sql used with ml datasets","label":["SQL","Machine_Learning"]},
-  {"text":"deep learning built on neural networks in python","label":["Deep_Learning","Python"]},
-  {"text":"react ui with javascript logic","label":["React","JavaScript"]},
-  {"text":"ml vs deep learning difference","label":["Machine_Learning","Deep_Learning"]},
-  {"text":"python scripts query sql","label":["Python","SQL"]},
-  {"text":"java used for backend react frontend","label":["Java","React"]},
-  {"text":"javascript async helps react","label":["JavaScript","React"]},
-  {"text":"sql data feeds ml model","label":["SQL","Machine_Learning"]},
-  {"text":"deep learning models trained using python libraries","label":["Deep_Learning","Python"]},
-  {"text":"java compared with javascript","label":["Java","JavaScript"]},
-  {"text":"ml preprocessing done in python","label":["Machine_Learning","Python"]},
-  {"text":"react app consuming sql data","label":["React","SQL"]},
-  {"text":"cnn is part of deep learning not basic ml","label":["Deep_Learning","Machine_Learning"]},
-  {"text":"python popular for ml and dl","label":["Python","Machine_Learning","Deep_Learning"]},
-  {"text":"java backend sql react frontend","label":["Java","SQL","React"]},
-  {"text":"javascript dom used in react","label":["JavaScript","React"]},
-  {"text":"ml models stored in sql","label":["Machine_Learning","SQL"]},
-  {"text":"deep learning implemented with python","label":["Deep_Learning","Python"]},
-  {"text":"java and python both used differently","label":["Java","Python"]},
-  {"text":"react uses js es6","label":["React","JavaScript"]},
-  {"text":"sql with python pandas","label":["SQL","Python"]},
-  {"text":"ml and dl both need data","label":["Machine_Learning","Deep_Learning"]},
-  {"text":"java vs python performance","label":["Java","Python"]},
-  {"text":"javascript and java are different","label":["Java","JavaScript"]},
-  {"text":"react with ml api","label":["React","Machine_Learning"]},
-  {"text":"python used for deep learning training","label":["Python","Deep_Learning"]},
-  {"text":"sql supports ml analytics","label":["SQL","Machine_Learning"]},
-  {"text":"java backend exposes api to react","label":["Java","React"]},
-  {"text":"ml preprocessing in python pandas","label":["Machine_Learning","Python"]},
-  {"text":"deep learning extends ml concepts","label":["Deep_Learning","Machine_Learning"]},
-  {"text":"react and sql full stack","label":["React","SQL"]},
-  {"text":"python scripting with sql queries","label":["Python","SQL"]},
-  {"text":"java vs javascript syntax","label":["Java","JavaScript"]},
-  {"text":"ml model served to react frontend","label":["Machine_Learning","React"]},
-  {"text":"deep learning uses neural nets coded in python","label":["Deep_Learning","Python"]},
-  
-  {"text":"umm i worked on a language where everything revolves around objects and memory is managed automatically","label":["Java"]},
-  {"text":"basically it runs on a virtual runtime so same compiled output works everywhere","label":["Java"]},
-  {"text":"i used an interpreted scripting language mainly for automation and quick scripts","label":["Python"]},
-  {"text":"that language where indentation matters and arrays are really flexible","label":["Python"]},
-  {"text":"uh the browser language that handles events and async callbacks","label":["JavaScript"]},
-  {"text":"i handled page updates without reload using functions and promises","label":["JavaScript"]},
-  {"text":"the ui library where components rerender based on state changes","label":["React"]},
-  {"text":"i worked on a frontend setup that avoids touching the real dom directly","label":["React"]},
-  {"text":"the database language where you join tables and maintain consistency","label":["SQL"]},
-  {"text":"i normalized tables and ensured transactions follow strict rules","label":["SQL"]},
-  {"text":"i trained models by fitting curves and separating classes from data","label":["Machine_Learning"]},
-  {"text":"used algorithms that learn patterns from labeled datasets","label":["Machine_Learning"]},
-  {"text":"i stacked multiple layers with nonlinear functions to learn features","label":["Deep_Learning"]},
-  {"text":"basically models that adjust weights backward through errors","label":["Deep_Learning"]},
-
-  {"text":"uh i think the object oriented one is slower than the scripting one but safer","label":["Java","Python"]},
-  {"text":"java and that browser language are same except syntax right","label":["Java","JavaScript"]},
-  {"text":"i use the frontend library directly with database queries","label":["React","SQL"]},
-  {"text":"machine learning is just neural networks i guess","label":["Machine_Learning","Deep_Learning"]},
-  {"text":"python is used because it automatically gives accuracy","label":["Python","Machine_Learning"]},
-  {"text":"react replaces html completely so no js needed","label":["React","JavaScript"]},
-  {"text":"sql decides how fast the ml model trains","label":["SQL","Machine_Learning"]},
-  {"text":"deep learning only works for images not numbers","label":["Deep_Learning"]},
-  {"text":"java is interpreted like python i think","label":["Java","Python"]},
-  {"text":"javascript and java share the same runtime","label":["Java","JavaScript"]},
-
-  {"text":"i trained a model and then showed results on a web ui","label":["Machine_Learning","React"]},
-  {"text":"data stored in tables was later fed into prediction logic","label":["SQL","Machine_Learning"]},
-  {"text":"frontend triggers backend logic written in a strongly typed language","label":["React","Java"]},
-  {"text":"scripts prepare data before feeding it to layered models","label":["Python","Deep_Learning"]},
-  {"text":"classification felt similar to regression just with labels","label":["Machine_Learning"]},
-
-  {"text":"uh i might be mixing things but backprop is also used in normal ml","label":["Machine_Learning","Deep_Learning"]},
-  {"text":"react handles backend state too i guess","label":["React"]},
-  {"text":"sql ensures security so hacking is prevented","label":["SQL"]},
-  {"text":"python is faster than compiled languages always","label":["Python"]},
-  {"text":"deep models dont need data cleaning","label":["Deep_Learning"]},
-
-  {"text":"i compared two languages one runs in browser one on virtual machine","label":["Java","JavaScript"]},
-  {"text":"used scripting to glue together database queries and analytics","label":["Python","SQL"]},
-  {"text":"ui consumes predictions coming from a trained model","label":["React","Machine_Learning"]},
-  {"text":"tables feed features into layered neural setups","label":["SQL","Deep_Learning"]},
-  {"text":"object oriented backend serving a reactive frontend","label":["Java","React"]},
-
-  {"text":"umm basically all ai is deep learning nowadays","label":["Machine_Learning","Deep_Learning"]},
-  {"text":"react is faster because it compiles","label":["React"]},
-  {"text":"sql is only for small data not analytics","label":["SQL"]},
-  {"text":"python memory is handled manually","label":["Python"]},
-  {"text":"javascript blocks execution always","label":["JavaScript"]}
+  {
+    "text": "umm i think java has classes and objects uh not fully sure",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "JVM runs bytecode simple",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i built a project with java focusing on oops principles and collections",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "java memory model with heap and stack basically",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "uh java inheritance polymorphism encapsulation abstraction",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "worked on hashmaps arraylist linkedlist in java",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "java streams lambda expressions",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am familiar with garbage collection in jvm",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "oops concepts mostly",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "java uses strong typing",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "actually java interfaces vs abstract classes",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i coded in java for backend logic",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "synchronization multithreading in java",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "uh collections framework like set list map",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "java bytecode portability",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am comfortable with core java",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "java exception handling checked unchecked",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "basically jvm does jit compilation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "java mostly",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used spring later but core java first",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "java oops heavy",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "umm java threads locks",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "familiar with java 8 features",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "java is verbose but safe",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "collections generics in java",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i mostly script in python for automation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python syntax is simple",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "uh pandas numpy basics",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i built a project with python data analysis",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python lists dicts tuples",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "actually i utilize python for scripting tasks",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python indentation based",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i worked on numpy arrays",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python is interpreted",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "umm python loops functions",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "pandas dataframe operations",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python virtualenv pip",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i coded in python for backend",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python exception handling",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "uh python is dynamically typed",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python scripting mostly",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "familiar with matplotlib also",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python generators",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i use python for rapid prototyping",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python easy",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "actually numpy broadcasting",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python decorators",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python mostly for data",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i worked on csv processing in python",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "python is flexible",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "javascript async await promises",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "uh dom manipulation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "js closures hoisting",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i coded in javascript for frontend",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "javascript is loosely typed",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "event loop in javascript",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "js es6 features",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i worked on fetch api",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "basically javascript runs in browser",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "arrow functions",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "javascript callbacks",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "js promises",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i built ui logic with javascript",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "uh javascript closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "javascript single threaded",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "dom events",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "js var let const",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "javascript mostly",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am familiar with async programming in js",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "javascript json handling",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "uh javascript timers",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "js modules",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "javascript dynamic",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i worked on browser apis",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "javascript closures scoping",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "react functional components hooks",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "uh useState useEffect",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "virtual dom diffing",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i built ui with react",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react state management",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "props and components",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react is declarative",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i worked on react hooks",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react component lifecycle",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "uh react rerendering",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react context api",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i coded in react for frontend",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react mostly",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "virtual dom",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react uses jsx",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "state vs props",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am familiar with react router",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react hooks simplified",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "uh react memoization",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react performance optimization",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react controlled components",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i worked on react forms",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react single page app",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "react components reuse",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "basically react ui",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "select join where clause",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "uh sql normalization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "acid properties",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i wrote complex joins",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql group by having",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql primary foreign keys",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i worked on relational schema",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql indexing",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "transactions commit rollback",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "uh sql subqueries",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql mostly",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am familiar with mysql",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql constraints",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "joins inner left right",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql data integrity",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql for backend",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql normalization forms",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "uh select star",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql views",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "stored procedures",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql triggers",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i worked on queries",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql database design",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "acid ensures consistency",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "sql joins mostly",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "linear regression classification",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "uh supervised learning",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i built ml model using sklearn",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "clustering kmeans",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "ml preprocessing feature scaling",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i worked on decision trees",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "machine learning pipeline",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "uh train test split",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "ml evaluation metrics",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "classification vs regression",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i coded ml in python",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "machine learning basics",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "sklearn models",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "unsupervised clustering",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "ml overfitting underfitting",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am familiar with cross validation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "machine learning algorithms",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "uh naive bayes",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "ml feature engineering",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "machine learning mostly",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "logistic regression",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "ml model training",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "sklearn preprocessing",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "machine learning predictions",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "ml classification task",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "neural networks layers",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "uh backpropagation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "cnn for images",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i trained deep models",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "activation functions relu sigmoid",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep learning gradient descent",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i worked on tensorflow",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep learning vs ml",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "uh vanishing gradients",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep neural networks",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "cnn pooling convolution",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am familiar with pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep learning training",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "loss functions",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep learning mostly",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "backprop chain rule",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep nets",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "uh dropout regularization",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "cnn feature maps",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep learning models",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i worked on image classification",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep learning optimization",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "relu helps",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "deep learning training loop",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "neural network weights",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i know java but prefer python for scripting",
+    "label": [
+      "Java",
+      "Python"
+    ]
+  },
+  {
+    "text": "java vs javascript type system",
+    "label": [
+      "Java",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "react frontend with sql backend",
+    "label": [
+      "React",
+      "SQL"
+    ]
+  },
+  {
+    "text": "ml models built using python",
+    "label": [
+      "Machine_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "deep learning is advanced ml",
+    "label": [
+      "Deep_Learning",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "javascript with react",
+    "label": [
+      "JavaScript",
+      "React"
+    ]
+  },
+  {
+    "text": "python with sql for data analysis",
+    "label": [
+      "Python",
+      "SQL"
+    ]
+  },
+  {
+    "text": "java backend sql database",
+    "label": [
+      "Java",
+      "SQL"
+    ]
+  },
+  {
+    "text": "react uses javascript",
+    "label": [
+      "React",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "ml in python using sklearn",
+    "label": [
+      "Machine_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "cnn implemented in python",
+    "label": [
+      "Deep_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "java and python both oop",
+    "label": [
+      "Java",
+      "Python"
+    ]
+  },
+  {
+    "text": "sql used with ml datasets",
+    "label": [
+      "SQL",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "deep learning built on neural networks in python",
+    "label": [
+      "Deep_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "react ui with javascript logic",
+    "label": [
+      "React",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "ml vs deep learning difference",
+    "label": [
+      "Machine_Learning",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "python scripts query sql",
+    "label": [
+      "Python",
+      "SQL"
+    ]
+  },
+  {
+    "text": "java used for backend react frontend",
+    "label": [
+      "Java",
+      "React"
+    ]
+  },
+  {
+    "text": "javascript async helps react",
+    "label": [
+      "JavaScript",
+      "React"
+    ]
+  },
+  {
+    "text": "sql data feeds ml model",
+    "label": [
+      "SQL",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "deep learning models trained using python libraries",
+    "label": [
+      "Deep_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "java compared with javascript",
+    "label": [
+      "Java",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "ml preprocessing done in python",
+    "label": [
+      "Machine_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "react app consuming sql data",
+    "label": [
+      "React",
+      "SQL"
+    ]
+  },
+  {
+    "text": "cnn is part of deep learning not basic ml",
+    "label": [
+      "Deep_Learning",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "python popular for ml and dl",
+    "label": [
+      "Python",
+      "Machine_Learning",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "java backend sql react frontend",
+    "label": [
+      "Java",
+      "SQL",
+      "React"
+    ]
+  },
+  {
+    "text": "javascript dom used in react",
+    "label": [
+      "JavaScript",
+      "React"
+    ]
+  },
+  {
+    "text": "ml models stored in sql",
+    "label": [
+      "Machine_Learning",
+      "SQL"
+    ]
+  },
+  {
+    "text": "deep learning implemented with python",
+    "label": [
+      "Deep_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "java and python both used differently",
+    "label": [
+      "Java",
+      "Python"
+    ]
+  },
+  {
+    "text": "react uses js es6",
+    "label": [
+      "React",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "sql with python pandas",
+    "label": [
+      "SQL",
+      "Python"
+    ]
+  },
+  {
+    "text": "ml and dl both need data",
+    "label": [
+      "Machine_Learning",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "java vs python performance",
+    "label": [
+      "Java",
+      "Python"
+    ]
+  },
+  {
+    "text": "javascript and java are different",
+    "label": [
+      "Java",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "react with ml api",
+    "label": [
+      "React",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "python used for deep learning training",
+    "label": [
+      "Python",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "sql supports ml analytics",
+    "label": [
+      "SQL",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "java backend exposes api to react",
+    "label": [
+      "Java",
+      "React"
+    ]
+  },
+  {
+    "text": "ml preprocessing in python pandas",
+    "label": [
+      "Machine_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "deep learning extends ml concepts",
+    "label": [
+      "Deep_Learning",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "react and sql full stack",
+    "label": [
+      "React",
+      "SQL"
+    ]
+  },
+  {
+    "text": "python scripting with sql queries",
+    "label": [
+      "Python",
+      "SQL"
+    ]
+  },
+  {
+    "text": "java vs javascript syntax",
+    "label": [
+      "Java",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "ml model served to react frontend",
+    "label": [
+      "Machine_Learning",
+      "React"
+    ]
+  },
+  {
+    "text": "deep learning uses neural nets coded in python",
+    "label": [
+      "Deep_Learning",
+      "Python"
+    ]
+  },
+  {
+    "text": "umm i worked on a language where everything revolves around objects and memory is managed automatically",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "basically it runs on a virtual runtime so same compiled output works everywhere",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used an interpreted scripting language mainly for automation and quick scripts",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "that language where indentation matters and arrays are really flexible",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "uh the browser language that handles events and async callbacks",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i handled page updates without reload using functions and promises",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "the ui library where components rerender based on state changes",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i worked on a frontend setup that avoids touching the real dom directly",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "the database language where you join tables and maintain consistency",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i normalized tables and ensured transactions follow strict rules",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i trained models by fitting curves and separating classes from data",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "used algorithms that learn patterns from labeled datasets",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i stacked multiple layers with nonlinear functions to learn features",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "basically models that adjust weights backward through errors",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "uh i think the object oriented one is slower than the scripting one but safer",
+    "label": [
+      "Java",
+      "Python"
+    ]
+  },
+  {
+    "text": "java and that browser language are same except syntax right",
+    "label": [
+      "Java",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i use the frontend library directly with database queries",
+    "label": [
+      "React",
+      "SQL"
+    ]
+  },
+  {
+    "text": "machine learning is just neural networks i guess",
+    "label": [
+      "Machine_Learning",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "python is used because it automatically gives accuracy",
+    "label": [
+      "Python",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "react replaces html completely so no js needed",
+    "label": [
+      "React",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "sql decides how fast the ml model trains",
+    "label": [
+      "SQL",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "deep learning only works for images not numbers",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "java is interpreted like python i think",
+    "label": [
+      "Java",
+      "Python"
+    ]
+  },
+  {
+    "text": "javascript and java share the same runtime",
+    "label": [
+      "Java",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i trained a model and then showed results on a web ui",
+    "label": [
+      "Machine_Learning",
+      "React"
+    ]
+  },
+  {
+    "text": "data stored in tables was later fed into prediction logic",
+    "label": [
+      "SQL",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "frontend triggers backend logic written in a strongly typed language",
+    "label": [
+      "React",
+      "Java"
+    ]
+  },
+  {
+    "text": "scripts prepare data before feeding it to layered models",
+    "label": [
+      "Python",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "classification felt similar to regression just with labels",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "uh i might be mixing things but backprop is also used in normal ml",
+    "label": [
+      "Machine_Learning",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "react handles backend state too i guess",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "sql ensures security so hacking is prevented",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "python is faster than compiled languages always",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "deep models dont need data cleaning",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i compared two languages one runs in browser one on virtual machine",
+    "label": [
+      "Java",
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "used scripting to glue together database queries and analytics",
+    "label": [
+      "Python",
+      "SQL"
+    ]
+  },
+  {
+    "text": "ui consumes predictions coming from a trained model",
+    "label": [
+      "React",
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "tables feed features into layered neural setups",
+    "label": [
+      "SQL",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "object oriented backend serving a reactive frontend",
+    "label": [
+      "Java",
+      "React"
+    ]
+  },
+  {
+    "text": "umm basically all ai is deep learning nowadays",
+    "label": [
+      "Machine_Learning",
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "react is faster because it compiles",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "sql is only for small data not analytics",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "python memory is handled manually",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "javascript blocks execution always",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in java, i focused on collections to improve reliability and concurrency for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i deployed a java project using stream api and concurrency",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "my hands on work in java includes jvm, collections, and production debugging",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i implemented a java project using jpa and multithreading",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as oop and multithreading",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around jpa and stream api",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on stream api to improve reliability and exception handling for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as jpa and jvm",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as collections and oop",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on stream api to improve reliability and jpa for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around spring boot and oop",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as garbage collection and spring boot",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as exception handling and oop",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i debugged a java project using oop and exception handling",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised collections, concurrency, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on oop to improve reliability and jpa for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around jvm and jpa",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around oop and spring boot",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised concurrency, spring boot, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i optimized a java project using exception handling and spring boot",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around oop and exception handling",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i debugged a java project using concurrency and oop",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i implemented a java project using garbage collection and oop",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i debugged a java project using jpa and stream api",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around concurrency and jpa",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as garbage collection and concurrency",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on jvm to improve reliability and garbage collection for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as jpa and oop",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as garbage collection and stream api",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on stream api to improve reliability and garbage collection for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised concurrency, jpa, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around jvm and stream api",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised jpa, stream api, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i debugged a java project using collections and exception handling",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as multithreading and jvm",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around collections and garbage collection",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "my hands on work in java includes garbage collection, jvm, and production debugging",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as stream api and concurrency",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as oop and collections",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i implemented a java project using jvm and concurrency",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on stream api to improve reliability and oop for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised oop, collections, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i debugged a java project using garbage collection and collections",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around spring boot and jvm",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised exception handling, concurrency, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised concurrency, collections, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised multithreading, jvm, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "my hands on work in java includes stream api, spring boot, and production debugging",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as multithreading and oop",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on garbage collection to improve reliability and multithreading for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised spring boot, oop, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised jvm, oop, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as oop and concurrency",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i implemented a java project using multithreading and garbage collection",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "for interview prep in java, i revised spring boot, jvm, and practical implementation",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around concurrency and oop",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around spring boot and concurrency",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i implemented a java project using concurrency and multithreading",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on exception handling to improve reliability and multithreading for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on exception handling to improve reliability and garbage collection for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as concurrency and stream api",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around exception handling and stream api",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around concurrency and exception handling",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "my hands on work in java includes spring boot, jvm, and production debugging",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "my hands on work in java includes multithreading, stream api, and production debugging",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as garbage collection and jvm",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "my hands on work in java includes oop, jvm, and production debugging",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as stream api and collections",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as concurrency and collections",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i am confident in java concepts such as jvm and exception handling",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in java, i focused on multithreading to improve reliability and garbage collection for performance",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i optimized a java project using exception handling and concurrency",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i implemented a java project using exception handling and collections",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "i used java in real projects, mainly around garbage collection and exception handling",
+    "label": [
+      "Java"
+    ]
+  },
+  {
+    "text": "in python, i focused on pandas to improve reliability and flask for performance",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes decorators, fastapi, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i deployed a python project using decorators and django",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i automated a python project using numpy and flask",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised pandas, data analysis, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "in python, i focused on asyncio to improve reliability and django for performance",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around asyncio and fastapi",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as decorators and numpy",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i deployed a python project using decorators and numpy",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around numpy and asyncio",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes django, generators, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as numpy and pandas",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as pandas and flask",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around decorators and flask",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes generators, numpy, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes decorators, data analysis, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised flask, asyncio, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "in python, i focused on fastapi to improve reliability and numpy for performance",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised fastapi, generators, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "in python, i focused on django to improve reliability and data analysis for performance",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around data analysis and fastapi",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes virtualenv, asyncio, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes pandas, decorators, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i analyzed a python project using data analysis and flask",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised data analysis, pandas, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i automated a python project using django and asyncio",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes generators, data analysis, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised asyncio, pandas, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as decorators and flask",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised asyncio, numpy, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes data analysis, decorators, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "in python, i focused on asyncio to improve reliability and generators for performance",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as django and fastapi",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as asyncio and virtualenv",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes flask, asyncio, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes virtualenv, decorators, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised data analysis, flask, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes fastapi, asyncio, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as flask and django",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as numpy and django",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as numpy and virtualenv",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i debugged a python project using numpy and data analysis",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i analyzed a python project using fastapi and decorators",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes data analysis, generators, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised virtualenv, asyncio, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as asyncio and decorators",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around pandas and numpy",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in python concepts such as data analysis and decorators",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes numpy, django, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes pandas, data analysis, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around virtualenv and asyncio",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes fastapi, django, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i implemented a python project using virtualenv and asyncio",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised django, generators, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around decorators and virtualenv",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "in python, i focused on decorators to improve reliability and django for performance",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i prototyped a python project using virtualenv and asyncio",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "in python, i focused on generators to improve reliability and asyncio for performance",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes decorators, numpy, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around data analysis and django",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around virtualenv and fastapi",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "in python, i focused on data analysis to improve reliability and flask for performance",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i automated a python project using numpy and asyncio",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i prototyped a python project using virtualenv and decorators",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "my hands on work in python includes flask, pandas, and production debugging",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "for interview prep in python, i revised generators, numpy, and practical implementation",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i used python in real projects, mainly around generators and django",
+    "label": [
+      "Python"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as dom and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i refactored a javascript project using closures and promises",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as hoisting and promises",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes async await, closures, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around node.js and modules",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "for interview prep in javascript, i revised fetch api, typescript, and practical implementation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as node.js and modules",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i debugged a javascript project using typescript and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "for interview prep in javascript, i revised fetch api, async await, and practical implementation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes fetch api, modules, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around hoisting and node.js",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around node.js and hoisting",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around event loop and async await",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes fetch api, hoisting, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i optimized a javascript project using hoisting and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on closures to improve reliability and modules for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i refactored a javascript project using async await and modules",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around promises and modules",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around closures and event loop",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "for interview prep in javascript, i revised promises, async await, and practical implementation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around async await and fetch api",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on typescript to improve reliability and dom for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as node.js and async await",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as fetch api and node.js",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "for interview prep in javascript, i revised closures, hoisting, and practical implementation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes typescript, modules, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i refactored a javascript project using fetch api and async await",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as closures and fetch api",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i optimized a javascript project using dom and hoisting",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around fetch api and event loop",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on promises to improve reliability and hoisting for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around async await and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as dom and event loop",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes fetch api, typescript, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around async await and dom",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around hoisting and async await",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as promises and modules",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around promises and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around event loop and dom",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i optimized a javascript project using dom and event loop",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "for interview prep in javascript, i revised modules, closures, and practical implementation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i built a javascript project using node.js and async await",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i built a javascript project using node.js and dom",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes dom, fetch api, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on closures to improve reliability and async await for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around modules and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on fetch api to improve reliability and modules for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around closures and dom",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as modules and fetch api",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes event loop, fetch api, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "for interview prep in javascript, i revised typescript, modules, and practical implementation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on typescript to improve reliability and hoisting for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes node.js, closures, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i integrated a javascript project using closures and modules",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i implemented a javascript project using event loop and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on async await to improve reliability and promises for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as promises and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i built a javascript project using dom and closures",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on modules to improve reliability and typescript for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes async await, node.js, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on promises to improve reliability and event loop for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "for interview prep in javascript, i revised hoisting, event loop, and practical implementation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i debugged a javascript project using hoisting and promises",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on typescript to improve reliability and event loop for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes hoisting, fetch api, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as modules and typescript",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i used javascript in real projects, mainly around fetch api and promises",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on fetch api to improve reliability and promises for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on async await to improve reliability and hoisting for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "for interview prep in javascript, i revised dom, typescript, and practical implementation",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i optimized a javascript project using node.js and dom",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as event loop and node.js",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on hoisting to improve reliability and event loop for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i debugged a javascript project using typescript and event loop",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i debugged a javascript project using event loop and hoisting",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "in javascript, i focused on dom to improve reliability and closures for performance",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "i am confident in javascript concepts such as fetch api and dom",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in javascript includes modules, hoisting, and production debugging",
+    "label": [
+      "JavaScript"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes memoization, state management, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i built a react project using react router and suspense",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used react in real projects, mainly around redux and forms",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised memoization, redux, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i built a react project using hooks and code splitting",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes state management, redux, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i integrated a react project using suspense and forms",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i built a react project using suspense and component lifecycle",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on component lifecycle to improve reliability and state management for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i integrated a react project using context api and suspense",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on component lifecycle to improve reliability and react router for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used react in real projects, mainly around forms and code splitting",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i refactored a react project using react router and hooks",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes component lifecycle, react router, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as suspense and state management",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as code splitting and react router",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on react router to improve reliability and memoization for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes context api, forms, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as redux and forms",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i debugged a react project using suspense and hooks",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i integrated a react project using react router and code splitting",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes hooks, react router, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes suspense, redux, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes context api, suspense, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i implemented a react project using hooks and react router",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as react router and redux",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised code splitting, hooks, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes code splitting, hooks, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on memoization to improve reliability and redux for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i implemented a react project using component lifecycle and react router",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i implemented a react project using context api and redux",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes code splitting, suspense, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i debugged a react project using context api and code splitting",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i optimized a react project using context api and react router",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on hooks to improve reliability and context api for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on code splitting to improve reliability and forms for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised state management, context api, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on forms to improve reliability and suspense for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised hooks, forms, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised context api, forms, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes context api, hooks, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised code splitting, component lifecycle, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on memoization to improve reliability and state management for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used react in real projects, mainly around redux and state management",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as memoization and suspense",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised hooks, context api, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes component lifecycle, hooks, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on forms to improve reliability and redux for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as redux and state management",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as memoization and code splitting",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on context api to improve reliability and redux for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used react in real projects, mainly around forms and state management",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on suspense to improve reliability and forms for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used react in real projects, mainly around state management and redux",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes state management, component lifecycle, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i integrated a react project using state management and forms",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used react in real projects, mainly around forms and context api",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised code splitting, forms, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used react in real projects, mainly around hooks and code splitting",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "my hands on work in react includes context api, memoization, and production debugging",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used react in real projects, mainly around forms and component lifecycle",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as code splitting and context api",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised hooks, memoization, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i refactored a react project using code splitting and hooks",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as forms and redux",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as forms and react router",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "for interview prep in react, i revised redux, react router, and practical implementation",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "in react, i focused on context api to improve reliability and forms for performance",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as forms and component lifecycle",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i am confident in react concepts such as component lifecycle and forms",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i implemented a react project using forms and state management",
+    "label": [
+      "React"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around transactions and stored procedures",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as joins and normalization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised window functions, normalization, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around normalization and joins",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around stored procedures and query optimization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised cte, query optimization, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as execution plan and window functions",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes joins, query optimization, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised stored procedures, cte, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around constraints and execution plan",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as indexing and execution plan",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on indexing to improve reliability and execution plan for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around execution plan and transactions",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes query optimization, transactions, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised normalization, execution plan, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i migrated a sql project using query optimization and constraints",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised joins, cte, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes joins, transactions, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes cte, normalization, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes stored procedures, execution plan, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes window functions, indexing, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes cte, transactions, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on query optimization to improve reliability and joins for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as stored procedures and constraints",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i maintained a sql project using query optimization and normalization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on query optimization to improve reliability and transactions for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i wrote a sql project using execution plan and indexing",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around joins and indexing",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes indexing, window functions, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i migrated a sql project using stored procedures and execution plan",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on constraints to improve reliability and window functions for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes cte, window functions, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on normalization to improve reliability and stored procedures for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on normalization to improve reliability and constraints for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised execution plan, cte, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as indexing and query optimization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised indexing, window functions, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes indexing, stored procedures, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on query optimization to improve reliability and window functions for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes normalization, execution plan, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as cte and transactions",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised constraints, cte, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes query optimization, normalization, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on stored procedures to improve reliability and indexing for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as transactions and cte",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i debugged a sql project using window functions and joins",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised query optimization, execution plan, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on transactions to improve reliability and cte for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around execution plan and normalization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i designed a sql project using transactions and normalization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on query optimization to improve reliability and execution plan for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised transactions, normalization, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as joins and indexing",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around joins and query optimization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around cte and transactions",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on stored procedures to improve reliability and normalization for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes normalization, cte, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i wrote a sql project using query optimization and stored procedures",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i wrote a sql project using joins and execution plan",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around query optimization and stored procedures",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around cte and joins",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "for interview prep in sql, i revised indexing, transactions, and practical implementation",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as execution plan and indexing",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i maintained a sql project using indexing and transactions",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "my hands on work in sql includes execution plan, stored procedures, and production debugging",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i designed a sql project using window functions and indexing",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "in sql, i focused on normalization to improve reliability and indexing for performance",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as query optimization and normalization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in sql concepts such as normalization and execution plan",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i optimized a sql project using stored procedures and joins",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i wrote a sql project using joins and cte",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i optimized a sql project using indexing and normalization",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i used sql in real projects, mainly around indexing and execution plan",
+    "label": [
+      "SQL"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as feature engineering and data leakage",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised feature engineering, cross validation, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised xgboost, precision recall, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i validated a machine learning project using cross validation and precision recall",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on baseline model to improve reliability and random forest for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on feature engineering to improve reliability and class imbalance for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i validated a machine learning project using cross validation and hyperparameter tuning",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around xgboost and hyperparameter tuning",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around model evaluation and precision recall",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i deployed a machine learning project using random forest and baseline model",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised precision recall, xgboost, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around model evaluation and baseline model",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised baseline model, precision recall, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as xgboost and class imbalance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around hyperparameter tuning and data leakage",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as precision recall and feature engineering",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around feature engineering and class imbalance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as hyperparameter tuning and random forest",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i trained a machine learning project using feature engineering and data leakage",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around model evaluation and hyperparameter tuning",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes feature engineering, data leakage, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as model evaluation and precision recall",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised random forest, data leakage, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes precision recall, data leakage, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as model evaluation and feature engineering",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on xgboost to improve reliability and cross validation for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on feature engineering to improve reliability and xgboost for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised random forest, hyperparameter tuning, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around xgboost and data leakage",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i trained a machine learning project using model evaluation and precision recall",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around random forest and class imbalance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i deployed a machine learning project using feature engineering and xgboost",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on precision recall to improve reliability and baseline model for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised class imbalance, hyperparameter tuning, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes data leakage, xgboost, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on random forest to improve reliability and baseline model for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around class imbalance and model evaluation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i trained a machine learning project using data leakage and feature engineering",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on cross validation to improve reliability and hyperparameter tuning for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on data leakage to improve reliability and model evaluation for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes class imbalance, baseline model, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i deployed a machine learning project using cross validation and model evaluation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as feature engineering and xgboost",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on baseline model to improve reliability and class imbalance for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as data leakage and model evaluation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes class imbalance, data leakage, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as hyperparameter tuning and class imbalance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised cross validation, random forest, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised baseline model, class imbalance, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around hyperparameter tuning and class imbalance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised class imbalance, data leakage, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i validated a machine learning project using precision recall and cross validation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on model evaluation to improve reliability and precision recall for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes class imbalance, random forest, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes xgboost, data leakage, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around class imbalance and data leakage",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on baseline model to improve reliability and xgboost for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as feature engineering and class imbalance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised data leakage, model evaluation, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "in machine learning, i focused on data leakage to improve reliability and class imbalance for performance",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i evaluated a machine learning project using class imbalance and baseline model",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in machine learning concepts such as class imbalance and precision recall",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i evaluated a machine learning project using model evaluation and baseline model",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around hyperparameter tuning and xgboost",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i used machine learning in real projects, mainly around feature engineering and baseline model",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in machine learning, i revised hyperparameter tuning, model evaluation, and practical implementation",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes cross validation, precision recall, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in machine learning includes cross validation, model evaluation, and production debugging",
+    "label": [
+      "Machine_Learning"
+    ]
+  },
+  {
+    "text": "i fine tuned a deep learning project using batch normalization and backpropagation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes pytorch, batch normalization, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on batch normalization to improve reliability and lstm for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on gradient clipping to improve reliability and cnn for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i optimized a deep learning project using learning rate scheduling and backpropagation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i deployed a deep learning project using backpropagation and lstm",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes cnn, lstm, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on rnn to improve reliability and backpropagation for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around rnn and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as gradient clipping and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on rnn to improve reliability and dropout for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around transfer learning and dropout",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes pytorch, rnn, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised batch normalization, backpropagation, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised batch normalization, learning rate scheduling, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as lstm and backpropagation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around batch normalization and lstm",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as backpropagation and lstm",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around lstm and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around transfer learning and backpropagation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised learning rate scheduling, lstm, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i optimized a deep learning project using lstm and gradient clipping",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes lstm, gradient clipping, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on lstm to improve reliability and rnn for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i trained a deep learning project using lstm and cnn",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i debugged a deep learning project using gradient clipping and lstm",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i fine tuned a deep learning project using cnn and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes lstm, rnn, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised lstm, rnn, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes transfer learning, batch normalization, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as learning rate scheduling and backpropagation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as rnn and gradient clipping",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised transfer learning, lstm, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as batch normalization and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i trained a deep learning project using learning rate scheduling and cnn",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised rnn, gradient clipping, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around lstm and learning rate scheduling",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around backpropagation and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around dropout and batch normalization",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i optimized a deep learning project using backpropagation and transfer learning",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around transfer learning and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on lstm to improve reliability and dropout for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised batch normalization, transfer learning, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on batch normalization to improve reliability and backpropagation for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around cnn and gradient clipping",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around pytorch and transfer learning",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as rnn and backpropagation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as learning rate scheduling and lstm",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes rnn, learning rate scheduling, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes pytorch, gradient clipping, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as cnn and transfer learning",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as backpropagation and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i deployed a deep learning project using batch normalization and dropout",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as dropout and gradient clipping",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as lstm and learning rate scheduling",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised backpropagation, gradient clipping, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i deployed a deep learning project using backpropagation and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised lstm, gradient clipping, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised pytorch, lstm, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as transfer learning and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i trained a deep learning project using dropout and gradient clipping",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as learning rate scheduling and cnn",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "for interview prep in deep learning, i revised learning rate scheduling, pytorch, and practical implementation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as lstm and batch normalization",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i optimized a deep learning project using cnn and backpropagation",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "my hands on work in deep learning includes cnn, dropout, and production debugging",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i trained a deep learning project using rnn and pytorch",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on lstm to improve reliability and batch normalization for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on pytorch to improve reliability and lstm for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on rnn to improve reliability and batch normalization for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "in deep learning, i focused on gradient clipping to improve reliability and pytorch for performance",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around batch normalization and cnn",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i used deep learning in real projects, mainly around lstm and transfer learning",
+    "label": [
+      "Deep_Learning"
+    ]
+  },
+  {
+    "text": "i am confident in deep learning concepts such as backpropagation and rnn",
+    "label": [
+      "Deep_Learning"
+    ]
+  }
 ]

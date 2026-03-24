@@ -25,7 +25,7 @@ Build **SkillWise**, a comprehensive AI-powered platform that provides a **perso
 1. **Understand what the candidate knows** — Using a custom-trained MLP neural network, detect which technical topics (Java, Python, React, etc.) a candidate mentions during their introduction.
 2. **Evaluates answers by meaning, not keywords** — Using Sentence Transformer embeddings and cosine similarity, score whether a candidate's answer is semantically correct (even if they use completely different words than the expected answer).
 3. **Asks smart follow-up questions** — Based on the detected topics, dynamically pick the right questions from a question bank and even generate resume-specific questions using Gemini.
-4. **Detects cheating in real-time** — Using a CNN trained from scratch for eye-gaze detection, MediaPipe for head pose tracking, and YOLOv8 for detecting multiple people in the frame.
+4. **Detects cheating in real-time** — Using a CNN trained from scratch for eye-gaze detection, MediaPipe for head pose tracking and for detecting multiple people in the frame.
 5. **Be a "White Box" project** — We build and train our own neural networks. We understand every layer, every loss function, every optimizer. This is NOT a wrapper around someone else's API.
 
 ---
@@ -57,7 +57,7 @@ We did a deep study of how real-world enterprise interview platforms work (see o
 |---|---|---|
 | **all-MiniLM-L6-v2** | Convert text → 384-dim embedding vectors | Training a language model from scratch requires Google-scale compute. Academic practice accepts using these as backbones. |
 | **OpenAI Whisper (medium)** | Speech-to-Text (Audio → Transcript) | Same reason. We use the multilingual `medium` variant for robustness with Indian accents. |
-| **YOLOv8n** | Detect people in webcam frames | Object detection backbone. We only use the person-class predictions from it. |
+| **MediaPipe** | Detect people in webcam frames | Object detection backbone. We only use the person-class predictions from it. |
 
 ---
 
@@ -143,8 +143,8 @@ This is a **custom-created** dataset (not downloaded from the internet). We buil
      ┌──────────┐ ┌──────┐ ┌──────────────────┐
      │ MLP      │ │Cosine│ │ Proctoring       │
      │ Intent   │ │ Sim  │ │ System           │
-     │ Classif. │ │(Eval)│ │ (CNN+MediaPipe+  │
-     │ (PyTorch)│ │      │ │  YOLOv8)         │
+     │ Classif. │ │(Eval)│ │ (CNN+MediaPipe)  │
+     │ (PyTorch)│ │      │ │                  │
      └──────────┘ └──────┘ └──────────────────┘
          │            │            │
      Topics      Score(%)     SAFE/ALERT
@@ -258,7 +258,7 @@ The proctoring system runs in a background thread and performs real-time analysi
 | Head Pose Detection | ✅ Done | MediaPipe landmarks with smoothing buffer |
 | Face Detection | ✅ Done | MediaPipe FaceMesh with Haar Cascade fallback |
 | Dark Environment Detection | ✅ Done | Brightness thresholding |
-| Multiple People Detection | ✅ Done | MediaPipe multi-face + YOLOv8 person detector |
+| Multiple People Detection | ✅ Done | MediaPipe multi-face + person detector |
 | Buzzer Alert | ✅ Done | Audio alert via winsound |
 | Session Recording | ✅ Done | MP4 video + JPEG snapshots of violations |
 | Report Generation | ✅ Done | JSON + CSV reports with timestamps and statistics |

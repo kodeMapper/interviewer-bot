@@ -85,3 +85,6 @@ progress.md
 # Uncomment if you don't want to version models
 # *.pth
 # *.pt
+
+# Data processing caches
+*.npy
