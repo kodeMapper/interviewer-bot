@@ -62,7 +62,7 @@ NO_FACE_TIMEOUT = 0.9
 MULTI_FACE_TIMEOUT = 0.9
 CONF_THRESHOLD = 0.90
 FRAME_SIZE = (640, 480)
-MAX_CAMERA_INDEX_TO_TRY = 10
+MAX_CAMERA_INDEX_TO_TRY = 3
 CAMERA_BACKENDS = (cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY)
 DARK_BRIGHTNESS_THRESHOLD = 45
 RECORDING_FPS = 12.0
@@ -315,16 +315,18 @@ def open_best_camera():
             print(f"Selected camera opened at index {camera_index}")
             return cap
 
+    # Try laptop camera (index 0) FIRST — most common case
+    cap = open_camera_with_backends(0)
+    if cap is not None:
+        print("Laptop camera opened")
+        return cap
+
+    # Then try external cameras
     for idx in range(1, MAX_CAMERA_INDEX_TO_TRY + 1):
         cap = open_camera_with_backends(idx)
         if cap is not None:
             print(f"External camera opened at index {idx}")
             return cap
-
-    cap = open_camera_with_backends(0)
-    if cap is not None:
-        print("Laptop camera opened")
-        return cap
 
     return None
 
@@ -405,6 +407,9 @@ def start_proctoring():
     running = True
     stop_buzzer()
 
+    # Brief delay to let the browser fully release camera from PreCheck getUserMedia
+    time.sleep(1.5)
+
     session_start_time = time.time()
     session_end_time = None
     session_id = datetime.now().strftime("session_%Y%m%d_%H%M%S")
@@ -478,10 +483,52 @@ def start_proctoring():
             start_buzzer()
             return
 
+    consecutive_failures = 0
+    MAX_CONSECUTIVE_FAILURES = 50
+    reconnect_attempts = 0
+    MAX_RECONNECT_ATTEMPTS = 3
+
     while running:
         ret, frame = cap.read()
         if not ret:
+            consecutive_failures += 1
+            time.sleep(0.05)  # yield CPU instead of spinning
+
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                reconnect_attempts += 1
+                print(f"Camera feed lost. Reconnect attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS}...")
+
+                if reconnect_attempts > MAX_RECONNECT_ATTEMPTS:
+                    current_status["status"] = "ALERT"
+                    current_status["reason"] = "CAMERA DISCONNECTED"
+                    _record_event("ALERT_TRIGGERED", "ALERT", "CAMERA DISCONNECTED",
+                                  f"Camera lost after {MAX_RECONNECT_ATTEMPTS} reconnect attempts")
+                    break
+
+                # Release old capture and try to re-open
+                try:
+                    cap.release()
+                except Exception:
+                    pass
+                time.sleep(1.0)  # wait before retry
+
+                cap = open_best_camera()
+                if cap is None:
+                    print("Reconnect failed — no camera found.")
+                    continue  # will try again next iteration
+                else:
+                    cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_SIZE[0])
+                    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_SIZE[1])
+                    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    for _ in range(5):
+                        cap.read()  # flush buffer
+                    consecutive_failures = 0
+                    print("Camera reconnected successfully.")
             continue
+
+        # Reset failure counter on successful frame
+        consecutive_failures = 0
+        reconnect_attempts = 0
 
         frame = cv2.resize(frame, FRAME_SIZE)
 

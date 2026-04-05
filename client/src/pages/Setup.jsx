@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
@@ -8,16 +8,30 @@ import { interviewAPI, resumeAPI } from '../services/api';
 
 function Setup() {
   const navigate = useNavigate();
-  const [selectedSkills, setSelectedSkills] = useState([]);
-  const [username, setUsername] = useState('');
-  const [candidateName, setCandidateName] = useState('');
-  const [sessionName, setSessionName] = useState('');
-  const [sessionId, setSessionId] = useState(null);
+  const [selectedSkills, setSelectedSkills] = useState(() => JSON.parse(sessionStorage.getItem('setup_skills') || '[]'));
+  const [username, setUsername] = useState(() => sessionStorage.getItem('setup_username') || '');
+  const [candidateName, setCandidateName] = useState(() => sessionStorage.getItem('setup_candidateName') || '');
+  const [sessionName, setSessionName] = useState(() => sessionStorage.getItem('setup_sessionName') || '');
+  const [sessionId, setSessionId] = useState(() => sessionStorage.getItem('setup_sessionId') || null);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [isUploadingResume, setIsUploadingResume] = useState(false);
-  const [uploadResult, setUploadResult] = useState(null);
+  const [uploadResult, setUploadResult] = useState(() => JSON.parse(sessionStorage.getItem('setup_uploadResult') || 'null'));
   const [uploadError, setUploadError] = useState(null);
-  const [step, setStep] = useState(1); // 1: Skills, 2: Resume, 3: Pre-Check
+  const [step, setStep] = useState(() => Number(sessionStorage.getItem('setup_step')) || 1); // 1: Skills, 2: Resume, 3: Pre-Check
+
+  useEffect(() => {
+    sessionStorage.setItem('setup_step', step);
+    if (sessionId) sessionStorage.setItem('setup_sessionId', sessionId);
+    sessionStorage.setItem('setup_username', username);
+    sessionStorage.setItem('setup_candidateName', candidateName);
+    sessionStorage.setItem('setup_sessionName', sessionName);
+    sessionStorage.setItem('setup_skills', JSON.stringify(selectedSkills));
+    if (uploadResult) sessionStorage.setItem('setup_uploadResult', JSON.stringify(uploadResult));
+  }, [step, sessionId, username, candidateName, sessionName, selectedSkills, uploadResult]);
+
+  // Clean sessionStorage when navigating away to a different main flow, optional but good prep
+  // We won't clear it immediately to ensure refresh keeps it.
+
 
   const handleStartSession = async () => {
     if (selectedSkills.length === 0) {
@@ -204,10 +218,14 @@ function Setup() {
           )}
 
           {step === 2 && (
-            <div className="space-y-8">
-              <div>
-                <h1 className="font-headline text-4xl md:text-5xl font-extrabold mb-4 text-glow text-primary-fixed">Inject Context Payload</h1>
-                <p className="text-on-surface-variant font-body text-lg">Upload the candidate's resume. Our LLM will parse experiences and spontaneously adapt the questioning.</p>
+            <div className="space-y-8 flex flex-col items-center">
+              <div className="text-center mb-6 max-w-2xl mx-auto">
+                <h1 className="text-4xl md:text-5xl font-headline font-extrabold tracking-tight text-on-surface mb-4 text-glow">
+                  The <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-fixed to-secondary-fixed">Source</span> Material
+                </h1>
+                <p className="text-on-surface-variant text-lg font-body leading-relaxed">
+                  SkillWise AI extracts technical depth and behavioral markers directly from your resume to calibrate the session.
+                </p>
               </div>
 
               <ResumeUpload
@@ -217,20 +235,25 @@ function Setup() {
                 error={uploadError}
               />
 
-              <div className="flex justify-between items-center mt-12 pt-6 border-t border-white/5">
+              <div className="flex justify-between items-center mt-12 pt-6 border-t border-white/5 w-full">
                 <button
                   onClick={() => setStep(1)}
-                  className="px-6 py-3 rounded-full text-on-surface-variant hover:text-white transition-colors font-semibold flex items-center gap-2"
+                  className="px-6 py-3 rounded-full text-on-surface-variant font-label text-xs uppercase tracking-widest hover:text-white transition-colors font-semibold flex items-center gap-2"
                 >
-                  <span className="material-symbols-outlined">arrow_back</span>
-                  Back to Domains
+                  <span className="material-symbols-outlined text-sm">arrow_back</span>
+                  Back
                 </button>
+                <div className="h-10 w-[1px] bg-outline-variant/30 hidden md:block"></div>
                 <button
                   onClick={handleStartInterview}
-                  className="bg-primary text-on-primary px-10 py-4 rounded-full font-bold flex items-center gap-3 hover:scale-105 transition-all shadow-[0_0_30px_rgba(166,140,255,0.2)]"
+                  className="group relative px-10 py-4 bg-transparent overflow-hidden rounded-full shadow-[0_0_30px_rgba(166,140,255,0.2)]"
                 >
-                  {uploadResult ? 'Proceed to System Check' : 'Skip Context Injection'}
-                  <span className="material-symbols-outlined">arrow_forward</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-container to-primary opacity-90 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute inset-0 border border-white/20 rounded-full"></div>
+                  <span className="relative z-10 font-label text-xs uppercase tracking-[0.2em] font-bold text-on-primary-container flex items-center gap-3">
+                    Initialize Phase 3
+                    <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                  </span>
                 </button>
               </div>
             </div>

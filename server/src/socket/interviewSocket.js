@@ -7,6 +7,7 @@
 const { Session } = require('../models');
 const interviewService = require('../services/interview.service');
 const questionService = require('../services/question.service');
+const resumeController = require('../controllers/resume.controller');
 const { stopProctoringInternal } = require('../adapters/proctoringAdapter');
 
 /**
@@ -106,6 +107,14 @@ module.exports = function (io) {
           message: intro.message,
           speakText: intro.speakText || intro.message
         });
+
+        // Fire Gemini Resume question generation if there is a resume and it hasn't generated yet.
+        if (session.resumePath && !session.resumeQuestionsReady) {
+           console.log(`[Socket] 🌟 Interview started. Triggering background Gemini question generation...`);
+           resumeController.processResumeInBackground(sessionId, session.resumeSummary, session.resumePath)
+              .then(() => console.log(`[Socket] ✅ Delayed Gemini generation complete for session ${sessionId}`))
+              .catch((err) => console.error(`[Socket] ❌ Delayed Gemini generation failed:`, err.message));
+        }
 
         // Check if skills were pre-selected (skipSkillPrompt = true)
         if (intro.skipSkillPrompt) {

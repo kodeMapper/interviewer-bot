@@ -19,7 +19,7 @@ function Admin() {
         sessionsAPI.getAll(),
         sessionsAPI.getStats()
       ]);
-      const sessionsData = sessionsRes.data?.docs || sessionsRes.data || [];
+      const sessionsData = sessionsRes.data?.sessions || [];
       setSessions(sessionsData);
       setStats(statsRes.data);
     } catch (err) {

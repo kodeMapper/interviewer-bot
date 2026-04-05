@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useProctoring } from '../../context/ProctoringContext';
 
 const ProctoringPanel = () => {
   const { isSafe, alertCount, isServiceConnected, alertHistory, detailedMetrics } = useProctoring();
   const logContainerRef = useRef(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   // Auto-scroll the security log to the latest entry
   useEffect(() => {
@@ -15,14 +17,34 @@ const ProctoringPanel = () => {
   return (
     <div className="flex flex-col gap-6 w-full h-full max-h-screen">
       {/* Webcam & Status */}
-      <div className="relative aspect-video rounded-xl overflow-hidden glass-panel border border-white/10 group shrink-0">
+      <div className="relative aspect-video rounded-xl overflow-hidden glass-panel border border-white/10 group shrink-0 bg-black/40">
         {isServiceConnected ? (
-          <img src="/api/proctoring/video" className="w-full h-full object-cover" alt="Live Feed" />
+          <>
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 bg-surface-container-low/80 backdrop-blur-sm">
+                <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                <span className="font-label text-[10px] uppercase tracking-[0.2em] text-primary animate-pulse font-bold">Synchronizing Feed</span>
+              </div>
+            )}
+            <img 
+              src={`/api/proctoring/video?t=${retryCount}`} 
+              className={`w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`} 
+              alt="Live Feed"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => {
+                setImageLoaded(false);
+                setTimeout(() => setRetryCount(prev => prev + 1), 2000);
+              }}
+            />
+          </>
         ) : (
-          <div className="flex items-center justify-center h-full text-outline-variant font-label text-xs uppercase tracking-widest bg-surface-container-low">Service Offline</div>
+          <div className="flex flex-col items-center justify-center h-full gap-3 bg-surface-container-low">
+            <span className="material-symbols-outlined text-on-surface-variant/20 text-4xl">videocam_off</span>
+            <div className="text-outline-variant font-label text-[10px] uppercase tracking-widest">Neural Link Offline</div>
+          </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-        {isServiceConnected && (
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+        {isServiceConnected && imageLoaded && (
           <div className={`absolute top-4 left-4 flex items-center gap-2 px-3 py-1 rounded-full border backdrop-blur-md ${isSafe ? 'bg-emerald-500/20 border-emerald-500/40' : 'bg-error/20 border-error/40'}`}>
             <div className={`w-2 h-2 rounded-full ${isSafe ? 'bg-emerald-500 shadow-[0_0_8px_#34d399]' : 'bg-error shadow-[0_0_8px_#ff716c] animate-pulse'}`}></div>
             <span className={`font-label text-[10px] font-bold tracking-widest uppercase ${isSafe ? 'text-emerald-400' : 'text-error'}`}>
@@ -31,7 +53,7 @@ const ProctoringPanel = () => {
           </div>
         )}
         <div className="absolute bottom-4 left-4">
-          <span className="text-xs font-semibold text-white/90">Identity Feed</span>
+          <span className="text-[10px] font-label uppercase tracking-widest text-white/70 font-bold">Identity Authentication Feed</span>
         </div>
       </div>
 

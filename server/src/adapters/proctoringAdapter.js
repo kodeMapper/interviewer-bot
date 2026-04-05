@@ -17,7 +17,7 @@
 
 const axios = require('axios');
 
-const PROCTOR_BASE = process.env.PROCTOR_URL || 'http://localhost:5000';
+const PROCTOR_BASE = process.env.PROCTOR_URL || 'http://127.0.0.1:5000';
 
 /**
  * GET /api/proctoring/status
@@ -90,13 +90,19 @@ async function videoFeed(req, res) {
 
     // Forward headers so the browser treats it as a live MJPEG stream
     res.setHeader('Content-Type', response.headers['content-type'] || 'multipart/x-mixed-replace; boundary=frame');
-    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Transfer-Encoding', 'chunked');
 
     response.data.pipe(res);
 
     // Clean up when client disconnects
     req.on('close', () => {
-      response.data.destroy();
+      if (response && response.data) {
+        response.data.destroy();
+      }
     });
   } catch (err) {
     if (err.code === 'ECONNREFUSED') {

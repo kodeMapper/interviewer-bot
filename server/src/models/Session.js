@@ -15,6 +15,7 @@ const answerSchema = new mongoose.Schema({
   topic: String,
   userAnswer: String,
   expectedAnswer: String,
+  feedback: String,
   score: {
     type: Number,
     min: 0,

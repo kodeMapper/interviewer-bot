@@ -44,6 +44,10 @@ function Interview() {
   
   // Local state
   const [interviewStarted, setInterviewStarted] = useState(false);
+  const [interviewComplete, setInterviewComplete] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [initCountdown, setInitCountdown] = useState(3);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [answerResult, setAnswerResult] = useState(null);
   const [hint, setHint] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -156,14 +160,50 @@ function Interview() {
     return () => {
       unsubJoined?.(); unsubMessage?.(); unsubQuestion?.(); unsubResult?.();
       unsubProgress?.(); unsubHint?.(); unsubComplete?.(); unsubError?.();
-      proctoringAPI.stop().catch(() => {});
     };
   }, [isConnected, on, speak, ttsSupported, navigate, sessionId, currentQuestion, addAnswer, resetTranscript, setCurrentQuestion, setProgress]);
 
-  const handleStart = useCallback(() => {
-    setInterviewStarted(true);
-    emit('start-interview');
-  }, [emit]);
+  // Separate cleanup — stop proctoring ONLY when leaving the page, NOT on re-renders
+  useEffect(() => {
+    return () => {
+      proctoringAPI.stop().catch(() => {});
+    };
+  }, []);
+
+  const handleStart = useCallback(async () => {
+    try {
+      setIsInitializing(true);
+      setInitCountdown(3);
+      
+      // Tell server/proctoring to start
+      await proctoringAPI.setMeta(sessionId, { name: 'Candidate' });
+      await proctoringAPI.start();
+      
+      // Start the interview on the server immediately, but wait for UI transition
+      emit('start-interview');
+
+      // Countdown for camera initialization
+      const timer = setInterval(() => {
+        setInitCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      // Wait 3 seconds for camera to warm up
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      setInterviewStarted(true);
+      setIsInitializing(false);
+    } catch (err) {
+      console.error("Proctoring failed to start:", err);
+      setIsInitializing(false);
+      alert('Failed to connect to proctoring service. Please ensure the proctoring server is running.');
+    }
+  }, [emit, sessionId]);
 
   const handleNextQuestion = useCallback(() => {
     emit('next-question');
@@ -215,13 +255,30 @@ function Interview() {
   const handleHint = useCallback(() => emit('request-hint'), [emit]);
 
   const handleEndInterview = useCallback(async () => {
-    if (window.confirm('End interview early? You will receive a report based on questions answered.')) {
-      cancelSpeech();
-      stopListening();
-      try { await proctoringAPI.stop(); } catch (err) {}
+    cancelSpeech();
+    stopListening();
+    
+    // Immediate UI feedback
+    setInterviewComplete(true);
+    setShowExitConfirm(false);
+    
+    try {
+      // Non-blocking proctoring stop
+      proctoringAPI.stop().catch(console.error);
+      
+      // Emit event to server
       emit('end-interview');
+      
+      // Fallback navigation if socket/server is slow (2 seconds)
+      setTimeout(() => {
+        console.log('[Interview] Fallback navigation triggered');
+        navigate(`/interview/${sessionId}/complete`);
+      }, 2000);
+    } catch (err) {
+      console.error('Error during end interview:', err);
+      navigate(`/interview/${sessionId}/complete`);
     }
-  }, [emit, cancelSpeech, stopListening]);
+  }, [emit, cancelSpeech, stopListening, navigate, sessionId]);
 
   if (!isConnected) {
     return (
@@ -234,17 +291,29 @@ function Interview() {
 
   if (!interviewStarted) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center selection:bg-primary/30 relative overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-container/20 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center selection:bg-primary/30 relative overflow-hidden font-body text-on-surface">
+        {/* Ambient Glows */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-container/15 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[150px] pointer-events-none"></div>
         
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-panel text-center max-w-xl p-10 rounded-3xl relative z-10 border border-white/10">
-          <h1 className="font-headline text-3xl font-extrabold tracking-tight mb-4">Initialize Session</h1>
-          <p className="text-on-surface-variant font-body mb-8 leading-relaxed">
-            The AI Proctoring engine is ready. The interview will adapt dynamically based on your performance. 
-          </p>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          className="glass-panel text-center max-w-xl w-full mx-4 p-12 rounded-3xl relative z-10 border border-white/10"
+        >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-bl-full -mr-16 -mt-16 pointer-events-none"></div>
           
-          {!sttSupported && (
+          <h1 className="text-4xl font-headline font-extrabold text-on-surface mb-4 tracking-tight">
+            {isInitializing ? "Initializing Camera" : "Ready to Begin"}
+          </h1>
+          <p className="text-on-surface-variant text-lg mb-10 max-w-md mx-auto leading-relaxed">
+            {isInitializing 
+              ? `Please wait while we secure your environment and prepare the camera feed. Starting in ${initCountdown}s...`
+              : "Welcome to your SkillWise Technical Interview. Please ensure you are in a quiet, well-lit environment and your camera is unobstructed."
+            }
+          </p>
+
+          {!isInitializing && !sttSupported && (
             <div className="p-4 bg-error-container/20 border border-error/30 rounded-xl mb-8 flex items-start gap-3">
               <span className="material-symbols-outlined text-error" style={{fontVariationSettings: "'FILL' 1"}}>warning</span>
               <p className="text-error font-body text-sm text-left">
@@ -252,11 +321,45 @@ function Interview() {
               </p>
             </div>
           )}
-          
-          <button onClick={handleStart} className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-primary-container to-primary text-on-primary-container hover:scale-[1.02] active:scale-95 transition-all font-label text-xs uppercase tracking-widest shadow-xl shadow-primary/20">
-            <span className="material-symbols-outlined text-[16px]">power_settings_new</span>
-            Launch Interview
-          </button>
+
+          {isInitializing ? (
+            <div className="flex flex-col items-center gap-8 py-4">
+              <div className="relative w-24 h-24">
+                <svg className="w-full h-full -rotate-90">
+                  <circle
+                    cx="48" cy="48" r="44"
+                    fill="none" stroke="currentColor" strokeWidth="6"
+                    className="text-white/5"
+                  />
+                  <motion.circle
+                    cx="48" cy="48" r="44"
+                    fill="none" stroke="currentColor" strokeWidth="6"
+                    strokeDasharray={276}
+                    initial={{ strokeDashoffset: 276 }}
+                    animate={{ strokeDashoffset: 276 - (276 * (3 - initCountdown) / 3) }}
+                    className="text-primary"
+                    transition={{ duration: 0.5 }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center font-headline text-3xl font-black text-primary">
+                  {initCountdown}
+                </div>
+              </div>
+              <div className="flex items-center gap-3 px-6 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs font-label uppercase tracking-widest text-primary animate-pulse">
+                <span className="material-symbols-outlined text-sm">videocam</span>
+                Securing Live Feed
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleStart}
+              className="group relative flex items-center justify-center gap-4 px-12 py-5 w-full rounded-2xl bg-gradient-to-r from-primary-container to-primary text-on-primary-container font-label text-xs uppercase tracking-[0.2em] font-black hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+              <span className="material-symbols-outlined relative z-10">rocket_launch</span>
+              <span className="relative z-10">Launch Interview</span>
+            </button>
+          )}
         </motion.div>
       </div>
     );
@@ -291,16 +394,97 @@ function Interview() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={handleEndInterview} className="px-5 py-1.5 text-[10px] font-label font-bold uppercase tracking-widest text-white bg-error/20 border border-error/50 rounded-full hover:bg-error/40 transition-all shadow-[0_0_15px_rgba(255,113,108,0.2)]">
+            <button onClick={() => setShowExitConfirm(true)} className="px-5 py-1.5 text-[10px] font-label font-bold uppercase tracking-widest text-white bg-error/20 border border-error/50 rounded-full hover:bg-error/40 transition-all shadow-[0_0_15px_rgba(255,113,108,0.2)]">
               Terminate
             </button>
           </div>
         </header>
 
+        {/* Custom Confirmation Modal */}
+        <AnimatePresence>
+          {showExitConfirm && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+               <motion.div 
+                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                 onClick={() => setShowExitConfirm(false)}
+                 className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+               />
+               <motion.div 
+                 initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+                 animate={{ opacity: 1, scale: 1, y: 0 }}
+                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                 className="relative w-full max-w-md glass-panel p-8 rounded-3xl border border-white/10 shadow-2xl"
+               >
+                 <div className="w-16 h-16 rounded-full bg-error/10 border border-error/20 flex items-center justify-center mb-6 mx-auto">
+                    <span className="material-symbols-outlined text-error text-3xl font-bold">warning</span>
+                 </div>
+                 <h2 className="text-2xl font-headline font-black text-center mb-2">End Interview?</h2>
+                 <p className="text-on-surface-variant text-center mb-8 leading-relaxed">
+                    You are about to terminate the session early. Your performance report will be generated based on the responses provided so far.
+                 </p>
+                 <div className="flex flex-col gap-3">
+                    <button 
+                      onClick={handleEndInterview}
+                      className="w-full py-4 rounded-xl bg-error text-white font-label text-xs uppercase tracking-widest font-black hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-error/20"
+                    >
+                      Yes, End Session
+                    </button>
+                    <button 
+                      onClick={() => setShowExitConfirm(false)}
+                      className="w-full py-4 rounded-xl bg-surface-container-high text-on-surface font-label text-xs uppercase tracking-widest font-bold hover:bg-surface-container-highest transition-all"
+                    >
+                      Continue Interview
+                    </button>
+                 </div>
+               </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Finalizing Overlay */}
+        <AnimatePresence>
+          {interviewComplete && (
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              className="fixed inset-0 z-[110] bg-background flex flex-col items-center justify-center"
+            >
+               <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none"></div>
+               <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-secondary/15 rounded-full blur-[150px] pointer-events-none"></div>
+               
+               <div className="relative text-center space-y-8">
+                 <div className="w-24 h-24 mx-auto relative">
+                    <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                    <div className="absolute inset-0 border-4 border-t-primary rounded-full animate-spin"></div>
+                    <span className="material-symbols-outlined absolute inset-0 flex items-center justify-center text-4xl text-primary animate-pulse">analytics</span>
+                 </div>
+                 
+                 <div className="space-y-2">
+                    <h2 className="text-3xl font-headline font-black tracking-tight text-white">Finalizing Session</h2>
+                    <p className="text-secondary/60 font-label text-xs uppercase tracking-[0.3em] font-bold">Compiling Reports & Intelligence</p>
+                 </div>
+                 
+                 <div className="max-w-xs mx-auto space-y-4">
+                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                       <motion.div 
+                         initial={{ width: 0 }} animate={{ width: "100%" }}
+                         transition={{ duration: 2 }}
+                         className="h-full bg-gradient-to-r from-primary to-secondary"
+                       />
+                    </div>
+                    <p className="text-on-surface-variant text-[10px] leading-relaxed">
+                       Securely uploading telemetry logs...
+                    </p>
+                 </div>
+               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Side Nav Shell (Optional/Cosmetic) */}
         <nav className="fixed left-4 top-1/2 -translate-y-1/2 w-16 rounded-3xl border border-violet-500/15 bg-slate-950/40 backdrop-blur-2xl flex flex-col items-center py-8 z-40 shadow-2xl shadow-violet-900/20">
           <div className="flex flex-col items-center gap-4 w-full">
-            <div onClick={handleEndInterview} className="flex flex-col items-center justify-center text-slate-500 p-2 w-full hover:bg-violet-500/10 hover:text-violet-200 transition-all cursor-pointer">
+            <div onClick={() => setShowExitConfirm(true)} className="flex flex-col items-center justify-center text-slate-500 p-2 w-full hover:bg-violet-500/10 hover:text-violet-200 transition-all cursor-pointer">
               <span className="material-symbols-outlined">dashboard</span>
               <span className="font-label uppercase tracking-[0.1em] text-[8px] mt-1">Exit</span>
             </div>
@@ -317,98 +501,88 @@ function Interview() {
           {/* Left Panel: 70% Interview Native Interface */}
           <section className="w-full md:w-[70%] flex flex-col gap-6 h-[calc(100vh-140px)]">
             
-            {/* Question Card */}
-            <div className="glass-panel rounded-xl p-8 md:p-10 flex flex-col justify-center min-h-[240px] md:min-h-[300px] relative overflow-hidden transition-all duration-500">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-30"></div>
-              <div className="flex justify-between items-center mb-6">
-                <span className="font-label text-[10px] uppercase tracking-[0.2em] text-primary">Current Objective</span>
-                {currentQuestion?.type && (
-                  <span className="bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-label uppercase tracking-widest border border-outline-variant/30 text-on-surface-variant flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
-                    {currentQuestion.type.replace('_', ' ')}
-                  </span>
-                )}
-              </div>
-              <h1 className="font-headline text-2xl md:text-3xl font-extrabold tracking-tight leading-normal text-white">
-                {currentQuestion ? currentQuestion.question : 'Awaiting system prompt...'}
-              </h1>
-              {hint && (
-                <div className="mt-6 flex items-start gap-3 p-4 bg-tertiary/10 border border-tertiary/20 rounded-xl animate-in fade-in slide-in-from-top-4">
-                  <span className="material-symbols-outlined text-tertiary text-[18px]">lightbulb</span>
-                  <p className="text-tertiary font-body text-sm">{hint}</p>
-                </div>
-              )}
-            </div>
+            {/* Single Conversation Window */}
+            <div className="flex-1 glass-panel rounded-3xl p-8 md:p-12 flex flex-col gap-8 relative overflow-y-auto transition-all duration-500 custom-scrollbar m-2">
+               <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-primary to-transparent opacity-30"></div>
+               
+               {/* Current Context Meta */}
+               <div className="flex justify-between items-center mb-4">
+                 <span className="font-label text-xs uppercase tracking-[0.2em] text-on-surface-variant flex items-center gap-2">
+                   <span className="material-symbols-outlined text-[16px]">forum</span>
+                   Active Dialogue
+                 </span>
+                 {currentQuestion?.type && (
+                   <span className="bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-label uppercase tracking-widest border border-outline-variant/30 text-primary flex items-center gap-1.5">
+                     <span className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-pulse"></span>
+                     {currentQuestion.type.replace('_', ' ')}
+                   </span>
+                 )}
+               </div>
 
-            {/* Real-time Transcript */}
-            <div className="flex-1 glass-panel rounded-xl p-6 overflow-y-auto custom-scrollbar flex flex-col gap-6" ref={transcriptRef}>
-              {messages.map((msg, idx) => (
-                <div key={idx} className={`flex gap-4 animate-in fade-in slide-in-from-bottom-2 ${msg.type === 'ai' ? '' : msg.type === 'user' ? 'flex-row-reverse' : ''}`}>
-                  <div className={`w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center border ${
-                    msg.type === 'ai' ? 'bg-primary/20 border-primary/30' : 
-                    msg.type === 'user' ? 'bg-secondary/20 border-secondary/30' : 
-                    'bg-white/10 border-white/20'
-                  }`}>
-                    <span className={`material-symbols-outlined text-sm ${
-                      msg.type === 'ai' ? 'text-primary' : 
-                      msg.type === 'user' ? 'text-secondary' : 
-                      'text-outline'
-                    }`}>
-                      {msg.type === 'ai' ? 'smart_toy' : msg.type === 'user' ? 'person' : 'info'}
-                    </span>
+               {/* Virtual AI Interviewer Bubble */}
+               <div className="flex gap-6 animate-in fade-in slide-in-from-top-4">
+                  <div className="w-14 h-14 rounded-full flex shrink-0 items-center justify-center border-2 bg-primary/20 border-primary/40 shadow-[0_0_20px_rgba(166,140,255,0.2)]">
+                     <span className="material-symbols-outlined text-primary text-[28px]">smart_toy</span>
                   </div>
-                  <div className={`space-y-1 max-w-[80%] ${msg.type === 'user' ? 'text-right' : 'text-left'}`}>
-                    <span className={`text-[10px] font-label uppercase tracking-widest ${
-                      msg.type === 'ai' ? 'text-primary/70' : 
-                      msg.type === 'user' ? 'text-secondary/70' : 
-                      'text-outline-variant'
-                    }`}>
-                      {msg.type === 'ai' ? 'SkillWise AI' : msg.type === 'user' ? 'Candidate' : 'System'}
-                    </span>
-                    <p className={`text-sm leading-relaxed ${
-                      msg.type === 'system' || msg.type === 'complete' ? 'text-emerald-400 italic font-medium' : 
-                      msg.type === 'error' ? 'text-error font-medium' : 
-                      'text-on-surface'
-                    }`}>
-                      {msg.text}
-                    </p>
+                  <div className="flex-1 bg-surface-container-high/50 border border-white/5 rounded-3xl rounded-tl-sm p-8 shadow-xl">
+                     <h1 className="font-headline text-2xl md:text-3xl font-extrabold tracking-tight leading-relaxed text-white">
+                        {currentQuestion ? currentQuestion.question : 'Awaiting system prompt...'}
+                     </h1>
+                     {hint && (
+                        <div className="mt-6 flex items-start gap-3 p-4 bg-tertiary/10 border border-tertiary/20 rounded-xl animate-in fade-in slide-in-from-top-4">
+                           <span className="material-symbols-outlined text-tertiary text-[18px]">lightbulb</span>
+                           <p className="text-tertiary font-body text-sm font-medium">{hint}</p>
+                        </div>
+                     )}
+                     {!currentQuestion && !isProcessing && (
+                        <div className="mt-4 flex gap-2">
+                          <span className="w-2 h-2 rounded-full bg-primary animate-bounce"></span>
+                          <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{animationDelay: '150ms'}}></span>
+                          <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{animationDelay: '300ms'}}></span>
+                        </div>
+                     )}
                   </div>
-                </div>
-              ))}
-              
-              {/* Active Transcript Overlay */}
-              {(isListening || transcript || interimTranscript) && (
-                <div className="flex gap-4 flex-row-reverse animate-in fade-in">
-                  <div className="w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center border bg-secondary/10 border-white/5 relative">
-                    <span className="material-symbols-outlined text-secondary/70 text-sm">more_horiz</span>
-                    <div className="absolute inset-0 border-2 border-secondary/50 rounded-full animate-ping"></div>
-                  </div>
-                  <div className="bg-surface-container-low max-w-[80%] p-3 rounded-lg rounded-tr-sm border border-secondary/10 text-right">
-                    <p className="text-on-surface text-sm">
-                      {transcript} 
-                      {interimTranscript && <span className="text-outline italic"> {interimTranscript}</span>}
-                      {isListening && !transcript && !interimTranscript && <span className="text-outline/40 italic">Listening...</span>}
-                    </p>
-                  </div>
-                </div>
-              )}
+               </div>
 
-              {/* Answer Result Block */}
-              {answerResult && (
-                <div className="flex gap-4 animate-in fade-in slide-in-from-top-4 my-2">
-                  <div className="w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center border bg-emerald-500/10 border-emerald-500/20">
-                    <span className="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+               {/* Current Candidate Answer Bubble (Only shows if typing/speaking or processing or just submitted) */}
+               <div className="flex gap-6 flex-row-reverse animate-in fade-in slide-in-from-bottom-4 mt-auto">
+                  <div className={`w-14 h-14 rounded-full flex shrink-0 items-center justify-center border-2 transition-all ${isListening ? 'bg-secondary/20 border-secondary shadow-[0_0_20px_rgba(0,218,243,0.3)] scale-110' : 'bg-surface-container border-white/10'}`}>
+                     <span className={`material-symbols-outlined text-[28px] ${isListening ? 'text-secondary animate-pulse' : 'text-on-surface-variant'}`}>person</span>
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-label uppercase tracking-widest text-emerald-400/80">AI Evaluation Engine</span>
-                    <div className="bg-emerald-500/5 border border-emerald-500/10 p-4 rounded-xl">
-                       <p className="text-sm text-emerald-300/90 font-medium">
-                         Response securely captured. Integrity checks applied. Proceed to the next objective when ready.
-                       </p>
-                    </div>
+                  <div className={`flex-1 border rounded-3xl rounded-tr-sm p-6 md:p-8 shadow-xl transition-all ${isListening ? 'bg-secondary/5 border-secondary/30' : 'bg-surface-container border-white/5'}`}>
+                     {isProcessing ? (
+                        <div className="flex flex-col gap-4">
+                           <p className="text-on-surface font-body italic text-lg leading-relaxed opacity-60">"{(messages && messages.length > 0 && messages[messages.length - 1]?.type === 'user') ? messages[messages.length - 1].text : transcript}"</p>
+                           <p className="text-primary font-label text-xs uppercase tracking-widest flex items-center gap-2 mt-4 mt-auto">
+                              <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
+                              Evaluating Response...
+                           </p>
+                        </div>
+                     ) : answerResult ? (
+                        <div className="flex flex-col gap-4">
+                           <p className="text-on-surface font-body italic text-lg leading-relaxed opacity-40 line-through">"{(messages && messages.length > 0 && messages.some(m => m.type === 'user')) ? [...messages].reverse().find(m => m.type === 'user')?.text : ''}"</p>
+                           <div className="flex bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl items-center gap-3">
+                              <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+                              <p className="text-sm text-emerald-400 font-medium">Capture confirmed. Awaiting advancement.</p>
+                           </div>
+                        </div>
+                     ) : (
+                        <div>
+                           {isListening ? (
+                              <p className="text-on-surface font-body text-xl md:text-2xl leading-relaxed font-light">
+                                 {transcript}
+                                 {interimTranscript && <span className="text-outline italic"> {interimTranscript}</span>}
+                                 {!transcript && !interimTranscript && <span className="opacity-30 italic">Listening to your response...</span>}
+                              </p>
+                           ) : (
+                              <p className="text-on-surface-variant opacity-60 font-body text-center italic mt-2">
+                                 Activate microphone to begin responding.
+                              </p>
+                           )}
+                        </div>
+                     )}
                   </div>
-                </div>
-              )}
+               </div>
             </div>
 
             {/* Voice Controls */}

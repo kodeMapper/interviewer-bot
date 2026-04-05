@@ -580,6 +580,7 @@ async function processAnswer(session, userAnswer, questionData) {
     topic: questionData.topic || questionData.section || 'Resume',
     userAnswer: userAnswer,
     expectedAnswer: questionData.expectedAnswer,
+    feedback: evaluation.feedback,
     score: evaluation.score,
     isCorrect: evaluation.score >= 60,
     isSkipped: false,

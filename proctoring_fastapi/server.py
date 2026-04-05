@@ -10,6 +10,7 @@ import zipfile
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
+from contextlib import asynccontextmanager
 from pydantic import BaseModel, Field
 
 from proctor_live import (
@@ -58,7 +59,7 @@ class CameraSelectionResponse(MessageResponse):
 
 
 class ReportArtifactBundle(BaseModel):
-    json: Optional[str] = None
+    json_file: Optional[str] = Field(None, alias="json")
     csv: Optional[str] = None
     video: Optional[str] = None
     snapshots: List[str] = Field(default_factory=list)
@@ -73,7 +74,7 @@ class StopResponse(BaseModel):
 
 
 class ReportDownloadLinks(BaseModel):
-    json: Optional[str] = None
+    json_file: Optional[str] = Field(None, alias="json")
     csv: Optional[str] = None
     video: Optional[str] = None
     snapshots: List[str] = Field(default_factory=list)
@@ -81,7 +82,7 @@ class ReportDownloadLinks(BaseModel):
 
 
 class LatestReportResponse(BaseModel):
-    json: Optional[str] = None
+    json_file: Optional[str] = Field(None, alias="json")
     csv: Optional[str] = None
     video: Optional[str] = None
     snapshots: List[str] = Field(default_factory=list)
@@ -141,10 +142,26 @@ Recommended local ports:
 - ML Service: `8000`
 """
 
+@asynccontextmanager
+async def lifespan_handler(app: FastAPI):
+    log_startup_banner()
+    logger.info("SkillWise — Proctoring System started")
+    logger.info("Frontend URL: %s", OPEN_URL)
+    logger.info("API docs URL: %s/docs", OPEN_URL)
+    logger.info("Docs hub URL: %s%s", OPEN_URL, DOCS_HUB_PATH)
+    logger.info("Status endpoint: %s/status", OPEN_URL)
+    yield
+    logger.info("Shutting down Proctoring System...")
+    stop_proctoring()
+    global proctor_thread
+    if proctor_thread is not None and proctor_thread.is_alive():
+        proctor_thread.join(timeout=3.0)
+
 app = FastAPI(
     title="SkillWise — Proctoring System",
     description=API_DESCRIPTION,
     version="2.0.0",
+    lifespan=lifespan_handler,
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_tags=OPENAPI_TAGS,
@@ -417,25 +434,6 @@ def build_stop_payload() -> StopResponse:
             package="/report/download/package" if has_report else None,
         ),
     )
-
-
-@app.on_event("startup")
-def on_startup():
-    log_startup_banner()
-    logger.info("SkillWise — Proctoring System started")
-    logger.info("Frontend URL: %s", OPEN_URL)
-    logger.info("API docs URL: %s/docs", OPEN_URL)
-    logger.info("Docs hub URL: %s%s", OPEN_URL, DOCS_HUB_PATH)
-    logger.info("Status endpoint: %s/status", OPEN_URL)
-
-
-@app.on_event("shutdown")
-def on_shutdown():
-    logger.info("Shutting down Proctoring System...")
-    stop_proctoring()
-    global proctor_thread
-    if proctor_thread is not None and proctor_thread.is_alive():
-        proctor_thread.join(timeout=3.0)
 
 
 @app.get("/", include_in_schema=False)

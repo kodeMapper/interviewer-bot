@@ -23,7 +23,7 @@ we need to modify database schema for interview, session and users. See the docs
 
 6. when we end the interview, on the report page, the expected answer should also be visible for each question as the bot giving us its feedback. see interview_controller.py.
 
-7. interview automatically stops. backend stops 304 
+7. interview automatically stops sometimes. also proctoring systems stops working sometimes. i.e, camera turns off and the feed freezes.
 
 8. admin page not opening (auth should be required) 
 Admin.jsx:45 Uncaught TypeError: sessions.filter is not a function
@@ -44,3 +44,18 @@ VM157:63 The above error occurred in the <Admin> component:
 
     
 
+9. while setuping the environment, at any step when i refresh, the refresh causes all steps (modules) to refresh, not that specific step.
+
+10. do gemini api call only after interview starts, not immidiatly after uploading the resume.
+
+11. for doing system environment check, do not add that beep sound or check for the interview rules (do not involve the backend), just make sure camera is visible/accesible and enough lighting is there. if possible then check for are there multiple Monitors or not. (single screen should be there). also make the user to do full screen for attempting the interview.
+
+12. resume upload page design - keep left side of the current implementation as it is, right side should be the UI of the resume upload page which is at design\stitch_ui_ux_design_execution\resume_upload_immersive
+
+13. single conversation window - in the interview room, there are 2 blocks which diplays the ongoing question. keep only the bottom conversation window. make sure the question is properly visible
+
+14. the vedio feed recording should start only after the interview starts, not before that.
+
+15. landing page - human figure integration: move the section relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6 overflow-hidden to left side. on the right side, human figure/model should be there. see the provided img to agent. just place that model near the card.
+
+16. while checking the environment (after resume upload), along with the small window of camera preview, other parameretes like, single screen, camera permission, mic permission, full screen such checklist should be there. and as the app check the parameter, it should be marked as checked.

@@ -45,15 +45,14 @@ function Landing() {
 
       <main className="relative">
 
-        {/* ── Hero Section ── */}
-        <section className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6 overflow-hidden">
+        <section className="relative min-h-screen flex items-center pt-32 pb-20 px-6 overflow-hidden" style={{ marginLeft: '150px' }}>
 
           {/* Ambient Light Sources */}
           <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(124, 77, 255, 0.15) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
           <div className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(0, 218, 243, 0.08) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
 
-          {/* Hero Text — centered above the floating panel */}
-          <div className="container max-w-7xl mx-auto relative z-10 text-center mt-[60px]">
+          {/* Hero Text — left-aligned */}
+          <div className="container max-w-7xl mx-auto relative z-10 text-left mt-[60px]">
             {/* Badge */}
             <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 backdrop-blur-md">
               <span className="flex h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_#00daf3]"></span>
@@ -67,12 +66,12 @@ function Landing() {
             </h1>
 
             {/* Subtext */}
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface-variant font-light mb-12 leading-relaxed">
+            <p className="max-w-2xl text-lg md:text-xl text-on-surface-variant font-light mb-12 leading-relaxed">
               Move beyond static resumes. SkillWise orchestrates immersive, AI-driven technical assessments that mirror real-world complexity with absolute proctoring integrity.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-20">
+            <div className="flex flex-col md:flex-row items-start gap-6 mb-20">
               <button
                 onClick={handleDashboard}
                 className="px-10 py-5 rounded-full font-bold text-lg text-on-primary flex items-center gap-3 hover:scale-105 transition-transform duration-300 shadow-[0_0_40px_rgba(166,140,255,0.3)] hover:shadow-[0_0_60px_rgba(166,140,255,0.5)]"
@@ -90,12 +89,13 @@ function Landing() {
             </div>
           </div>
 
-          {/* Floating Hero UI Panel */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-4xl px-6 opacity-30 pointer-events-none md:opacity-100">
+          {/* Floating Hero UI Panel + Human Figure — centered on screen */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-end justify-center">
+            {/* The Card */}
             <motion.div 
               animate={{ y: [-8, 8, -8] }} 
               transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-              className="glass-panel p-4 rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]" 
+              className="glass-panel p-4 rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-[600px] lg:w-[750px] shrink-0" 
               style={{ background: 'rgba(32, 31, 31, 0.6)', backdropFilter: 'blur(40px)', boxShadow: 'inset 0 0 20px rgba(166, 140, 255, 0.05)' }}
             >
               {/* Window Chrome */}
@@ -114,6 +114,17 @@ function Landing() {
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMgdr4ZvATEeshAledypAr2gkXSvUTnWHp3Q5VTwOR9fABjU6dIfTNgWWYj-SbUVpndF8vDk-VN1pgc4L3vKJg1w93EK86rpMsESNWdgtAx9FKfUY6GTsTd7oez568tWcuBO4MrdSRwcGGNnBuBc9MKR_Zexaq73NwhEyuRXGbkCBvReNTAwhdL0RCRyracdbze6ov1Ssu9_7F2vqjdJ8HCmdDHfM7QQzOzGfUfvi-wboyNTPbr2QG2Ajj1AgcfPfB1IEDbf95jOo"
               />
             </motion.div>
+
+            {/* Human Figure — leaning against the card */}
+            <motion.img
+              src="/hero-figure.png"
+              alt="Professional figure"
+              className="h-[560px] lg:h-[650px] object-contain pointer-events-none select-none hidden md:block shrink-0 ml-[-60px] mb-[-10px]"
+              style={{ filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.5))', mixBlendMode: 'multiply' }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+            />
           </div>
         </section>
 

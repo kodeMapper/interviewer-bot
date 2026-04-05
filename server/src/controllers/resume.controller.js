@@ -76,28 +76,21 @@ exports.uploadResume = async (req, res, next) => {
     session.resumeQuestions = []; // Empty for now
     await session.save();
 
-    // Step 4: Start Gemini question generation in BACKGROUND
-    // This is the key difference - we don't await this!
-    console.log(`[Resume BG] Starting background question generation...`);
-    
-    processResumeInBackground(sessionId, resumeText, req.file.path)
-      .then(() => {
-        console.log(`[Resume BG] ✅ Background processing complete for session ${sessionId}`);
-      })
-      .catch((error) => {
-        console.error(`[Resume BG] ❌ Background processing failed for session ${sessionId}:`, error.message);
-      });
+    // Step 4: DO NOT start Gemini question generation here!
+    // The user requested that we do gemini api call only after interview starts
+    // We update session state to indicate it has a resume, but it does not have questions yet
+    console.log(`[Resume BG] Resume parsed and saved. Gemini generation deferred to interview start.`);
 
-    // Step 5: Return IMMEDIATELY - don't wait for Gemini!
+    // Step 5: Return IMMEDIATELY
     res.json({
       success: true,
       data: {
         sessionId,
         fileName: req.file.originalname,
         skillsDetected: session.skillsDetected,
-        resumeQuestionsReady: false, // Tell frontend questions are being generated
-        message: 'Resume uploaded. Questions are being generated in background.',
-        status: 'processing'
+        resumeQuestionsReady: false,
+        message: 'Resume uploaded successfully. Analysis will begin when interview starts.',
+        status: 'ready'
       }
     });
     
@@ -120,7 +113,7 @@ exports.uploadResume = async (req, res, next) => {
  * 
  * Uses direct PDF upload to Gemini for better accuracy
  */
-async function processResumeInBackground(sessionId, resumeText, filePath) {
+exports.processResumeInBackground = async function(sessionId, resumeText, filePath) {
   try {
     console.log(`[Resume BG] Generating questions via Gemini...`);
     const startTime = Date.now();
