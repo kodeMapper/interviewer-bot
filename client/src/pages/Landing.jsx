@@ -49,9 +49,8 @@ function Landing() {
         <section className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6 overflow-hidden">
 
           {/* Ambient Light Sources */}
-          <div className="absolute top-[-10%] left-[-15%] w-[70vw] h-[70vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(124, 77, 255, 0.25) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
-          <div className="absolute top-[-20%] right-[-15%] w-[70vw] h-[70vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(0, 218, 243, 0.2) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
-          <div className="absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] pointer-events-none opacity-40" style={{ background: 'radial-gradient(circle at center, rgba(166, 140, 255, 0.2) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
+          <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(124, 77, 255, 0.15) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
+          <div className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(0, 218, 243, 0.08) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
 
           {/* Hero Text — centered above the floating panel */}
           <div className="container max-w-7xl mx-auto relative z-10 text-center mt-[60px]">
