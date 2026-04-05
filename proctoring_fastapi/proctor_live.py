@@ -272,8 +272,10 @@ def get_face_mesh_module():
 def play_buzzer():
     global buzzer_active
     while buzzer_active:
-        winsound.Beep(1000, 300)
-        time.sleep(0.1)
+        winsound.Beep(1000, 150)
+        if not buzzer_active:
+            break
+        time.sleep(0.05)
 
 def start_buzzer():
     global buzzer_active, buzzer_thread

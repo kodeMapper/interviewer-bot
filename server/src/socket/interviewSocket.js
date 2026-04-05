@@ -7,11 +7,12 @@
 const { Session } = require('../models');
 const interviewService = require('../services/interview.service');
 const questionService = require('../services/question.service');
+const { stopProctoringInternal } = require('../adapters/proctoringAdapter');
 
 /**
  * Initialize Socket.io event handlers
  */
-module.exports = function(io) {
+module.exports = function (io) {
   // Store active sessions
   const activeSessions = new Map();
 
@@ -110,17 +111,17 @@ module.exports = function(io) {
         if (intro.skipSkillPrompt) {
           // Skills already known - go directly to first warmup question
           console.log(`🎯 Skills pre-selected: ${intro.detectedSkills.join(', ')}. Skipping skill prompt.`);
-          
+
           // Set flag to prevent duplicate question requests
           socket.isWaitingForIntro = true;
-          
+
           const reloadedSession = await Session.findById(sessionId);
           const firstQuestion = await interviewService.getNextQuestion(reloadedSession);
-          
+
           // Store last question for reconnection recovery
           reloadedSession.lastQuestion = firstQuestion;
           await reloadedSession.save();
-          
+
           // Longer delay to let intro speech complete fully (8 seconds)
           setTimeout(() => {
             socket.isWaitingForIntro = false;
@@ -135,11 +136,11 @@ module.exports = function(io) {
           // Legacy flow: Get the skill prompt question
           const reloadedSession = await Session.findById(sessionId);
           const skillPrompt = await interviewService.getNextQuestion(reloadedSession);
-          
+
           // Store last question for reconnection recovery
           reloadedSession.lastQuestion = skillPrompt;
           await reloadedSession.save();
-          
+
           // Small delay for natural pacing
           setTimeout(() => {
             socket.emit('question', {
@@ -199,11 +200,11 @@ module.exports = function(io) {
           // Automatically get next question after transition
           const reloadedSession = await Session.findById(sessionId);
           const nextQ = await interviewService.getNextQuestion(reloadedSession);
-          
+
           // Store last question for reconnection recovery
           reloadedSession.lastQuestion = nextQ;
           await reloadedSession.save();
-          
+
           setTimeout(() => {
             socket.emit('question', {
               ...nextQ,
@@ -241,7 +242,7 @@ module.exports = function(io) {
     socket.on('submit-answer', async (data) => {
       try {
         console.log(`🎤 Answer received:`, data);
-        
+
         const sessionId = activeSessions.get(socket.id);
         if (!sessionId) {
           return socket.emit('error', { message: 'Not in a session' });
@@ -266,14 +267,14 @@ module.exports = function(io) {
         // This is the intro where user says their skills
         if (questionData.type === 'skill_prompt' || questionData.requiresSkillDetection) {
           console.log(`🎯 Processing skill prompt answer. Detected skills: ${detectedSkills.join(', ')}`);
-          
+
           // Process intro and get transition message
           const transitionResult = await interviewService.processIntroAnswer(
-            session, 
-            answer, 
+            session,
+            answer,
             detectedSkills
           );
-          
+
           // Send transition message
           socket.emit('interview-message', {
             type: 'transition',
@@ -281,11 +282,11 @@ module.exports = function(io) {
             speakText: transitionResult.speakText,
             detectedSkills: transitionResult.detectedSkills
           });
-          
+
           // Get the first warmup question
           const reloadedSession = await Session.findById(sessionId);
           const firstQuestion = await interviewService.getNextQuestion(reloadedSession);
-          
+
           setTimeout(() => {
             if (firstQuestion.type === 'transition') {
               // If transition, emit it and then get next question
@@ -303,7 +304,7 @@ module.exports = function(io) {
               socket.questionStartTime = Date.now();
             }
           }, 2000);
-          
+
           return;
         }
 
@@ -311,11 +312,11 @@ module.exports = function(io) {
         const skipPatterns = ['skip', 'next', 'pass', 'next question'];
         const isSkipCommand = skipPatterns.some(p => answer.toLowerCase().includes(p));
         console.log(`[Answer] Skip check - answer: "${answer}", isSkip: ${isSkipCommand}`);
-        
+
         if (isSkipCommand) {
           console.log('[Answer] Processing skip command...');
           const skipResult = await interviewService.skipQuestion(session, questionData);
-          
+
           // Don't reveal the answer on skip - just acknowledge
           socket.emit('answer-result', {
             type: 'skipped',
@@ -340,9 +341,9 @@ module.exports = function(io) {
             const skippedCount = updatedSession.answers.filter(a => a.isSkipped).length;
             const totalScore = updatedSession.answers.filter(a => !a.isSkipped).reduce((sum, a) => sum + a.score, 0);
             const avgScore = answeredCount > 0 ? Math.round(totalScore / answeredCount) : 0;
-            
+
             console.log(`[Skip] Progress: answered=${answeredCount}, skipped=${skippedCount}, avgScore=${avgScore}`);
-            
+
             socket.emit('progress', {
               state: updatedSession.state,
               currentTopic: updatedSession.currentTopic,
@@ -354,7 +355,7 @@ module.exports = function(io) {
 
             // AUTOMATICALLY get and send the next question
             const nextQuestion = await interviewService.getNextQuestion(updatedSession);
-            
+
             if (nextQuestion.type === 'finished') {
               socket.emit('interview-complete', {
                 message: nextQuestion.message,
@@ -370,11 +371,11 @@ module.exports = function(io) {
               // Get actual next question after transition
               const afterTransitionSession = await Session.findById(sessionId);
               const actualNext = await interviewService.getNextQuestion(afterTransitionSession);
-              
+
               // Store last question for reconnection recovery
               afterTransitionSession.lastQuestion = actualNext;
               await afterTransitionSession.save();
-              
+
               setTimeout(() => {
                 socket.emit('question', {
                   ...actualNext,
@@ -387,7 +388,7 @@ module.exports = function(io) {
               // Store last question for reconnection recovery
               updatedSession.lastQuestion = nextQuestion;
               await updatedSession.save();
-              
+
               // Send next question directly
               socket.emit('question', {
                 ...nextQuestion,
@@ -410,7 +411,7 @@ module.exports = function(io) {
           await session.save();
 
           const report = interviewService.generateReport(session);
-          
+
           socket.emit('interview-complete', {
             message: 'Interview ended early at your request.',
             summary: report.summary,
@@ -421,8 +422,8 @@ module.exports = function(io) {
         }
 
         // Calculate response time
-        const responseTime = socket.questionStartTime 
-          ? Math.round((Date.now() - socket.questionStartTime) / 1000) 
+        const responseTime = socket.questionStartTime
+          ? Math.round((Date.now() - socket.questionStartTime) / 1000)
           : 0;
 
         // IMMEDIATELY acknowledge the answer (don't wait for evaluation)
@@ -447,7 +448,7 @@ module.exports = function(io) {
             if (questionData.questionId) {
               await questionService.updateQuestionStats(questionData.questionId, result.score);
             }
-            
+
             // Reload session to get updated counts
             const updatedSession = await Session.findById(sessionId);
             if (updatedSession) {
@@ -455,7 +456,7 @@ module.exports = function(io) {
               const skippedCount = updatedSession.answers.filter(a => a.isSkipped).length;
               const totalScore = updatedSession.answers.filter(a => !a.isSkipped).reduce((sum, a) => sum + a.score, 0);
               const avgScore = answeredCount > 0 ? Math.round(totalScore / answeredCount) : 0;
-              
+
               // Send progress update to client
               socket.emit('progress', {
                 state: updatedSession.state,
@@ -466,7 +467,7 @@ module.exports = function(io) {
                 questionsAsked: updatedSession.answers.length
               });
             }
-            
+
             console.log(`[Answer] ✅ Background processing complete. Score: ${result.score}`);
           })
           .catch((err) => {
@@ -536,7 +537,7 @@ module.exports = function(io) {
     socket.on('request-hint', async () => {
       try {
         const questionData = socket.currentQuestion;
-        
+
         if (!questionData) {
           return socket.emit('error', { message: 'No active question' });
         }
@@ -588,7 +589,7 @@ module.exports = function(io) {
 
         // Generate report with all answers so far
         const report = interviewService.generateReport(session);
-        
+
         socket.emit('interview-complete', {
           message: 'Interview ended at your request. Generating your report...',
           summary: report.summary,
@@ -617,6 +618,8 @@ module.exports = function(io) {
             // User can reconnect
             session.socketId = null;
             await session.save();
+            // IMPORTANT: Stop proctoring camera to prevent infinite memory leak
+            await stopProctoringInternal();
           }
         } catch (error) {
           console.error('Error handling disconnect:', error);

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SkillWise | Interview Setup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@300;400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#00b4c9",
+                        "on-surface": "#e8e5e4",
+                        "tertiary-fixed": "#ff9cb2",
+                        "on-background": "#e8e5e4",
+                        "on-tertiary-fixed": "#48001c",
+                        "inverse-surface": "#fcf8f8",
+                        "primary-fixed-dim": "#bba6ff",
+                        "surface-variant": "#262626",
+                        "secondary-container": "#002a30",
+                        "secondary": "#00daf3",
+                        "tertiary-container": "#ff9cb2",
+                        "on-primary-container": "#ffffff",
+                        "outline-variant": "#484848",
+                        "surface-container-lowest": "#000000",
+                        "surface-dim": "#0e0e0e",
+                        "secondary-fixed": "#9cf0ff",
+                        "on-primary-fixed": "#2d007f",
+                        "inverse-primary": "#6834eb",
+                        "background": "#0e0e0e",
+                        "on-tertiary-fixed-variant": "#820038",
+                        "on-secondary": "#004750",
+                        "surface-tint": "#a68cff",
+                        "on-primary": "#25006b",
+                        "on-surface-variant": "#adaaaa",
+                        "outline": "#767575",
+                        "primary-fixed": "#c8b7ff",
+                        "tertiary": "#ffb1c1",
+                        "secondary-fixed-dim": "#49e7ff",
+                        "error-dim": "#c94947",
+                        "error-container": "#8a1a1e",
+                        "surface-container-low": "#131313",
+                        "secondary-dim": "#00cbe2",
+                        "on-primary-fixed-variant": "#4e00cd",
+                        "primary": "#a68cff",
+                        "tertiary-fixed-dim": "#ff85a4",
+                        "tertiary-dim": "#ff6c95",
+                        "on-tertiary-container": "#720030",
+                        "on-error-container": "#ff9993",
+                        "surface-container-highest": "#262626",
+                        "surface-container-high": "#201f1f",
+                        "on-error": "#490006",
+                        "primary-dim": "#7e51ff",
+                        "on-secondary-fixed": "#00464f",
+                        "on-secondary-fixed-variant": "#006571",
+                        "surface-container": "#1a1919",
+                        "inverse-on-surface": "#565554",
+                        "on-tertiary": "#830039",
+                        "error": "#ff716c",
+                        "primary-container": "#7c4dff",
+                        "surface-bright": "#2c2c2c",
+                        "surface": "#0e0e0e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(32, 31, 31, 0.6);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(200, 183, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(0, 218, 243, 0.4);
+            box-shadow: 0 20px 40px rgba(124, 77, 255, 0.12);
+        }
+        .glow-active {
+            background: linear-gradient(135deg, rgba(124, 77, 255, 0.2), rgba(0, 218, 243, 0.1));
+            border-color: #00daf3;
+            box-shadow: 0 0 30px rgba(0, 218, 243, 0.2), inset 0 0 15px rgba(0, 218, 243, 0.1);
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, #7c4dff15 0%, #0e0e0e 70%);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen overflow-x-hidden selection:bg-primary/30">
+<!-- TopNavBar (SkillWise v1) -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-3 bg-surface/60 backdrop-blur-2xl rounded-full mt-4 mx-auto max-w-5xl border border-white/15 shadow-[0_0_40px_rgba(124,77,255,0.08)]">
+<div class="text-2xl font-black tracking-tighter text-on-surface Manrope">SkillWise</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-primary font-semibold border-b-2 border-primary/40 pb-1 Manrope tracking-[0.05em] font-medium transition-all duration-300" href="#">Platform</a>
+<a class="text-on-surface-variant hover:text-primary transition-all duration-300 Manrope tracking-[0.05em] font-medium" href="#">Insights</a>
+<a class="text-on-surface-variant hover:text-primary transition-all duration-300 Manrope tracking-[0.05em] font-medium" href="#">Enterprise</a>
+</div>
+<div class="flex items-center space-x-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all duration-300 scale-95 active:scale-90" data-icon="account_circle">account_circle</button>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-bold Manrope tracking-wider scale-95 active:scale-90 transition-all">Get Started</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="hero-gradient pt-32 pb-24 px-6 min-h-screen flex flex-col items-center">
+<!-- Step Indicator -->
+<div class="mb-8 flex items-center space-x-4">
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary">Step 01</span>
+<div class="h-[1px] w-12 bg-outline-variant"></div>
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Defining Expertise</span>
+</div>
+<!-- Headline Area -->
+<header class="text-center max-w-3xl mb-16">
+<h1 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tighter mb-6 text-on-surface">
+                What <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Expertise</span> are we hunting for?
+            </h1>
+<p class="text-on-surface-variant text-lg max-w-xl mx-auto font-body">
+                Select the core domains for this interview. Our AI will calibrate its logic based on these architectural anchors.
+            </p>
+</header>
+<!-- Floating Glass Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl w-full">
+<!-- Skill Tile: Frontend -->
+<div class="glass-card glow-active p-8 rounded-xl cursor-pointer group relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-secondary" data-icon="web">web</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-2">Frontend Engineering</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Modern frameworks, performance optimization, and architectural patterns.</p>
+<div class="mt-6 flex flex-wrap gap-2">
+<span class="font-label text-[9px] px-2 py-1 bg-secondary-container text-secondary rounded-full border border-secondary/20">REACT</span>
+<span class="font-label text-[9px] px-2 py-1 bg-secondary-container text-secondary rounded-full border border-secondary/20">TYPESCRIPT</span>
+</div>
+</div>
+<!-- Skill Tile: Backend -->
+<div class="glass-card p-8 rounded-xl cursor-pointer group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors" data-icon="database">database</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-2">Backend Systems</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Distributed systems, database design, and cloud infrastructure logic.</p>
+<div class="mt-6 flex flex-wrap gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
+<span class="font-label text-[9px] px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full border border-outline-variant">PYTHON</span>
+<span class="font-label text-[9px] px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full border border-outline-variant">GO</span>
+</div>
+</div>
+<!-- Skill Tile: AI/ML -->
+<div class="glass-card p-8 rounded-xl cursor-pointer group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors" data-icon="memory">memory</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-2">AI &amp; Machine Learning</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">LLM integration, neural networks, and data processing pipelines.</p>
+<div class="mt-6 flex flex-wrap gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
+<span class="font-label text-[9px] px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full border border-outline-variant">PYTORCH</span>
+<span class="font-label text-[9px] px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full border border-outline-variant">NLP</span>
+</div>
+</div>
+<!-- Skill Tile: Product Design -->
+<div class="glass-card p-8 rounded-xl cursor-pointer group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-2">Product Design</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">UX research, interface strategy, and design-system engineering.</p>
+<div class="mt-6 flex flex-wrap gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
+<span class="font-label text-[9px] px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full border border-outline-variant">FIGMA</span>
+<span class="font-label text-[9px] px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full border border-outline-variant">MOTION</span>
+</div>
+</div>
+<!-- Skill Tile: DevOps -->
+<div class="glass-card p-8 rounded-xl cursor-pointer group">
+<div class="mb-6">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors" data-icon="cloud_done">cloud_done</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-2">DevOps &amp; SRE</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">CI/CD automation, kubernetes orchestration, and security protocols.</p>
+<div class="mt-6 flex flex-wrap gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
+<span class="font-label text-[9px] px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full border border-outline-variant">DOCKER</span>
+<span class="font-label text-[9px] px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full border border-outline-variant">AWS</span>
+</div>
+</div>
+<!-- Add Custom Skill -->
+<div class="glass-card p-8 rounded-xl cursor-pointer group border-dashed border-outline/30 flex flex-col items-center justify-center text-center">
+<div class="mb-4">
+<span class="material-symbols-outlined text-4xl text-outline group-hover:text-primary transition-all" data-icon="add_circle">add_circle</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-1">Custom Domain</h3>
+<p class="text-on-surface-variant text-xs">Define a bespoke skill set</p>
+</div>
+</section>
+<!-- Footer Actions -->
+<footer class="mt-20 w-full max-w-6xl flex justify-between items-center">
+<div class="flex items-center text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer group">
+<span class="material-symbols-outlined mr-2 transition-transform group-hover:-translate-x-1" data-icon="arrow_back">arrow_back</span>
+<span class="font-label text-xs uppercase tracking-widest">Back to Roles</span>
+</div>
+<div class="flex items-center space-x-8">
+<div class="text-right">
+<p class="text-[10px] font-label uppercase tracking-widest text-on-surface-variant">Selection Status</p>
+<p class="text-sm font-medium text-secondary">01 Skills Picked</p>
+</div>
+<button class="group flex items-center bg-white text-black px-10 py-4 rounded-full font-bold transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] active:scale-95">
+<span class="Manrope tracking-tighter">Proceed to Configuration</span>
+<span class="material-symbols-outlined ml-3 transition-transform group-hover:translate-x-1" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</footer>
+</main>
+<!-- Background Decoration -->
+<div class="fixed top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px] pointer-events-none z-[-1]"></div>
+<div class="fixed bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-secondary/5 blur-[120px] pointer-events-none z-[-1]"></div>
+</body></html>

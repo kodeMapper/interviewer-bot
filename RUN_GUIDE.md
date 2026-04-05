@@ -1,134 +1,97 @@
-﻿# Interviewer Bot - Run Guide (Windows)
+# SkillWise Platform — Run Guide (Unified Services)
 
-This repository contains multiple services. Start each service in a separate terminal.
+This platform requires four separate services to be running simultaneously.
 
-## Services and Ports
+| Service | Protocol | Host | Port | Health Check |
+|---------|----------|------|------|--------------|
+| **ML Service** | REST | 127.0.0.1 | 8000 | `/health` |
+| **Proctoring** | REST | 127.0.0.1 | 5000 | `/status` |
+| **Backend** | REST/WS | 127.0.0.1 | 5001 | `/health` |
+| **Frontend** | HTTP | 127.0.0.1 | 3000 | `-` |
 
-- Frontend (React + Vite): http://localhost:3000
-- Backend (Express + Socket.io): http://localhost:5001 
-  - *Note: For comprehensive API documentation, refer to the [Swagger User Guide](docs/swagger-user-guide.md).*
-- ML Service (FastAPI): http://localhost:8000
-- Proctoring FastAPI (optional): http://127.0.0.1:5000
+---
 
-## First-Time Setup
+## 🛠️ Combined Setup Script (One-Time)
 
-### 1) Root Python environment (CLI interviewer)
+Run these snippets in order to ensure environments and dependencies are ready.
 
+### 1. ML Service (Intent Classifier)
 ```powershell
-cd C:\Users\acer\Desktop\DL Project
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install --upgrade pip
-pip install -r requirements.txt
+cd ml-service; python -m venv venv; .\venv\Scripts\Activate.ps1; pip install -r requirements.txt
 ```
 
-### 2) ML service environment
-
+### 2. Proctoring Service (Gaze/Face Detection)
 ```powershell
-cd C:\Users\acer\Desktop\DL Project\ml-service
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install --upgrade pip
-pip install -r requirements.txt
+cd proctoring_fastapi; python -m venv venv; .\venv\Scripts\Activate.ps1; pip install -r requirements.txt
 ```
 
-### 3) Backend and frontend dependencies
-
+### 3. Backend (Express API)
 ```powershell
-cd C:\Users\acer\Desktop\DL Project\server
-npm install
-
-cd C:\Users\acer\Desktop\DL Project\client
-npm install
+cd server; npm install
 ```
 
-### 4) Proctoring dependencies (optional)
-
+### 4. Frontend (Vite UI)
 ```powershell
-cd C:\Users\acer\Desktop\DL Project\proctoring_fastapi
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install --upgrade pip
-pip install -r requirements.txt
+cd client; npm install
 ```
 
-## Start Commands
+---
 
-### Terminal A: ML service
+## 🚀 Launch Sequence (Terminal Breakdown)
 
+Open **four** terminals and run each service in this specific order:
+
+### Terminal A: [ML Service]
 ```powershell
-cd C:\Users\acer\Desktop\DL Project\ml-service
-.\venv\Scripts\Activate.ps1
-uvicorn main:app --host 127.0.0.1 --port 8000
+cd ml-service; .\venv\Scripts\Activate.ps1; uvicorn main:app --port 8000
 ```
 
-### Terminal B: Backend
-
+### Terminal B: [Proctoring]
 ```powershell
-cd C:\Users\acer\Desktop\DL Project\server
-npm run dev
+cd proctoring_fastapi; .\venv\Scripts\Activate.ps1; python server.py
 ```
 
-### Terminal C: Frontend
-
+### Terminal C: [Backend Gateway]
 ```powershell
-cd C:\Users\acer\Desktop\DL Project\client
-npm run dev
+cd server; npm run dev
 ```
 
-### Terminal D: Proctoring (optional)
-
+### Terminal D: [Frontend UI]
 ```powershell
-cd C:\Users\acer\Desktop\DL Project\proctoring_fastapi
-.\venv\Scripts\Activate.ps1
-python server.py
+cd client; npm run dev
 ```
 
-## Health Checks
+---
+
+## 🔍 Health & Connectivity Checks (Post-Launch)
+
+Run these PowerShell commands to confirm everything is connected:
 
 ```powershell
-Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8000/health | Select-Object -ExpandProperty Content
-Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5001/health | Select-Object -ExpandProperty Content
-Invoke-WebRequest -UseBasicParsing http://localhost:3000 | Select-Object -ExpandProperty StatusCode
-Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5000/status | Select-Object -ExpandProperty Content
+# 1. Check ML Service
+(Invoke-RestMethod http://127.0.0.1:8000/health).status
+# 2. Check Proctoring
+(Invoke-RestMethod http://127.0.0.1:5000/status).status
+# 3. Check Backend
+(Invoke-RestMethod http://127.0.0.1:5001/health).status
 ```
 
-## Port Conflict Fixes
+---
 
-### Free backend port 5001
+## ⚠️ Troubleshooting & Port Conflicts
 
-```powershell
-Get-NetTCPConnection -LocalPort 5001 -State Listen | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }
-```
+### Force Close Hanging Processes
+If a port is already in use, run these commands:
+- **Port 5001 (Node):** `npx kill-port 5001`
+- **Port 5000 (Proctor):** `npx kill-port 5000`
+- **Port 8000 (Python):** `npx kill-port 8000`
+- **Port 3000 (Vite):** `npx kill-port 3000`
 
-### Free ML port 8000
+### Environment Variables
+- `server/.env` must contain `GEMINI_API_KEY`, `MONGODB_URI`, `ML_SERVICE_URL`, and `PROCTORING_SERVICE_URL`.
+- `client/.env` must contain `VITE_API_URL=http://localhost:5001`.
 
-```powershell
-Get-NetTCPConnection -LocalPort 8000 -State Listen | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }
-```
+---
 
-### Free frontend port 3000
-
-```powershell
-Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }
-```
-
-## Environment Variables
-
-Use these values at minimum:
-
-- server/.env:
-  - PORT=5001
-  - MONGODB_URI=<your-mongodb-uri>
-  - ML_SERVICE_URL=http://localhost:8000
-  - CLIENT_URL=http://localhost:3000
-  - GEMINI_API_KEY=<your-key>
-
-- client/.env:
-  - VITE_API_URL=http://localhost:5001
-
-## Notes
-
-- Run uvicorn from inside ml-service so backend imports resolve correctly.
-- The original Python ML logic remains in backend/ and is loaded by ml-service.
-- Proctoring is separate and optional during MERN interview flow.
+## 📋 Note on Camera Usage
+The **Proctoring Service** takes exclusive control of your webcam using OpenCV. Ensure no other apps (Zoom, Teams) are using the camera before launching the interview.

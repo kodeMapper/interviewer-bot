@@ -44,6 +44,9 @@ const RESUME_QUESTIONS_TARGET = 20;
  */
 async function createSession(data) {
   const session = new Session({
+    username: data.username,
+    candidateName: data.candidateName || 'Candidate',
+    sessionName: data.sessionName || '',
     state: STATES.INTRO,
     userSelectedSkills: data.userSelectedSkills || data.skillsDetected || [], // User-selected from main page
     skillsDetected: [], // Will be populated from resume extraction
@@ -451,7 +454,7 @@ async function getDeepDiveQuestion(session) {
     keywords: question.keywords,
     speakText: fullQuestion,
     questionNumber: session.questionsAsked,
-    totalForTopic: QUESTIONS_PER_TOPIC
+    totalTopic: QUESTIONS_PER_TOPIC
   };
 }
 
@@ -748,6 +751,8 @@ function generateReport(session) {
 
   return {
     sessionId: session._id,
+    username: session.username,
+    sessionName: session.sessionName || '',
     candidateProfile: session.resumeSummary || null,
     summary: {
       finalScore: totalScore,
@@ -771,7 +776,9 @@ function generateReport(session) {
     detailedAnswers: answers.map(a => ({
       question: a.questionText || a.question || 'Question',
       topic: a.topic || 'General',
-      userAnswer: a.isSkipped ? '[SKIPPED]' : (a.userAnswer || '').substring(0, 200),
+      userAnswer: a.isSkipped ? '[SKIPPED]' : (a.userAnswer || ''),
+      expectedAnswer: a.expectedAnswer || null,
+      feedback: a.feedback || null,
       score: a.score || 0,
       isCorrect: a.isCorrect || false,
       isSkipped: a.isSkipped || false

@@ -1,33 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Kalam:wght@300;400;700&family=Syne:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@200;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary: #0ea5e9;
-  --primary-dark: #0284c7;
-  --secondary: #64748b;
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --error: #ef4444;
+@layer base {
+  :root {
+    --font-cinzel: 'Cinzel', serif;
+    --font-kalam: 'Kalam', cursive;
+    --font-syne: 'Syne', sans-serif;
+  }
+  
+  body {
+    background-color: #0e0e0e;
+    color: #e8e5e4;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Manrope', sans-serif;
+  }
 }
 
-* {
-  box-sizing: border-box;
-}
+@layer components {
+  /* Glass effect panels v2 */
+  .glass-panel {
+    background: rgba(32, 31, 31, 0.6);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(200, 183, 255, 0.15);
+    box-shadow: inset 0 0 20px rgba(166, 140, 255, 0.05);
+  }
+  
+  .glass-card {
+    background: rgba(32, 31, 31, 0.6);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(200, 183, 255, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-body {
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
-    Oxygen, Ubuntu, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-  min-height: 100vh;
-  color: #f1f5f9;
-}
+  .glass-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(0, 218, 243, 0.4);
+    box-shadow: 0 20px 40px rgba(124, 77, 255, 0.12);
+  }
 
-#root {
-  min-height: 100vh;
+  .glass-chip {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(38, 38, 38, 0.4);
+    border: 1px solid rgba(200, 183, 255, 0.15);
+  }
+
+  .glow-active {
+    background: linear-gradient(135deg, rgba(124, 77, 255, 0.2), rgba(0, 218, 243, 0.1));
+    border-color: #00daf3;
+    box-shadow: 0 0 30px rgba(0, 218, 243, 0.2), inset 0 0 15px rgba(0, 218, 243, 0.1);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 30px rgba(166, 140, 255, 0.4);
+  }
+
+  .radial-glow {
+    background: radial-gradient(circle at center, rgba(124, 77, 255, 0.15) 0%, rgba(14, 14, 14, 0) 70%);
+  }
+
+  .chrome-gradient {
+    background: linear-gradient(135deg, #a68cff 0%, #00daf3 100%);
+  }
+  
+  .portal-glow {
+    box-shadow: 0 0 80px -10px rgba(124, 77, 255, 0.3);
+  }
+  
+  .scan-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00daf3, transparent);
+    box-shadow: 0 0 20px #00daf3;
+  }
+
+  .hero-gradient {
+    background: radial-gradient(circle at 50% 50%, #7c4dff15 0%, #0e0e0e 70%);
+  }
+
+  /* Card styles */
+  .card {
+    @apply glass-panel rounded-2xl p-6 shadow-xl;
+  }
+
+  /* Legacy Button styles mapping to new theme */
+  .btn-primary {
+    @apply chrome-gradient hover:scale-[1.02] active:scale-[0.98] text-on-primary font-bold py-3 px-6 
+      rounded-full transition-all duration-300 shadow-[0_4px_12px_rgba(124,77,255,0.3)];
+  }
+
+  .btn-secondary {
+    @apply bg-surface-variant hover:bg-surface-container-highest text-on-surface font-medium py-3 px-6 
+      rounded-full transition-all duration-300 border border-outline-variant/30;
+  }
+
+  /* Skill badge */
+  .skill-badge {
+    @apply px-4 py-1.5 rounded-full font-label text-[11px] uppercase tracking-wider bg-primary/10 text-primary border border-primary/20;
+  }
+  
+  /* Loading spinner */
+  .spinner {
+    @apply w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin;
+  }
+
+  /* Stitch Ethereal Glow Utilities */
+  .glow-cyan { text-shadow: 0 0 15px rgba(0, 218, 243, 0.5); }
+  .glow-violet { text-shadow: 0 0 15px rgba(166, 140, 255, 0.5); }
+  
+  .bg-gradient-ethereal {
+    background: radial-gradient(circle at 0% 0%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(0, 218, 243, 0.1) 0%, transparent 50%);
+  }
+
+  .fill-icon { font-variation-settings: 'FILL' 1; }
+
+  /* Font Utilities */
+  .font-cinzel { font-family: var(--font-cinzel) !important; }
+  .font-kalam { font-family: var(--font-kalam) !important; }
+  .font-syne { font-family: var(--font-syne) !important; }
 }
 
 /* Custom scrollbar */
@@ -36,125 +137,54 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #262626;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #484848;
 }
 
-/* Microphone animation */
+.no-scrollbar::-webkit-scrollbar { 
+  display: none; 
+}
+
+/* Material Symbols sizing helper */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* Animations (Keep Legacy for Interview View) */
 @keyframes pulse-ring {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.3;
-  }
-  100% {
-    transform: scale(0.9);
-    opacity: 0.7;
-  }
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.1); opacity: 0.3; }
+  100% { transform: scale(0.9); opacity: 0.7; }
 }
 
 .mic-listening {
   animation: pulse-ring 1.5s ease-in-out infinite;
 }
 
-/* Voice wave animation */
 @keyframes voice-wave {
-  0%, 100% {
-    height: 10px;
-  }
-  50% {
-    height: 30px;
-  }
+  0%, 100% { height: 10px; }
+  50% { height: 30px; }
 }
 
 .voice-bar {
   animation: voice-wave 0.8s ease-in-out infinite;
 }
+.voice-bar:nth-child(2) { animation-delay: 0.1s; }
+.voice-bar:nth-child(3) { animation-delay: 0.2s; }
+.voice-bar:nth-child(4) { animation-delay: 0.3s; }
+.voice-bar:nth-child(5) { animation-delay: 0.4s; }
 
-.voice-bar:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.voice-bar:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
-.voice-bar:nth-child(4) {
-  animation-delay: 0.3s;
-}
-
-.voice-bar:nth-child(5) {
-  animation-delay: 0.4s;
-}
-
-/* Glass effect */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #38bdf8, #0ea5e9, #0284c7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Button styles */
-.btn-primary {
-  @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 
-    rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
-}
-
-.btn-secondary {
-  @apply bg-secondary-700 hover:bg-secondary-600 text-white font-medium py-2 px-4 
-    rounded-lg transition-all duration-200;
-}
-
-/* Card styles */
-.card {
-  @apply bg-secondary-800/50 backdrop-blur-sm border border-secondary-700 
-    rounded-xl p-6 shadow-xl;
-}
-
-/* Skill badge */
-.skill-badge {
-  @apply px-3 py-1 rounded-full text-sm font-medium bg-primary-500/20 
-    text-primary-300 border border-primary-500/30;
-}
-
-/* Score display */
-.score-excellent {
-  @apply text-green-400;
-}
-
-.score-good {
-  @apply text-blue-400;
-}
-
-.score-average {
-  @apply text-yellow-400;
-}
-
-.score-poor {
-  @apply text-red-400;
-}
-
-/* Loading spinner */
-.spinner {
-  @apply w-8 h-8 border-4 border-primary-500/30 border-t-primary-500 
-    rounded-full animate-spin;
-}
+/* Dashboard & Reporting Score Utilities */
+.score-excellent { @apply text-secondary; }
+.score-good { @apply text-primary; }
+.score-average { @apply text-[#f59e0b]; }
+.score-poor { @apply text-[#ef4444]; }

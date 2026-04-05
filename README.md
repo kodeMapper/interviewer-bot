@@ -1,26 +1,30 @@
-# AI Smart Interviewer & Proctoring System
-### A Syllabus-Compliant Deep Learning Implementation | MERN Web Application
+# SkillWise — Unified AI Interview & Proctoring Platform
+### Enterprise-Grade Assessment Engine | MERN + FastAPI + Deep Learning
 
 ---
 
-## 🚀 Quick Start (Web Application)
+## 🚀 Quick Start (Unified Platform)
+
+SkillWise consists of four integrated services. Follow the [Run Guide](RUN_GUIDE.md) for detailed setup.
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  Terminal 1: ML Service       │  Terminal 2: Backend    │  Terminal 3: UI  │
-│  cd ml-service                │  cd server              │  cd client        │
-│  .\venv\Scripts\activate      │  npm run dev            │  npm run dev      │
-│  uvicorn main:app --port 8000 │                         │                   │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                      ↓
-                         Open http://localhost:3000
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│  Terminal 1: ML Service (8000) │ Terminal 2: Proctoring (5000) │ Terminal 3: Backend (5001) │
+│  uvicorn main:app --port 8000  │ python server.py              │ npm run dev                │
+└────────────────────────────────────────────┬────────────────────────────────────────────┘
+                                             ▼
+                                Terminal 4: Frontend (3000)
+                                       npm run dev
+                                             ↓
+                                Open http://localhost:3000
 ```
 
-| Service | Port | Technology |
-|---------|------|------------|
-| Frontend | 3000 | React + Vite |
-| Backend | 5001 | Express + Socket.io (See [Swagger Docs](docs/swagger-user-guide.md)) |
-| ML Service | 8000 | FastAPI (wraps original Python ML) |
+| Service | Port | Technology | Purpose |
+|---------|------|------------|---------|
+| **Frontend** | 3000 | React + Vite | Unified UI for Candidates & Admins |
+| **Backend** | 5001 | Node.js + Express | API Gateway & Interview State Machine |
+| **Proctoring** | 5000 | FastAPI + OpenCV | Real-time AI Eye-Tracking & Monitoring |
+| **ML Service** | 8000 | FastAPI + PyTorch | Intent Classification & Answer Evaluation |
 
 ---
 
@@ -714,3 +718,55 @@ interviewer-bot/
 ├── RUN_GUIDE.md               # Detailed setup instructions
 └── requirements.txt           # Original Python dependencies
 ```
+
+---
+
+## 🎨 V2 UI Design System (Stitch MCP)
+
+The frontend uses a custom **"Ethereal/Immersive"** design system generated via [Stitch MCP](https://stitch.google.com/), featuring:
+
+| Token | Description |
+|-------|-------------|
+| `.glass-panel` | Frosted glass containers with backdrop blur and violet glow |
+| `.glass-card` | Interactive cards with hover lift and cyan border transitions |
+| `.glow-active` | Active state glow with cyan/violet gradient |
+| `.portal-glow` | Deep purple box-shadow for portal-style elements |
+| `.scan-line` | Animated cyan scan line for proctoring HUD |
+
+**Fonts:** Manrope (headlines), Inter (body), Space Grotesk (labels/monospace)  
+**Colors:** M3 dark theme — `#a68cff` (primary), `#00daf3` (secondary), `#0e0e0e` (background)
+
+### Navigation Map
+```
+Landing (/)
+  ├─ "Start Assessment" → /setup
+  ├─ "Launch Dashboard" → /:username/dashboard
+  ├─ "Assess" nav → /setup
+  └─ "Admin" nav → /admin
+
+Setup (/setup)  
+  ├─ Step 1 (Skills + Identity) → Step 2
+  ├─ Step 2 (Resume Upload) → Step 3
+  └─ Step 3 (System PreCheck) → /interview/:sessionId
+
+Interview (/interview/:sessionId)
+  └─ "Terminate" → /interview/:sessionId/complete
+
+Complete (/interview/:sessionId/complete)
+  └─ "View Report" → /report/:sessionId
+
+Report (/report/:sessionId)
+  ├─ "Dashboard" → /:username/dashboard
+  └─ "Practice Again" → /setup
+
+Dashboard (/:username/dashboard)
+  ├─ "View Report" → /report/:sessionId
+  └─ "Start Interview" → /setup
+
+Admin (/admin)
+  └─ "Extract Report" → /report/:sessionId
+```
+
+### Future Scope
+See [`docs/deployment_needs.md`](docs/deployment_needs.md) for unimplemented features including Authentication/RBAC, Talent Pool, Insights analytics, and deployment infrastructure.
+

@@ -58,6 +58,21 @@ const resumeQuestionSchema = new mongoose.Schema({
 
 // Main session schema
 const sessionSchema = new mongoose.Schema({
+  // Candidate Info
+  username: {
+    type: String,
+    required: true,
+    index: true
+  },
+  candidateName: {
+    type: String,
+    default: 'Candidate'
+  },
+  sessionName: {
+    type: String,
+    default: ''
+  },
+  
   // Session State
   state: {
     type: String,
@@ -138,7 +153,23 @@ const sessionSchema = new mongoose.Schema({
   
   // Metadata
   userAgent: String,
-  ipAddress: String
+  ipAddress: String,
+
+  // Proctoring Data
+  proctoringData: {
+    enabled: { type: Boolean, default: false },
+    startedAt: Date,
+    endedAt: Date,
+    totalAlerts: { type: Number, default: 0 },
+    alertEvents: [{
+      timestamp: Date,
+      status: String,
+      reason: String,
+      duration: Number
+    }],
+    passed: { type: Boolean, default: true },
+    reportPath: String
+  }
 }, {
   timestamps: true
 });

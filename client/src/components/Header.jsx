@@ -1,46 +1,37 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Mic, LayoutDashboard, Home as HomeIcon } from 'lucide-react';
 
 function Header() {
   const location = useLocation();
   
-  const isActive = (path) => {
-    return location.pathname === path ? 'text-primary-400' : 'text-secondary-400 hover:text-white';
-  };
+  // Conditionally hide header on Landing and Interview rooms.
+  if (location.pathname === '/' || location.pathname.startsWith('/interview/')) {
+    return null;
+  }
 
   return (
-    <header className="glass border-b border-secondary-700/50 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3">
-            <div className="p-2 bg-primary-500/20 rounded-xl">
-              <Mic className="w-6 h-6 text-primary-400" />
-            </div>
-            <span className="text-xl font-bold gradient-text">
-              AI Smart Interviewer
-            </span>
-          </Link>
-
-          {/* Navigation */}
-          <nav className="flex items-center gap-6">
-            <Link 
-              to="/" 
-              className={`flex items-center gap-2 transition-colors ${isActive('/')}`}
-            >
-              <HomeIcon className="w-5 h-5" />
-              <span className="hidden sm:inline">Home</span>
-            </Link>
-            
-            <Link 
-              to="/dashboard" 
-              className={`flex items-center gap-2 transition-colors ${isActive('/dashboard')}`}
-            >
-              <LayoutDashboard className="w-5 h-5" />
-              <span className="hidden sm:inline">Dashboard</span>
-            </Link>
-          </nav>
-        </div>
+    <header className="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-50 bg-[#0e131e]/60 backdrop-blur-lg border-b border-[#424754]/15">
+      <div className="flex items-center gap-3">
+        <span className="text-xl font-bold tracking-tighter text-white">SkillWise</span>
+        <div className="h-4 w-px bg-outline-variant/30 mx-2"></div>
+        <span className="font-mono text-[0.6875rem] uppercase tracking-[0.15em] text-outline">Assessment Engine</span>
+      </div>
+      <div className="flex items-center gap-6">
+        <Link 
+          to="/setup" 
+          className={`font-mono text-sm uppercase tracking-wider transition-colors ${location.pathname === '/setup' ? 'text-primary' : 'text-outline hover:text-white'}`}
+        >
+          Setup
+        </Link>
+        {/* Placeholder for personalized dashboard link, typically you'd read username from auth state */}
+        <Link 
+          to="/guest/dashboard" 
+          className={`font-mono text-sm uppercase tracking-wider transition-colors ${location.pathname.includes('/dashboard') ? 'text-primary' : 'text-outline hover:text-white'}`}
+        >
+          Dashboard
+        </Link>
+        <button className="flex items-center justify-center p-2 rounded-lg hover:bg-surface-container transition-colors text-outline">
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>help_outline</span>
+        </button>
       </div>
     </header>
   );

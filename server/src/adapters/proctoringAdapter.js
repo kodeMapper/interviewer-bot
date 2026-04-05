@@ -109,4 +109,75 @@ async function videoFeed(req, res) {
   }
 }
 
-module.exports = { getStatus, startProctoring, stopProctoring, videoFeed };
+/**
+ * POST /api/proctoring/session/meta
+ */
+async function setSessionMeta(req, res) {
+  try {
+    const metaPayload = req.body;
+    const { data } = await axios.post(`${PROCTOR_BASE}/session/meta`, metaPayload, { timeout: 3000 });
+    res.json({ success: true, data });
+  } catch (err) {
+    if (err.code === 'ECONNREFUSED' || err.response?.status === 404) {
+      return res.json({ success: true, warning: 'Proctoring service unavailable or endpoint absent', data: {} });
+    }
+    res.status(502).json({ success: false, error: err.message });
+  }
+}
+
+/**
+ * GET /api/proctoring/report
+ */
+async function getReport(req, res) {
+  try {
+    const { data } = await axios.get(`${PROCTOR_BASE}/report/latest`, { timeout: 5000 });
+    res.json({ success: true, data });
+  } catch (err) {
+    if (err.code === 'ECONNREFUSED' || err.response?.status === 404) {
+      return res.json({ success: false, error: 'Proctoring service unavailable or endpoint absent' });
+    }
+    res.status(502).json({ success: false, error: err.message });
+  }
+}
+
+/**
+ * Stop proctoring programmatically (used by socket disconnect)
+ */
+async function stopProctoringInternal() {
+  try {
+    await axios.post(`${PROCTOR_BASE}/stop`, {}, { timeout: 3000 });
+  } catch (err) {
+    // Ignore errors for internal shutdown
+  }
+}
+
+/**
+ * Download logs and videos
+ */
+async function downloadLog(req, res) {
+  try {
+    const response = await axios.get(`${PROCTOR_BASE}/report/download/csv`, { responseType: 'stream', timeout: 10000 });
+    res.setHeader('Content-Disposition', 'attachment; filename="proctoring_log.csv"');
+    res.setHeader('Content-Type', 'text/csv');
+    response.data.pipe(res);
+  } catch (err) {
+    res.status(404).send('Log file not found or service offline');
+  }
+}
+
+async function downloadVideo(req, res) {
+  try {
+    const response = await axios.get(`${PROCTOR_BASE}/report/download/video`, { responseType: 'stream', timeout: 20000 });
+    res.setHeader('Content-Disposition', 'attachment; filename="session_video.mp4"');
+    res.setHeader('Content-Type', 'video/mp4');
+    response.data.pipe(res);
+  } catch (err) {
+    res.status(404).send('Video file not found or service offline');
+  }
+}
+
+module.exports = { 
+  getStatus, startProctoring, stopProctoring, videoFeed, 
+  setSessionMeta, getReport, stopProctoringInternal,
+  downloadLog, downloadVideo
+};

@@ -1,0 +1,46 @@
+1. initialize module 2 not working - "Failed to create session. Please try again." 
+Error: {
+  message: 'Session validation failed: username: Path `username` is required.',
+  stack: 'ValidationError: Session validation failed: username: Path `username` is required.\n' +
+    '    at Document.invalidate (C:\\Users\\acer\\Desktop\\DL Project\\server\\node_modules\\mongoose\\lib\\document.js:3381:32)\n' +
+    '    at C:\\Users\\acer\\Desktop\\DL Project\\server\\node_modules\\mongoose\\lib\\document.js:3142:17\n' +
+    '    at C:\\Users\\acer\\Desktop\\DL Project\\server\\node_modules\\mongoose\\lib\\schemaType.js:1446:9\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)',
+  path: '/api/interview/start',
+  method: 'POST'
+}
+POST /api/interview/start 400 6.628 ms - 87
+we need to modify database schema for interview, session and users. See the docs/deployment_needs.md
+
+
+2. landing page's hero section's background box is not alined properly. You can see the screenshots in design\stitch_ui_ux_design_execution\skillwise_landing_immersive
+
+3. Also as i had instructed, See the uiux design plan that i had provided. there are extra buttons/ missing navigations/ non functional componets which are not functional and should not be there in the desings. hence modify the UI according to our app's functionality.
+
+4. do not completly rely on the html code from the stitch always. sometimes it does not give the actual UI. always recheck with the png of that page (screen) wether the UI is correct or not. some minor missmatches are ok, but try to develop as close as possible to the UI. 
+
+5. some pages designs are not friendly with Desktop. so make them friendly with Desktop by ajusting size.
+
+6. when we end the interview, on the report page, the expected answer should also be visible for each question as the bot giving us its feedback. see interview_controller.py.
+
+7. interview automatically stops. backend stops 304 
+
+8. admin page not opening (auth should be required) 
+Admin.jsx:45 Uncaught TypeError: sessions.filter is not a function
+    at Admin (Admin.jsx:45:37)
+Admin	@	Admin.jsx:45
+
+Admin.jsx:45 Uncaught TypeError: sessions.filter is not a function
+    at Admin (Admin.jsx:45:37)
+VM157:63 The above error occurred in the <Admin> component:
+
+    at Admin (http://localhost:3000/src/pages/Admin.jsx?t=1775380198900:24:20)
+    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=b9d6f27e:4131:5)
+    at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=b9d6f27e:4601:5)
+    at InterviewProvider (http://localhost:3000/src/context/InterviewContext.jsx:20:37)
+    at App
+    at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=b9d6f27e:4544:15)
+    at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=b9d6f27e:5290:5)
+
+    
+

@@ -11,8 +11,8 @@ const api = axios.create({
 
 // Interview API
 export const interviewAPI = {
-  startSession: async (skills, resumePath = null) => {
-    const response = await api.post('/interview/start', { skills, resumePath });
+  startSession: async (skills, resumePath = null, username, candidateName, sessionName) => {
+    const response = await api.post('/interview/start', { skills, resumePath, username, candidateName, sessionName });
     return response.data;
   },
 
@@ -103,6 +103,11 @@ export const sessionsAPI = {
     return response.data;
   },
 
+  getByUsername: async (username) => {
+    const response = await api.get(`/interview/user/${username}`);
+    return response.data;
+  },
+
   delete: async (sessionId) => {
     const response = await api.delete(`/session/${sessionId}`);
     return response.data;
@@ -110,6 +115,41 @@ export const sessionsAPI = {
 
   getStats: async () => {
     const response = await api.get('/session/stats/summary');
+    return response.data;
+  }
+};
+
+// Proctoring API
+export const proctoringAPI = {
+  getStatus: async () => {
+    const response = await api.get('/proctoring/status');
+    return response.data;
+  },
+
+  start: async () => {
+    const response = await api.post('/proctoring/start');
+    return response.data;
+  },
+
+  stop: async () => {
+    const response = await api.post('/proctoring/stop');
+    return response.data;
+  },
+
+  setMeta: async (sessionId, metaData = {}) => {
+    const response = await api.post('/proctoring/session/meta', {
+      exam_id: sessionId,
+      candidate_name: metaData.name || 'Candidate',
+      ...metaData
+    });
+    return response.data;
+  }
+};
+
+// Report API (Combined)
+export const reportAPI = {
+  getCombined: async (sessionId) => {
+    const response = await api.get(`/report/${sessionId}/combined`);
     return response.data;
   }
 };

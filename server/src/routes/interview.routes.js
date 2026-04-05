@@ -19,4 +19,7 @@ router.post('/session/:sessionId/end', interviewController.endSession);
 // Get interview report
 router.get('/session/:sessionId/report', interviewController.getReport);
 
+// Get all sessions for a user
+router.get('/user/:username', interviewController.getSessionsByUsername);
+
 module.exports = router;

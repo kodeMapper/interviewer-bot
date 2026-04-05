@@ -10,21 +10,22 @@ function TranscriptDisplay({ transcript, interimTranscript, isListening }) {
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
-      className="card"
+      className="card !p-6"
     >
-      <h3 className="text-sm font-medium text-secondary-400 mb-2">
-        Your Answer:
+      <h3 className="text-[11px] font-bold tracking-wider uppercase text-outline mb-3 flex items-center gap-2">
+        <div className={`w-2 h-2 rounded-full ${isListening ? 'bg-primary animate-pulse' : 'bg-outline-variant'}`}></div>
+        Your Answer
       </h3>
-      <div className="min-h-[60px] p-4 bg-secondary-800/50 rounded-lg">
-        <p className="text-white">
+      <div className="min-h-[60px] p-4 bg-surface-container-low border border-outline-variant/10 rounded-xl">
+        <p className="text-on-surface leading-relaxed text-lg">
           {transcript}
           {interimTranscript && (
-            <span className="text-secondary-400 italic ml-1">
+            <span className="text-outline italic ml-1">
               {interimTranscript}
             </span>
           )}
           {isListening && !transcript && !interimTranscript && (
-            <span className="text-secondary-500 italic">
+            <span className="text-outline/60 italic text-base">
               Start speaking...
             </span>
           )}

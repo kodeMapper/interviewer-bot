@@ -18,11 +18,11 @@ function ProgressBar({ progress, state }) {
   };
 
   return (
-    <div className="card">
+    <div className="card !p-4 bg-surface-container/50 border border-outline-variant/10">
       {/* Progress bar */}
-      <div className="relative h-2 bg-secondary-700 rounded-full overflow-hidden mb-4">
+      <div className="relative h-1.5 bg-surface-variant rounded-full overflow-hidden mb-3">
         <motion.div
-          className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary-500 to-primary-400"
+          className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary to-[#4d8eff] shadow-[0_0_8px_theme(colors.primary.DEFAULT)]"
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.5 }}
@@ -34,10 +34,10 @@ function ProgressBar({ progress, state }) {
         {states.map((s, index) => (
           <div
             key={s}
-            className={`text-xs ${
+            className={`text-[10px] uppercase tracking-wider font-bold ${
               index <= currentIndex 
-                ? 'text-primary-400' 
-                : 'text-secondary-500'
+                ? 'text-primary' 
+                : 'text-outline/70'
             }`}
           >
             {getStateName(s)}
@@ -46,26 +46,26 @@ function ProgressBar({ progress, state }) {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-secondary-700">
+      <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-outline-variant/20">
         <div className="text-center">
-          <p className="text-2xl font-bold text-white">
+          <p className="text-2xl font-black text-on-surface">
             {progress.totalAnswered || 0}
           </p>
-          <p className="text-xs text-secondary-400">Answered</p>
+          <p className="text-[10px] uppercase tracking-wider font-semibold text-outline">Answered</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold text-white">
+          <p className="text-2xl font-black text-on-surface">
             {progress.totalSkipped || 0}
           </p>
-          <p className="text-xs text-secondary-400">Skipped</p>
+          <p className="text-[10px] uppercase tracking-wider font-semibold text-outline">Skipped</p>
         </div>
         <div className="text-center">
-          <p className={`text-2xl font-bold ${
-            (progress.averageScore || 0) >= 60 ? 'text-green-400' : 'text-yellow-400'
+          <p className={`text-2xl font-black ${
+            (progress.averageScore || 0) >= 60 ? 'text-[#00a572]' : 'text-error'
           }`}>
             {progress.averageScore || 0}%
           </p>
-          <p className="text-xs text-secondary-400">Avg Score</p>
+          <p className="text-[10px] uppercase tracking-wider font-semibold text-outline">Avg Score</p>
         </div>
       </div>
     </div>

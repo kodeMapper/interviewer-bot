@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SkillWise | Interview Setup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#00b4c9",
+                    "on-surface": "#e8e5e4",
+                    "tertiary-fixed": "#ff9cb2",
+                    "on-background": "#e8e5e4",
+                    "on-tertiary-fixed": "#48001c",
+                    "inverse-surface": "#fcf8f8",
+                    "primary-fixed-dim": "#bba6ff",
+                    "surface-variant": "#262626",
+                    "secondary-container": "#002a30",
+                    "secondary": "#00daf3",
+                    "tertiary-container": "#ff9cb2",
+                    "on-primary-container": "#ffffff",
+                    "outline-variant": "#484848",
+                    "surface-container-lowest": "#000000",
+                    "surface-dim": "#0e0e0e",
+                    "secondary-fixed": "#9cf0ff",
+                    "on-primary-fixed": "#2d007f",
+                    "inverse-primary": "#6834eb",
+                    "background": "#0e0e0e",
+                    "on-tertiary-fixed-variant": "#820038",
+                    "on-secondary": "#004750",
+                    "surface-tint": "#a68cff",
+                    "on-primary": "#25006b",
+                    "on-surface-variant": "#adaaaa",
+                    "outline": "#767575",
+                    "primary-fixed": "#c8b7ff",
+                    "tertiary": "#ffb1c1",
+                    "secondary-fixed-dim": "#49e7ff",
+                    "error-dim": "#c94947",
+                    "error-container": "#8a1a1e",
+                    "surface-container-low": "#131313",
+                    "secondary-dim": "#00cbe2",
+                    "on-primary-fixed-variant": "#4e00cd",
+                    "primary": "#a68cff",
+                    "tertiary-fixed-dim": "#ff85a4",
+                    "tertiary-dim": "#ff6c95",
+                    "on-tertiary-container": "#720030",
+                    "on-error-container": "#ff9993",
+                    "surface-container-highest": "#262626",
+                    "surface-container-high": "#201f1f",
+                    "on-error": "#490006",
+                    "primary-dim": "#7e51ff",
+                    "on-secondary-fixed": "#00464f",
+                    "on-secondary-fixed-variant": "#006571",
+                    "surface-container": "#1a1919",
+                    "inverse-on-surface": "#565554",
+                    "on-tertiary": "#830039",
+                    "error": "#ff716c",
+                    "primary-container": "#7c4dff",
+                    "surface-bright": "#2c2c2c",
+                    "surface": "#0e0e0e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .portal-glow {
+            box-shadow: 0 0 80px -10px rgba(124, 77, 255, 0.3);
+        }
+        .glass-chip {
+            backdrop-filter: blur(12px);
+            background: rgba(38, 38, 38, 0.4);
+            border: 1px solid rgba(200, 183, 255, 0.15);
+        }
+        .scan-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00daf3, transparent);
+            box-shadow: 0 0 20px #00daf3;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 selection:text-primary-fixed overflow-x-hidden">
+<!-- Ethereal Background Light Sources -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+<div class="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] rounded-full bg-primary-container/10 blur-[120px]"></div>
+<div class="absolute top-[40%] -right-[10%] w-[50%] h-[50%] rounded-full bg-secondary-container/5 blur-[100px]"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[30%] bg-gradient-to-t from-primary/5 to-transparent blur-3xl"></div>
+</div>
+<!-- TopNavBar v1 -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-3 bg-surface/60 backdrop-blur-2xl rounded-full mt-4 mx-auto max-w-5xl border border-white/15 shadow-[0_0_40px_rgba(124,77,255,0.08)]">
+<div class="flex items-center gap-2">
+<span class="text-2xl font-black tracking-tighter text-on-surface">SkillWise</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-primary transition-all duration-300 Manrope tracking-[0.05em] font-medium" href="#">Platform</a>
+<a class="text-on-surface-variant hover:text-primary transition-all duration-300 Manrope tracking-[0.05em] font-medium" href="#">Insights</a>
+<a class="text-on-surface-variant hover:text-primary transition-all duration-300 Manrope tracking-[0.05em] font-medium" href="#">Enterprise</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer" data-icon="account_circle">account_circle</button>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:shadow-[0_0_20px_rgba(124,77,255,0.4)] active:scale-95">
+                Get Started
+            </button>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="relative z-10 min-h-screen pt-32 pb-20 flex flex-col items-center px-6">
+<!-- Stepper Indicator -->
+<div class="flex items-center gap-4 mb-12">
+<div class="flex flex-col items-center">
+<span class="text-[10px] font-label uppercase tracking-[0.2em] text-secondary mb-2">Step 02</span>
+<div class="h-[2px] w-32 bg-surface-container-highest overflow-hidden rounded-full">
+<div class="h-full w-2/3 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Section Header -->
+<div class="text-center mb-16 max-w-2xl">
+<h1 class="text-4xl md:text-5xl font-headline font-extrabold tracking-tight text-on-surface mb-4">
+                The <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Source</span> Material
+            </h1>
+<p class="text-on-surface-variant text-lg font-light leading-relaxed">
+                SkillWise AI extracts technical depth and behavioral markers directly from your resume to calibrate the session.
+            </p>
+</div>
+<!-- Portal Drop Zone (The Hero) -->
+<div class="relative group cursor-pointer">
+<!-- Outer Glow Rings -->
+<div class="absolute inset-0 -m-8 border border-primary/10 rounded-[4rem] group-hover:border-primary/30 transition-all duration-700 animate-pulse"></div>
+<div class="absolute inset-0 -m-4 border border-secondary/5 rounded-[3.5rem] group-hover:border-secondary/20 transition-all duration-1000"></div>
+<!-- The Core Portal -->
+<div class="relative w-72 h-72 md:w-80 md:h-80 bg-surface-container-low/40 backdrop-blur-3xl rounded-[3rem] border border-white/10 flex flex-col items-center justify-center gap-4 portal-glow overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]">
+<!-- Scanning Effect Simulation (Static Representation) -->
+<div class="absolute inset-x-0 top-1/4 scan-line opacity-20 group-hover:opacity-100 group-hover:top-3/4 transition-all duration-[2000ms] ease-in-out"></div>
+<div class="p-6 rounded-full bg-primary-container/10 text-primary-fixed mb-2">
+<span class="material-symbols-outlined text-5xl" data-icon="cloud_upload" style="font-variation-settings: 'FILL' 1;">cloud_upload</span>
+</div>
+<div class="text-center">
+<p class="font-label text-xs uppercase tracking-widest text-on-surface/80">Drop PDF or DOCX</p>
+<p class="text-[10px] font-label text-on-surface-variant mt-1 uppercase tracking-tighter">Maximum size 10MB</p>
+</div>
+<!-- Subtle Inner Shadow for Depth -->
+<div class="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.6)] pointer-events-none"></div>
+</div>
+</div>
+<!-- Feedback: Floating Skill Chips (Simulated Post-Upload State) -->
+<div class="mt-20 w-full max-w-4xl">
+<div class="flex flex-wrap justify-center gap-3">
+<div class="glass-chip px-5 py-2 rounded-full flex items-center gap-2 group hover:border-secondary/40 transition-colors">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_8px_#00daf3]"></span>
+<span class="font-label text-[11px] uppercase tracking-wider text-secondary">Neural Networks</span>
+<button class="material-symbols-outlined text-[14px] text-on-surface-variant hover:text-error" data-icon="close">close</button>
+</div>
+<div class="glass-chip px-5 py-2 rounded-full flex items-center gap-2 group hover:border-primary/40 transition-colors">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_#a68cff]"></span>
+<span class="font-label text-[11px] uppercase tracking-wider text-primary">System Architecture</span>
+<button class="material-symbols-outlined text-[14px] text-on-surface-variant hover:text-error" data-icon="close">close</button>
+</div>
+<div class="glass-chip px-5 py-2 rounded-full flex items-center gap-2 group hover:border-secondary/40 transition-colors">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_8px_#00daf3]"></span>
+<span class="font-label text-[11px] uppercase tracking-wider text-secondary">Typescript Engine</span>
+<button class="material-symbols-outlined text-[14px] text-on-surface-variant hover:text-error" data-icon="close">close</button>
+</div>
+<div class="glass-chip px-5 py-2 rounded-full flex items-center gap-2 group hover:border-primary/40 transition-colors opacity-60">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_#a68cff]"></span>
+<span class="font-label text-[11px] uppercase tracking-wider text-primary">Kubernetes</span>
+<button class="material-symbols-outlined text-[14px] text-on-surface-variant hover:text-error" data-icon="close">close</button>
+</div>
+</div>
+</div>
+<!-- Control Actions -->
+<div class="mt-auto pt-20 flex items-center gap-6">
+<button class="text-on-surface-variant font-label text-xs uppercase tracking-widest hover:text-on-surface transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_back">arrow_back</span>
+                Back
+            </button>
+<div class="h-10 w-[1px] bg-outline-variant/30"></div>
+<button class="group relative px-10 py-4 bg-transparent overflow-hidden rounded-full">
+<div class="absolute inset-0 bg-gradient-to-r from-primary-container to-primary opacity-90 group-hover:opacity-100 transition-opacity"></div>
+<div class="absolute inset-0 border border-white/20 rounded-full"></div>
+<span class="relative z-10 font-label text-xs uppercase tracking-[0.2em] font-bold text-on-primary-container flex items-center gap-3">
+                    Initialize Phase 3
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</button>
+</div>
+</main>
+<!-- Side Decoration (Ethereal Observatory Element) -->
+<div class="fixed right-10 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-8 opacity-20 hover:opacity-100 transition-opacity duration-500">
+<div class="flex flex-col items-center gap-1">
+<div class="w-1 h-1 rounded-full bg-secondary"></div>
+<div class="w-[1px] h-20 bg-gradient-to-b from-secondary to-transparent"></div>
+</div>
+<div class="[writing-mode:vertical-lr] font-label text-[10px] uppercase tracking-[0.5em] text-on-surface-variant">
+            Data Extraction Engine v2.0
+        </div>
+</div>
+</body></html>

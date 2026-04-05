@@ -27,6 +27,17 @@ app.get('/api/docs', (req, res) => {
   res.type('html').send(renderSwaggerUiHtml('/api/docs/openapi.json'));
 });
 
+// Cache-busting middleware for all API routes to prevent 304 issues
+app.use('/api', (req, res, next) => {
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+    'Surrogate-Control': 'no-store'
+  });
+  next();
+});
+
 // Security middleware
 app.use(helmet());
 
@@ -68,6 +79,7 @@ app.use('/api/questions', require('./routes/question.routes'));
 app.use('/api/resume', require('./routes/resume.routes'));
 app.use('/api/session', require('./routes/session.routes'));
 app.use('/api/proctoring', require('./routes/proctoring.routes'));
+app.use('/api/report', require('./routes/report.routes'));
 
 // Error handling
 app.use(notFoundHandler);

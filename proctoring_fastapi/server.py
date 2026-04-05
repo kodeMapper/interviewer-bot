@@ -429,6 +429,15 @@ def on_startup():
     logger.info("Status endpoint: %s/status", OPEN_URL)
 
 
+@app.on_event("shutdown")
+def on_shutdown():
+    logger.info("Shutting down Proctoring System...")
+    stop_proctoring()
+    global proctor_thread
+    if proctor_thread is not None and proctor_thread.is_alive():
+        proctor_thread.join(timeout=3.0)
+
+
 @app.get("/", include_in_schema=False)
 def home():
     return FileResponse(os.path.join(BASE_DIR, "index.html"))

@@ -9,12 +9,20 @@ const {
   getStatus,
   startProctoring,
   stopProctoring,
-  videoFeed
+  videoFeed,
+  setSessionMeta,
+  getReport,
+  downloadLog,
+  downloadVideo
 } = require('../adapters/proctoringAdapter');
 
 router.get('/status', getStatus);
 router.post('/start', startProctoring);
 router.post('/stop', stopProctoring);
 router.get('/video', videoFeed);
+router.post('/session/meta', setSessionMeta);
+router.get('/report', getReport);
+router.get('/download/csv', downloadLog);
+router.get('/download/video', downloadVideo);
 
 module.exports = router;

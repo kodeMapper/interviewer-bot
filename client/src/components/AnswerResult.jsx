@@ -22,20 +22,20 @@ function AnswerResult({ result }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="card"
+      className="card !p-6 bg-[#00a572]/5 border-[#00a572]/20 shadow-none border"
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-5">
         {/* Icon */}
-        <div className="flex-shrink-0 p-3 bg-secondary-700 rounded-xl">
+        <div className={`flex-shrink-0 p-3 rounded-2xl ${isSkipped ? 'bg-surface-container text-outline' : 'bg-[#00a572]/20 text-[#00a572]'}`}>
           {getIcon()}
         </div>
 
         {/* Content - Simple message, no score/feedback during interview */}
         <div className="flex-1">
-          <p className="text-lg text-secondary-200">
+          <p className="text-xl font-bold text-on-surface tracking-wide">
             {getMessage()}
           </p>
-          <p className="text-sm text-secondary-400 mt-1">
+          <p className="text-[13px] text-outline font-medium mt-1">
             Feedback will be provided in your final report
           </p>
         </div>

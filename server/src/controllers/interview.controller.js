@@ -11,7 +11,7 @@ const interviewService = require('../services/interview.service');
  */
 exports.startSession = async (req, res, next) => {
   try {
-    const { skills, resumePath } = req.body;
+    const { skills, resumePath, username, candidateName, sessionName } = req.body;
 
     if (!skills || !Array.isArray(skills) || skills.length === 0) {
       return res.status(400).json({
@@ -19,10 +19,22 @@ exports.startSession = async (req, res, next) => {
         error: 'Skills array is required'
       });
     }
+    
+    if (!username || username.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        error: 'Username is required and cannot be empty'
+      });
+    }
+
+    console.log(`[Interview] 🚀 Creating session for user: ${username}, candidate: ${candidateName}, session: ${sessionName}`);
 
     // Pass user-selected skills from main page
     // These will be used for warmup questions from MongoDB
     const session = await interviewService.createSession({
+      username,
+      candidateName: candidateName || 'Candidate',
+      sessionName: sessionName || '',
       userSelectedSkills: skills, // User-selected skills for warmup
       resumePath,
       userAgent: req.headers['user-agent'],
@@ -145,6 +157,24 @@ exports.getReport = async (req, res, next) => {
     res.json({
       success: true,
       data: report
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get all sessions for a username
+ */
+exports.getSessionsByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    
+    const sessions = await Session.find({ username }).sort({ startedAt: -1 });
+    
+    res.json({
+      success: true,
+      data: sessions
     });
   } catch (error) {
     next(error);

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#ffffff",
+                    "surface-container-high": "#201f1f",
+                    "primary-fixed-dim": "#bba6ff",
+                    "primary-container": "#7c4dff",
+                    "on-primary-fixed": "#2d007f",
+                    "surface-dim": "#0e0e0e",
+                    "on-primary-fixed-variant": "#4e00cd",
+                    "surface-container-lowest": "#000000",
+                    "background": "#0e0e0e",
+                    "surface-container": "#1a1919",
+                    "on-secondary": "#004750",
+                    "secondary-container": "#002a30",
+                    "tertiary-container": "#ff9cb2",
+                    "on-error-container": "#ff9993",
+                    "tertiary-dim": "#ff6c95",
+                    "on-error": "#490006",
+                    "secondary-fixed": "#9cf0ff",
+                    "inverse-on-surface": "#565554",
+                    "outline": "#767575",
+                    "primary": "#a68cff",
+                    "on-primary": "#25006b",
+                    "on-secondary-fixed-variant": "#006571",
+                    "surface-variant": "#262626",
+                    "on-tertiary-fixed-variant": "#820038",
+                    "tertiary-fixed-dim": "#ff85a4",
+                    "secondary": "#00daf3",
+                    "error-dim": "#c94947",
+                    "on-surface": "#e8e5e4",
+                    "inverse-primary": "#6834eb",
+                    "primary-fixed": "#c8b7ff",
+                    "on-secondary-fixed": "#00464f",
+                    "tertiary-fixed": "#ff9cb2",
+                    "primary-dim": "#7e51ff",
+                    "on-tertiary": "#830039",
+                    "surface-container-highest": "#262626",
+                    "surface-container-low": "#131313",
+                    "surface": "#0e0e0e",
+                    "secondary-dim": "#00cbe2",
+                    "on-tertiary-fixed": "#48001c",
+                    "error": "#ff716c",
+                    "error-container": "#8a1a1e",
+                    "secondary-fixed-dim": "#49e7ff",
+                    "on-background": "#e8e5e4",
+                    "surface-tint": "#a68cff",
+                    "on-secondary-container": "#00b4c9",
+                    "inverse-surface": "#fcf8f8",
+                    "tertiary": "#ffb1c1",
+                    "outline-variant": "#484848",
+                    "surface-bright": "#2c2c2c",
+                    "on-tertiary-container": "#720030",
+                    "on-surface-variant": "#adaaaa"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(38, 38, 38, 0.6);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(200, 183, 255, 0.15);
+            box-shadow: 0 0 40px rgba(124, 77, 255, 0.08);
+        }
+        .glow-accent-cyan {
+            box-shadow: 0 0 20px rgba(0, 218, 243, 0.3);
+        }
+        .glow-accent-violet {
+            box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #a68cff, #00daf3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full border-b border-violet-500/15 bg-slate-950/60 backdrop-blur-xl flex justify-between items-center px-8 py-4 z-50">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">SkillWise</span>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-['Manrope'] tracking-[0.05em] uppercase text-sm font-semibold text-slate-300/80 hover:text-cyan-300 transition-all duration-300" href="#">Platform</a>
+<a class="font-['Manrope'] tracking-[0.05em] uppercase text-sm font-semibold text-slate-300/80 hover:text-cyan-300 transition-all duration-300" href="#">Company</a>
+<a class="font-['Manrope'] tracking-[0.05em] uppercase text-sm font-semibold text-slate-300/80 hover:text-cyan-300 transition-all duration-300" href="#">Enterprise</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="font-['Manrope'] tracking-[0.05em] uppercase text-sm font-semibold text-slate-300/80 hover:text-cyan-300 transition-all duration-300">Login</button>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-['Manrope'] tracking-[0.05em] uppercase text-sm font-semibold hover:scale-95 active:scale-90 transition-all duration-300">Get Started</button>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-4 top-24 bottom-4 w-20 rounded-3xl border border-violet-500/15 bg-slate-950/40 backdrop-blur-2xl flex flex-col items-center py-8 z-40 shadow-2xl shadow-violet-900/20">
+<div class="mb-8">
+<span class="material-symbols-outlined text-primary text-3xl">psychology</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex flex-col items-center justify-center text-slate-500 p-3 mb-2 hover:bg-violet-500/10 hover:text-violet-200 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.1em] text-[10px] mt-1">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-cyan-500/20 text-cyan-400 rounded-xl p-3 mb-2 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="video_chat">video_chat</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.1em] text-[10px] mt-1">Interviews</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 p-3 mb-2 hover:bg-violet-500/10 hover:text-violet-200 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.1em] text-[10px] mt-1">Talent</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 p-3 mb-2 hover:bg-violet-500/10 hover:text-violet-200 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.1em] text-[10px] mt-1">Insights</span>
+</div>
+</div>
+<div class="mt-auto">
+<div class="flex flex-col items-center justify-center text-slate-500 p-3 mb-2 hover:bg-violet-500/10 hover:text-violet-200 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.1em] text-[10px] mt-1">Settings</span>
+</div>
+</div>
+</aside>
+<main class="pl-32 pr-12 pt-28 pb-12 overflow-hidden">
+<!-- Hero Section -->
+<section class="relative mb-20">
+<!-- Background Light Sources -->
+<div class="absolute -top-40 -left-40 w-96 h-96 bg-primary-container/20 rounded-full blur-[120px]"></div>
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[150px]"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<div class="lg:col-span-7">
+<span class="font-label text-secondary tracking-[0.2em] uppercase text-sm mb-4 block">Candidate Performance Overview</span>
+<h1 class="font-headline text-5xl md:text-7xl font-extrabold text-on-surface mb-6 tracking-tight">Full Stack Developer Interview</h1>
+<p class="text-on-surface-variant text-lg max-w-xl leading-relaxed">Detailed assessment for Alexander Thorne. The evaluation highlights exceptional technical proficiency in React/Next.js and strong architectural thinking.</p>
+</div>
+<div class="lg:col-span-5">
+<div class="glass-panel p-8 rounded-3xl relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="font-label text-on-surface-variant uppercase tracking-widest text-xs mb-1">Overall Compatibility</h3>
+<div class="flex items-baseline gap-2">
+<span class="font-headline text-6xl font-black text-white">78<span class="text-secondary text-3xl font-bold">%</span></span>
+<span class="font-headline text-2xl font-bold text-primary-fixed-dim">A-</span>
+</div>
+</div>
+<div class="w-16 h-16 rounded-full border-4 border-secondary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 border-t border-white/5 pt-8">
+<div class="text-center">
+<span class="font-label text-on-surface-variant text-[10px] uppercase block mb-1">Duration</span>
+<span class="font-headline text-lg font-bold">42m 12s</span>
+</div>
+<div class="text-center border-x border-white/5">
+<span class="font-label text-on-surface-variant text-[10px] uppercase block mb-1">Questions</span>
+<span class="font-headline text-lg font-bold">12 / 12</span>
+</div>
+<div class="text-center">
+<span class="font-label text-on-surface-variant text-[10px] uppercase block mb-1">Confidence</span>
+<span class="font-headline text-lg font-bold text-secondary">High</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Technical Breakdown Bento -->
+<section class="mb-20">
+<div class="flex items-center justify-between mb-10">
+<h2 class="font-headline text-3xl font-bold tracking-tight">Technical Mastery</h2>
+<div class="h-px flex-grow mx-8 bg-gradient-to-r from-white/10 to-transparent"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Skill Card 1 -->
+<div class="glass-panel p-6 rounded-2xl hover:bg-surface-container-high/60 transition-all duration-500">
+<div class="flex items-center gap-3 mb-6">
+<div class="p-2 bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">data_object</span>
+</div>
+<span class="font-headline font-bold text-lg">System Design</span>
+</div>
+<div class="relative h-2 w-full bg-surface-container-highest rounded-full mb-2 overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-[85%] bg-primary glow-accent-violet rounded-full"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-[10px] text-on-surface-variant uppercase">Proficiency</span>
+<span class="font-headline font-bold text-primary">85%</span>
+</div>
+</div>
+<!-- Skill Card 2 -->
+<div class="glass-panel p-6 rounded-2xl hover:bg-surface-container-high/60 transition-all duration-500">
+<div class="flex items-center gap-3 mb-6">
+<div class="p-2 bg-secondary/10 rounded-lg">
+<span class="material-symbols-outlined text-secondary">terminal</span>
+</div>
+<span class="font-headline font-bold text-lg">Logic &amp; Algo</span>
+</div>
+<div class="relative h-2 w-full bg-surface-container-highest rounded-full mb-2 overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-[92%] bg-secondary glow-accent-cyan rounded-full"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-[10px] text-on-surface-variant uppercase">Proficiency</span>
+<span class="font-headline font-bold text-secondary">92%</span>
+</div>
+</div>
+<!-- Skill Card 3 -->
+<div class="glass-panel p-6 rounded-2xl hover:bg-surface-container-high/60 transition-all duration-500">
+<div class="flex items-center gap-3 mb-6">
+<div class="p-2 bg-tertiary/10 rounded-lg">
+<span class="material-symbols-outlined text-tertiary">javascript</span>
+</div>
+<span class="font-headline font-bold text-lg">Frameworks</span>
+</div>
+<div class="relative h-2 w-full bg-surface-container-highest rounded-full mb-2 overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-[78%] bg-tertiary rounded-full"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-[10px] text-on-surface-variant uppercase">Proficiency</span>
+<span class="font-headline font-bold text-tertiary">78%</span>
+</div>
+</div>
+<!-- Skill Card 4 -->
+<div class="glass-panel p-6 rounded-2xl hover:bg-surface-container-high/60 transition-all duration-500">
+<div class="flex items-center gap-3 mb-6">
+<div class="p-2 bg-on-surface-variant/10 rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant">psychology_alt</span>
+</div>
+<span class="font-headline font-bold text-lg">Communication</span>
+</div>
+<div class="relative h-2 w-full bg-surface-container-highest rounded-full mb-2 overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-[64%] bg-on-surface-variant rounded-full"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-[10px] text-on-surface-variant uppercase">Proficiency</span>
+<span class="font-headline font-bold text-on-surface-variant">64%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Proctoring Timeline -->
+<section class="mb-20">
+<div class="flex items-center gap-4 mb-10">
+<h2 class="font-headline text-3xl font-bold tracking-tight">Proctoring Timeline</h2>
+<span class="bg-error-container text-on-error-container px-3 py-1 rounded-full text-[10px] font-label uppercase tracking-widest">2 Flagged Events</span>
+</div>
+<div class="glass-panel p-10 rounded-3xl overflow-x-auto">
+<div class="min-w-[1000px] relative">
+<!-- Timeline Base Line -->
+<div class="absolute top-1/2 left-0 w-full h-[2px] bg-surface-container-highest -translate-y-1/2"></div>
+<div class="relative flex justify-between items-center px-4">
+<!-- Timeline Point 1 -->
+<div class="flex flex-col items-center group">
+<div class="w-12 h-12 rounded-xl overflow-hidden mb-4 border-2 border-transparent group-hover:border-primary transition-all shadow-lg">
+<img alt="candidate face portrait" class="w-full h-full object-cover" data-alt="close-up of a professional young man focus during an online video interview against a dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVDeQWEsJX33Yon38Duu36Zwy--1B80TbxhvlCdLrO_hQC5wCjosgkhv9N4umTqdiRn7e-k9cRlazqY2BExiYTHlI2VTuTWpwk4GxVNrC3EPV4pIpi4AMaxmd3_M3v3jlVU3hC_H6eu8hNknU7Uec2HTOBokCeooi5e7uSFb3UkrhZqXo7erXuZB1zKzlxDIPcBcPTu2g2OoTcL7KWZyDqKt8RUPGZV9q2kVYZKVNeYMFRX5NmO8sQA0aM-dyGDWZreoQQrILYjAA"/>
+</div>
+<div class="w-4 h-4 bg-primary rounded-full relative z-10 glow-accent-violet"></div>
+<span class="font-label text-[10px] text-on-surface-variant mt-4">02:15</span>
+</div>
+<!-- Timeline Point 2 (Flagged) -->
+<div class="flex flex-col items-center group -translate-y-2">
+<div class="bg-error/10 text-error px-3 py-1 rounded-full text-[9px] font-label uppercase mb-2">Looking Away</div>
+<div class="w-16 h-16 rounded-xl overflow-hidden mb-4 border-2 border-error shadow-xl glow-accent-error">
+<img alt="candidate glancing away" class="w-full h-full object-cover" data-alt="webcam snapshot of a person looking away from the computer screen towards the left side with analytical expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJL_frP84Auuw8PDIMIG5a1jjgWMGD--WkExT7Z0t__GiRFebQW94lfpSheVcrdienvD8gqVOZBRJH5aMt_fqdQTxLIBwk8RY_dyRUMbjsqMKZhy3Dm3FtNlweOquOO2hsI6AUOPKlpC2nuz8NNpEnTFjfkdunnIMM2dbTBFWJO02KCT7QhxWmx8En7aoRuvGWMFYsEGTnW0_4oeI31jszbyf2wsAd10ukhwRRar23bq4qzdKqiXnnXx3uWCT5sepMxx8D0dvM1KU"/>
+</div>
+<div class="w-6 h-6 bg-error rounded-full relative z-10 flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-[14px] text-white">flag</span>
+</div>
+<span class="font-label text-[10px] text-error mt-4">12:44</span>
+</div>
+<!-- Timeline Point 3 -->
+<div class="flex flex-col items-center group">
+<div class="w-12 h-12 rounded-xl overflow-hidden mb-4 border-2 border-transparent">
+<img alt="coding screen" class="w-full h-full object-cover" data-alt="screenshot of a dark mode code editor with colorful syntax highlighting showing javascript functions" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr1jGvPLPIJx-OBIxkrFojvoB0_XirHkIF2LqWsu8Vq5YiA2gSo5bguPWljZ29W-V2tmsF1em67WL54lZV9DdiKNlwyWqtTPCPmWKC08LBC9FqTUa9dve5jAGbtZyJYz49ggzgSC2ZsfY8H89AVelFOpsKmBtM-U2Evg1cVyj6gElYMefNJOp1RktEdiMwH2kt-Fo4kVj9aRe2N085uzlxtDq8q9BrWnl6d1THg7JH9aTI_eprOn-R5vsJZmWBG_67FUmyflYWGOQ"/>
+</div>
+<div class="w-4 h-4 bg-on-surface-variant/40 rounded-full relative z-10"></div>
+<span class="font-label text-[10px] text-on-surface-variant mt-4">24:00</span>
+</div>
+<!-- Timeline Point 4 (Flagged) -->
+<div class="flex flex-col items-center group -translate-y-2">
+<div class="bg-error/10 text-error px-3 py-1 rounded-full text-[9px] font-label uppercase mb-2">Head Left</div>
+<div class="w-16 h-16 rounded-xl overflow-hidden mb-4 border-2 border-error shadow-xl">
+<img alt="candidate sideways" class="w-full h-full object-cover" data-alt="blurred motion of a candidate turning their head sharply to the left during a recorded interview session" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6xt4Nz5O1_uOCkH49eALC_dnX1dYg-dXKW4u3zejpXIALfJ5odrtP4zAoxUg6Vlb-uqnKh6_VxpG88-LoJ1KqoE6FCoSFmGuqO-8Vm2lIPxdIYLp6JHYHNsndd7Tz-zfoVOlsTjuB8O4jrETXy98CXiVEC5YNEKvgdQ9cWpB_fr5eofMBDSFLUglxbcUFBdZOcedWQaTqsOofl4CZzV6C-s60EKoIinNLQ-NVKnLOKFjLrExUJh6SOG5ACzii3PdLvlEHxOGm3MA"/>
+</div>
+<div class="w-6 h-6 bg-error rounded-full relative z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-white">warning</span>
+</div>
+<span class="font-label text-[10px] text-error mt-4">31:12</span>
+</div>
+<!-- Timeline Point 5 -->
+<div class="flex flex-col items-center group">
+<div class="w-12 h-12 rounded-xl overflow-hidden mb-4 border-2 border-transparent group-hover:border-secondary transition-all">
+<img alt="closing interaction" class="w-full h-full object-cover" data-alt="close-up of hands typing on a laptop keyboard with soft ambient lighting from the screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiiJnsxSH_livfSgdbBHMEbjKgG79C1cJUw-YwP6sMcpwD2XbSoaD4vJcbtfeqikrTEsb4-O0gIGWG3mz_KMjJM8sHQmxQGHre1uE0KlKzDapgG09oT0KPqc1XFxIcpjQ6-KhhJijEAJ5_P6Sk0x6C3edE6S0lohY65V9kDFNtK04-WPd09Nv_bbz4B78xEC34cDkgdOo-P8DRYPf2xypxfzlSxE__bGSW3iE7BrS7ezK4Mv5RmqaQCZhqfHQ5AuK7__-kH3DLvy8"/>
+</div>
+<div class="w-4 h-4 bg-secondary rounded-full relative z-10 glow-accent-cyan"></div>
+<span class="font-label text-[10px] text-on-surface-variant mt-4">42:12</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Question-by-Question -->
+<section class="mb-24">
+<h2 class="font-headline text-3xl font-bold tracking-tight mb-10">Assessment Details</h2>
+<div class="space-y-4">
+<!-- Question 1 -->
+<div class="glass-panel rounded-2xl overflow-hidden group">
+<div class="p-6 flex items-start gap-6 cursor-pointer hover:bg-white/5 transition-colors">
+<div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary font-headline font-bold border border-secondary/20 shrink-0">
+                            01
+                        </div>
+<div class="flex-grow">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Frontend Architecture</span>
+<span class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-[10px] font-bold">EXCELLENT</span>
+</div>
+<h4 class="font-headline text-xl font-bold mb-4">Explain the concept of 'Hydration' in the context of Next.js and React.</h4>
+<div class="bg-surface-container-low/50 p-6 rounded-xl border border-white/5">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label text-xs uppercase text-primary font-bold tracking-wider">AI feedback</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed italic">"Candidate provided a precise technical explanation distinguishing between SSR and Hydration. They correctly identified the process of attaching event listeners to static HTML and mentioned potential pitfalls like hydration mismatch errors."</p>
+</div>
+</div>
+<div class="shrink-0 pt-2 text-on-surface-variant group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Question 2 -->
+<div class="glass-panel rounded-2xl overflow-hidden group">
+<div class="p-6 flex items-start gap-6 cursor-pointer hover:bg-white/5 transition-colors">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-headline font-bold border border-primary/20 shrink-0">
+                            02
+                        </div>
+<div class="flex-grow">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">System Design</span>
+<span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-[10px] font-bold">GOOD</span>
+</div>
+<h4 class="font-headline text-xl font-bold mb-4">How would you architect a real-time collaborative code editor?</h4>
+<div class="bg-surface-container-low/50 p-6 rounded-xl border border-white/5">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label text-xs uppercase text-primary font-bold tracking-wider">AI feedback</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed italic">"Demonstrated strong knowledge of WebSockets and Operational Transformation (OT) vs CRDTs. A slightly shallow explanation on database syncing, but solid infrastructure intuition."</p>
+</div>
+</div>
+<div class="shrink-0 pt-2 text-on-surface-variant group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="pl-32 pr-12 pb-12">
+<div class="glass-panel p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 border-t border-white/5">
+<div class="flex items-center gap-4">
+<div class="p-3 bg-white/5 rounded-2xl">
+<span class="material-symbols-outlined text-primary">verified</span>
+</div>
+<div>
+<p class="font-headline font-bold">SkillWise Verifiable Report</p>
+<p class="font-label text-[10px] text-on-surface-variant uppercase">ID: SW-992-AXT-2024</p>
+</div>
+</div>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-surface-container-highest border border-white/10 hover:bg-surface-bright transition-all font-label text-xs uppercase tracking-widest group">
+<span class="material-symbols-outlined text-sm group-hover:-translate-y-0.5 transition-transform">download</span>
+                    Download PDF
+                </button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-primary-container text-on-primary-container hover:scale-95 transition-all font-label text-xs uppercase tracking-widest shadow-xl shadow-primary/20">
+<span class="material-symbols-outlined text-sm">share</span>
+                    Share Link
+                </button>
+</div>
+</div>
+<div class="mt-8 text-center text-on-surface-variant font-label text-[10px] uppercase tracking-[0.2em] opacity-40">
+            Powered by SkillWise Neural Assessment Engine © 2024
+        </div>
+</footer>
+</body></html>

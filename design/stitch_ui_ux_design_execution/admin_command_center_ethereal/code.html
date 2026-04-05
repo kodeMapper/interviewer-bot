@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SkillWise | Admin Command Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Space+Grotesk:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#006571",
+                        "secondary-fixed-dim": "#49e7ff",
+                        "tertiary": "#ffb1c1",
+                        "tertiary-container": "#ff9cb2",
+                        "surface-variant": "#262626",
+                        "secondary-container": "#002a30",
+                        "primary-dim": "#7e51ff",
+                        "surface-dim": "#0e0e0e",
+                        "secondary": "#00daf3",
+                        "surface-container-lowest": "#000000",
+                        "on-tertiary-fixed-variant": "#820038",
+                        "on-tertiary": "#830039",
+                        "surface-container-highest": "#262626",
+                        "surface-container-low": "#131313",
+                        "surface": "#0e0e0e",
+                        "inverse-surface": "#fcf8f8",
+                        "secondary-fixed": "#9cf0ff",
+                        "primary-fixed-dim": "#bba6ff",
+                        "on-secondary-container": "#00b4c9",
+                        "surface-bright": "#2c2c2c",
+                        "surface-tint": "#a68cff",
+                        "on-primary-fixed": "#2d007f",
+                        "on-secondary-fixed": "#00464f",
+                        "primary-container": "#7c4dff",
+                        "outline-variant": "#484848",
+                        "on-tertiary-fixed": "#48001c",
+                        "secondary-dim": "#00cbe2",
+                        "inverse-primary": "#6834eb",
+                        "on-tertiary-container": "#720030",
+                        "on-surface": "#e8e5e4",
+                        "error-container": "#8a1a1e",
+                        "background": "#0e0e0e",
+                        "on-background": "#e8e5e4",
+                        "error-dim": "#c94947",
+                        "tertiary-dim": "#ff6c95",
+                        "tertiary-fixed": "#ff9cb2",
+                        "on-primary": "#25006b",
+                        "on-error": "#490006",
+                        "primary-fixed": "#c8b7ff",
+                        "inverse-on-surface": "#565554",
+                        "on-primary-container": "#ffffff",
+                        "primary": "#a68cff",
+                        "on-error-container": "#ff9993",
+                        "on-primary-fixed-variant": "#4e00cd",
+                        "outline": "#767575",
+                        "error": "#ff716c",
+                        "tertiary-fixed-dim": "#ff85a4",
+                        "on-surface-variant": "#adaaaa",
+                        "surface-container-high": "#201f1f",
+                        "surface-container": "#1a1919",
+                        "on-secondary": "#004750"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0e0e0e;
+            color: #e8e5e4;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(32, 31, 31, 0.6);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(200, 183, 255, 0.15);
+        }
+        .ethereal-glow {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(124, 77, 255, 0.15) 0%, rgba(14, 14, 14, 0) 70%);
+            z-index: -1;
+            top: -200px;
+            left: -200px;
+            pointer-events: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .label-style {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<div class="ethereal-glow"></div>
+<div class="ethereal-glow" style="right: -300px; bottom: -300px; left: auto; top: auto; background: radial-gradient(circle, rgba(0, 218, 243, 0.1) 0%, rgba(14, 14, 14, 0) 70%);"></div>
+<!-- SideNavBar Component -->
+<aside class="flex flex-col h-full sticky top-0 h-screen w-64 border-r border-violet-500/15 bg-neutral-950/60 backdrop-blur-xl shrink-0 z-[60]">
+<div class="p-8">
+<h1 class="text-xl font-bold tracking-[0.1em] text-white">SkillWise</h1>
+<p class="label-style text-[10px] text-primary-fixed mt-1 opacity-70">Command Center</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<!-- Active State: Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-cyan-500/20 text-cyan-400 border-r-2 border-cyan-400 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="label-style text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">videocam</span>
+<span class="label-style text-sm">Live Sessions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="label-style text-sm">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="label-style text-sm">User Management</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="label-style text-sm">Settings</span>
+</a>
+</nav>
+<div class="p-6">
+<button class="w-full bg-gradient-to-r from-primary-container to-primary text-on-primary-container py-3 px-4 rounded-full font-bold shadow-lg shadow-primary-container/20 hover:scale-[1.02] active:scale-95 transition-all duration-300 label-style text-xs">
+                Launch Session
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopNavBar Component -->
+<header class="flex justify-between items-center px-8 w-full sticky top-0 z-50 bg-neutral-900/40 backdrop-blur-2xl h-16 border-b border-white/5">
+<div class="flex items-center gap-6 w-1/3">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-secondary transition-colors">search</span>
+<input class="w-full bg-surface-container-highest/50 border-none rounded-full py-2 pl-10 pr-4 text-sm text-on-surface focus:ring-1 focus:ring-secondary/40 placeholder:text-neutral-500 transition-all" placeholder="Search sessions, users, or metrics..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-8 h-full">
+<div class="flex gap-6 h-full items-center">
+<a class="text-white border-b border-cyan-400 h-full flex items-center px-2 text-sm font-medium" href="#">Global View</a>
+<a class="text-neutral-400 hover:text-cyan-300 transition-all text-sm font-medium" href="#">Metrics</a>
+<a class="text-neutral-400 hover:text-cyan-300 transition-all text-sm font-medium" href="#">Help</a>
+</div>
+<div class="flex items-center gap-4 border-l border-white/10 pl-6">
+<button class="material-symbols-outlined text-neutral-400 hover:text-white transition-colors">notifications</button>
+<button class="material-symbols-outlined text-neutral-400 hover:text-white transition-colors">grid_view</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-white/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="professional headshot of an executive in soft lighting with a dark minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB813ZLxyd7aQ4e1Zv4FIcbzUBXZ3CTLSWabxX5zDcJrbOpoPzdjLKv7A69HK9JeFmHKRmJnBpSymEJ0CB7b1BEG9CyoC2s9CJtgpH3NqdHc-AQ6qjH-2I-KfhpGr6CoP5pdTxb0OfKYp_Gfcg8gkBpJComUvAD2XUEGIh16Bot1karVYWeu1C5UDP4VuYl7c5d_TyIynExlTWeHaJkIZ5Y3CP4uMMA22G9JzR8AkkvH1bePhRrng7BiP5qMx76U4s0kWvt8-Pf6A4"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="p-8 space-y-8 overflow-y-auto">
+<!-- Section 1: Global Metrics Panel (Bento Grid) -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="col-span-2 glass-panel p-6 rounded-xl flex flex-col justify-between">
+<div>
+<h3 class="label-style text-xs text-neutral-400 mb-4">Throughput Efficiency</h3>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-headline font-extrabold text-white">98.4<span class="text-primary-fixed opacity-50">%</span></span>
+<span class="text-secondary text-xs font-bold">+2.4%</span>
+</div>
+</div>
+<div class="h-24 mt-6 flex items-end gap-1">
+<div class="w-full bg-surface-container-highest rounded-t-sm h-12 opacity-50"></div>
+<div class="w-full bg-primary-container/40 rounded-t-sm h-16"></div>
+<div class="w-full bg-primary-container/60 rounded-t-sm h-20"></div>
+<div class="w-full bg-secondary rounded-t-sm h-24 shadow-[0_0_15px_rgba(0,218,243,0.3)]"></div>
+<div class="w-full bg-primary-container/40 rounded-t-sm h-14"></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-10 opacity-50"></div>
+<div class="w-full bg-primary-container/80 rounded-t-sm h-22"></div>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl">
+<h3 class="label-style text-xs text-neutral-400 mb-4">Active Sessions</h3>
+<div class="relative h-32 w-full flex items-center justify-center">
+<svg class="w-24 h-24 transform -rotate-90">
+<circle class="text-white/5" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-secondary" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="62.8" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold text-white">142</span>
+<span class="text-[10px] label-style text-neutral-500">Live</span>
+</div>
+</div>
+<p class="text-[11px] text-neutral-400 text-center mt-4">Capacity: 75% utilized</p>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between overflow-hidden relative">
+<div class="relative z-10">
+<h3 class="label-style text-xs text-neutral-400 mb-4">AI Accuracy</h3>
+<div class="text-3xl font-bold text-white">99.92<span class="text-sm font-normal text-neutral-500">ms</span></div>
+<p class="text-[10px] text-neutral-500 mt-1">Average Latency</p>
+</div>
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary-dim/20 blur-3xl rounded-full"></div>
+<span class="material-symbols-outlined text-primary/30 absolute right-4 top-4 text-4xl">neurology</span>
+</div>
+</section>
+<!-- Section 2: Live Sessions Monitor -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-2xl font-headline font-bold text-white tracking-tight">Live Sessions Monitor</h2>
+<p class="text-sm text-on-surface-variant">Real-time surveillance of active engineering interviews</p>
+</div>
+<div class="flex gap-2">
+<span class="flex items-center gap-1.5 px-3 py-1 bg-surface-container-high rounded-full border border-white/5 text-[10px] label-style">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                            Live Filter: Active
+                        </span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Session Card 1 -->
+<div class="glass-panel rounded-xl overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+<div class="relative aspect-video">
+<img alt="Live session 1" class="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" data-alt="a professional woman focus intensity while looking at a computer screen in a dimly lit modern office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0y308C4-j4BGCpEU7DS4jBcJYzdBnMWlTxgLmAoTLVQEUQsoDvrIQKB6JvcyBEB6g0GWszWF_xBGcu4mp83UgvgkQjGI-SgK_u4g3UIauz4GfIL7ei1VN8HAjsGVPOjkmDPqoZmDwJmIS6NgLrvxN5TxCeSr-uNRn2TCmNxTJwwVecZ9TRmRmuKFnjiV7L31ydcMCov8VzYE1W_zSssPBCfcU0tzKGu8y9Vt_HLi81f_nEA2WTGSVu5zyyCIHZu0sWYRX48Jw4e8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest to-transparent opacity-60"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface-container-lowest/80 backdrop-blur-md px-2 py-1 rounded text-[9px] font-bold text-white uppercase tracking-wider">04:22:15</span>
+<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="w-1 h-1 rounded-full bg-emerald-400"></span> SAFE
+                                </span>
+</div>
+</div>
+<div class="p-4 space-y-3">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-bold text-on-surface">Elena Rodriguez</h4>
+<p class="text-[10px] text-neutral-500 label-style">Sr. Systems Architect</p>
+</div>
+<span class="material-symbols-outlined text-neutral-500 text-sm">open_in_new</span>
+</div>
+<div class="bg-surface-container-lowest/50 p-2 rounded-lg border border-white/5">
+<p class="text-[11px] text-neutral-400 italic">"...implementing the Redis cache layer would reduce lat..."</p>
+</div>
+</div>
+</div>
+<!-- Session Card 2 -->
+<div class="glass-panel rounded-xl overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+<div class="relative aspect-video">
+<img alt="Live session 2" class="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" data-alt="a young male developer looking intently at multiple monitors with code reflected on his face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIxveg_QLPhOfM2oiNFkcY0xCbIg5lbkxOiZVI4ADVgCrIZ2OOuFyk_Z7nK-UV8Q04M8iM92pmgX-wPdrxJavB2daubu4ddCAaPTAvKzTXxoFnyrwFm4ddCg6wmSGBVXaHTm-zl7SBxN5C3JTAYXW4ktQ8Lf86uwmYL3tvVGpcE0NXvMYAgl2k0H33XXXUkygogKGqvgo3_FNZkiftELJvE2VVIjLhIx_qmVYks4L62ZGXU2vJSsdsoOPaueP7VFYoIGiWXIxWjQA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest to-transparent opacity-60"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface-container-lowest/80 backdrop-blur-md px-2 py-1 rounded text-[9px] font-bold text-white uppercase tracking-wider">00:12:44</span>
+<span class="bg-error-container/20 text-error border border-error/30 px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 animate-pulse">
+<span class="w-1 h-1 rounded-full bg-error"></span> ALERT
+                                </span>
+</div>
+</div>
+<div class="p-4 space-y-3">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-bold text-on-surface">Jordan Chen</h4>
+<p class="text-[10px] text-neutral-500 label-style">Fullstack Developer</p>
+</div>
+<span class="material-symbols-outlined text-neutral-500 text-sm">open_in_new</span>
+</div>
+<div class="bg-surface-container-lowest/50 p-2 rounded-lg border border-white/5">
+<p class="text-[11px] text-error-dim">Multiple face detection / External audio source detected.</p>
+</div>
+</div>
+</div>
+<!-- Session Card 3 -->
+<div class="glass-panel rounded-xl overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+<div class="relative aspect-video">
+<img alt="Live session 3" class="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" data-alt="close up of a professional woman wearing headphones during a remote technical interview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5opE2fJj-0N6feQSNdWJRUeBtAQtYVJpISti_44ViCy955zwOt2UeuzKyUgk0jtQanDLV6pxjYq-CpKv7EAcSaITsnvlPyUiQC8CkkmLbshIvLF-hC8o3U5KT5KqjSbK5UWhCCQjerLOoP77dSd3WobVNh3bzp0k-e4aXpkWgTmQR_Te_FZnJyJIqdaHCbDce1W8vWtCEoviU_OkdjmCdfZ89U-Sm6WU8Eozxm0zpT06dHOWzZw0Qf0JMPGcxbQiGiRke3FtK8Rg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest to-transparent opacity-60"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface-container-lowest/80 backdrop-blur-md px-2 py-1 rounded text-[9px] font-bold text-white uppercase tracking-wider">01:45:00</span>
+<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="w-1 h-1 rounded-full bg-emerald-400"></span> SAFE
+                                </span>
+</div>
+</div>
+<div class="p-4 space-y-3">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-bold text-on-surface">Sarah Miller</h4>
+<p class="text-[10px] text-neutral-500 label-style">Product Lead</p>
+</div>
+<span class="material-symbols-outlined text-neutral-500 text-sm">open_in_new</span>
+</div>
+<div class="bg-surface-container-lowest/50 p-2 rounded-lg border border-white/5">
+<p class="text-[11px] text-neutral-400 italic">"...roadmap focuses on scalability for Q3 while..."</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Section 3: Talent Insights (Spatial View) -->
+<section class="lg:col-span-2 space-y-4">
+<h2 class="text-xl font-headline font-bold text-white">Talent Pool Dynamics</h2>
+<div class="glass-panel rounded-2xl h-[350px] relative overflow-hidden flex items-center justify-center p-8">
+<!-- Abstract Spatial Graph Representation -->
+<div class="absolute inset-0 flex items-center justify-center opacity-40">
+<div class="w-[300px] h-[300px] rounded-full border border-primary-container/20 flex items-center justify-center">
+<div class="w-[200px] h-[200px] rounded-full border border-primary-container/40 flex items-center justify-center">
+<div class="w-[100px] h-[100px] rounded-full border border-secondary/40"></div>
+</div>
+</div>
+</div>
+<!-- Floating Data Points -->
+<div class="absolute top-[20%] left-[30%] group">
+<div class="w-3 h-3 rounded-full bg-secondary shadow-[0_0_15px_#00daf3] cursor-pointer"></div>
+<div class="absolute top-4 -left-10 w-32 glass-panel p-2 rounded-lg text-[10px] opacity-0 group-hover:opacity-100 transition-opacity z-20">
+<span class="label-style block mb-1">Backend Hub</span>
+<span class="text-neutral-300">84% Senior Candidates</span>
+</div>
+</div>
+<div class="absolute bottom-[30%] right-[25%] group">
+<div class="w-4 h-4 rounded-full bg-primary shadow-[0_0_15px_#a68cff] cursor-pointer"></div>
+<div class="absolute -top-12 -left-10 w-32 glass-panel p-2 rounded-lg text-[10px] opacity-0 group-hover:opacity-100 transition-opacity z-20">
+<span class="label-style block mb-1">Data Science</span>
+<span class="text-neutral-300">Elite Concentration</span>
+</div>
+</div>
+<div class="absolute top-[50%] right-[40%] group">
+<div class="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_15px_white] cursor-pointer"></div>
+</div>
+<!-- Legend/Utility -->
+<div class="absolute bottom-6 left-6 flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="label-style text-[9px]">High Potential</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="label-style text-[9px]">Vetted Expert</span>
+</div>
+</div>
+<div class="z-10 text-center max-w-sm">
+<h3 class="font-headline font-bold text-white mb-2">Performance Clusters</h3>
+<p class="text-xs text-neutral-400">Visualizing 2,400+ candidates across algorithmic competency and system design scores.</p>
+</div>
+</div>
+</section>
+<!-- Section 4: Alerts Log -->
+<section class="space-y-4">
+<h2 class="text-xl font-headline font-bold text-white">System Events</h2>
+<div class="glass-panel rounded-2xl flex-1 overflow-hidden">
+<div class="p-4 border-b border-white/5 label-style text-[10px] text-neutral-500">Live Feed</div>
+<div class="divide-y divide-white/5">
+<!-- Alert 1 -->
+<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors group">
+<div class="w-8 h-8 rounded-lg bg-error-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-error text-lg">warning</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h5 class="text-[12px] font-bold text-on-surface">Proctoring Violation</h5>
+<span class="text-[10px] text-neutral-500">2m ago</span>
+</div>
+<p class="text-[11px] text-neutral-400 mt-1 truncate">Session ID #4421: Background voice detected.</p>
+</div>
+</div>
+<!-- Alert 2 -->
+<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors group">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h5 class="text-[12px] font-bold text-on-surface">Candidate Certified</h5>
+<span class="text-[10px] text-neutral-500">14m ago</span>
+</div>
+<p class="text-[11px] text-neutral-400 mt-1 truncate">User [M. Patel] achieved Tier 1 Architecture score.</p>
+</div>
+</div>
+<!-- Alert 3 -->
+<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors group">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-neutral-400 text-lg">sync</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h5 class="text-[12px] font-bold text-on-surface">Batch Sync Complete</h5>
+<span class="text-[10px] text-neutral-500">45m ago</span>
+</div>
+<p class="text-[11px] text-neutral-400 mt-1 truncate">Greenhouse ATS integration sync successful.</p>
+</div>
+</div>
+<!-- Alert 4 -->
+<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors group">
+<div class="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-lg">rocket_launch</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h5 class="text-[12px] font-bold text-on-surface">New Feature Live</h5>
+<span class="text-[10px] text-neutral-500">1h ago</span>
+</div>
+<p class="text-[11px] text-neutral-400 mt-1 truncate">AI Transcription v2.4 deployed to production.</p>
+</div>
+</div>
+</div>
+<button class="w-full p-3 text-[10px] label-style text-neutral-500 hover:text-white transition-colors border-t border-white/5">
+                            View Historical Logs
+                        </button>
+</div>
+</section>
+</div>
+</div>
+</main>
+</body></html>
