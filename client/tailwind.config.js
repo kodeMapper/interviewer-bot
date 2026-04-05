@@ -68,7 +68,7 @@ export default {
         "full": "9999px"
       },
       fontFamily: {
-        "headline": ["Syne", "Manrope", "sans-serif"],
+        "headline": ["Manrope", "sans-serif"],
         "body": ["Inter", "sans-serif"],
         "label": ["Space Grotesk", "sans-serif"],
         "mono": ["JetBrains Mono", "monospace"],

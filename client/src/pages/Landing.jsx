@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 function Landing() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ function Landing() {
   };
 
   return (
-    <div className="bg-background selection:bg-primary/30 min-h-screen relative font-body text-on-surface overflow-x-hidden">
+    <div className="bg-background bg-grid-pattern selection:bg-primary/30 min-h-screen relative font-body text-on-surface overflow-x-hidden">
 
       {/* ── TopNavBar ── */}
       <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl flex justify-between items-center px-8 py-3 bg-surface/60 backdrop-blur-2xl rounded-full border border-white/15 shadow-[0_0_40px_rgba(124,77,255,0.08)]">
@@ -48,8 +49,9 @@ function Landing() {
         <section className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6 overflow-hidden">
 
           {/* Ambient Light Sources */}
-          <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(124, 77, 255, 0.15) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
-          <div className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(0, 218, 243, 0.08) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
+          <div className="absolute top-[-10%] left-[-15%] w-[70vw] h-[70vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(124, 77, 255, 0.25) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
+          <div className="absolute top-[-20%] right-[-15%] w-[70vw] h-[70vw] pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(0, 218, 243, 0.2) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
+          <div className="absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] pointer-events-none opacity-40" style={{ background: 'radial-gradient(circle at center, rgba(166, 140, 255, 0.2) 0%, rgba(14, 14, 14, 0) 70%)' }}></div>
 
           {/* Hero Text — centered above the floating panel */}
           <div className="container max-w-7xl mx-auto relative z-10 text-center mt-[60px]">
@@ -60,9 +62,9 @@ function Landing() {
             </div>
 
             {/* Headline */}
-            <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-on-surface mb-8 leading-[0.9]" style={{ textShadow: '0 0 30px rgba(166, 140, 255, 0.4)' }}>
+            <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-on-surface mb-8 leading-[1.1]" style={{ textShadow: '0 0 40px rgba(166, 140, 255, 0.6)' }}>
               Evaluating Talent <br />
-              <span className="text-transparent bg-clip-text" style={{ background: 'linear-gradient(135deg, #a68cff 0%, #00daf3 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>In Multi-Dimensions</span>
+              <span className="text-transparent bg-clip-text inline-block" style={{ background: 'linear-gradient(135deg, #a68cff 0%, #00daf3 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>In Multi-Dimensions</span>
             </h1>
 
             {/* Subtext */}
@@ -91,7 +93,12 @@ function Landing() {
 
           {/* Floating Hero UI Panel */}
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-4xl px-6 opacity-30 pointer-events-none md:opacity-100">
-            <div className="glass-panel p-4 rounded-3xl overflow-hidden border border-white/10" style={{ background: 'rgba(32, 31, 31, 0.6)', backdropFilter: 'blur(40px)', boxShadow: 'inset 0 0 20px rgba(166, 140, 255, 0.05)' }}>
+            <motion.div 
+              animate={{ y: [-8, 8, -8] }} 
+              transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+              className="glass-panel p-4 rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]" 
+              style={{ background: 'rgba(32, 31, 31, 0.6)', backdropFilter: 'blur(40px)', boxShadow: 'inset 0 0 20px rgba(166, 140, 255, 0.05)' }}
+            >
               {/* Window Chrome */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex gap-1.5">
@@ -107,7 +114,7 @@ function Landing() {
                 alt="futuristic dark holographic interface showing data visualization of candidate technical skills and behavioral metrics"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMgdr4ZvATEeshAledypAr2gkXSvUTnWHp3Q5VTwOR9fABjU6dIfTNgWWYj-SbUVpndF8vDk-VN1pgc4L3vKJg1w93EK86rpMsESNWdgtAx9FKfUY6GTsTd7oez568tWcuBO4MrdSRwcGGNnBuBc9MKR_Zexaq73NwhEyuRXGbkCBvReNTAwhdL0RCRyracdbze6ov1Ssu9_7F2vqjdJ8HCmdDHfM7QQzOzGfUfvi-wboyNTPbr2QG2Ajj1AgcfPfB1IEDbf95jOo"
               />
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -115,7 +122,7 @@ function Landing() {
         <section className="py-24 px-6 relative">
           <div className="container max-w-7xl mx-auto">
             <div className="mb-20 space-y-4">
-              <h2 className="font-headline text-4xl md:text-5xl font-bold text-on-surface tracking-tight">The Future of Assessment</h2>
+              <h2 className="font-syne font-headline text-4xl md:text-5xl font-bold text-on-surface tracking-tight">The Future of Assessment</h2>
               <p className="text-on-surface-variant max-w-xl text-lg">Our core engine leverages three pillars of spatial analysis to ensure every hire is a precision match.</p>
             </div>
 
@@ -128,7 +135,7 @@ function Landing() {
                 </div>
                 <div className="relative z-10 max-w-md">
                   <span className="font-label text-xs tracking-widest text-primary mb-4 block uppercase">Cognitive Analysis</span>
-                  <h3 className="text-3xl font-bold mb-4 font-headline">Dynamic Skill Evaluation</h3>
+                  <h3 className="text-3xl font-bold mb-4 font-syne font-headline">Dynamic Skill Evaluation</h3>
                   <p className="text-on-surface-variant font-body">Our engine orchestrates real-time technical assessments that adapt difficulty and topic depth based on live candidate performance.</p>
                 </div>
               </div>
@@ -139,7 +146,7 @@ function Landing() {
                   <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>shield</span>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-3 font-headline">Behavioral Integrity</h3>
+                  <h3 className="text-2xl font-bold mb-3 font-syne font-headline">Behavioral Integrity</h3>
                   <p className="text-on-surface-variant text-sm leading-relaxed font-body">Real-time computer vision prevents phone usage, multi-person presence, and detects unauthorized assistance during assessment.</p>
                 </div>
               </div>
@@ -150,7 +157,7 @@ function Landing() {
                   <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>visibility</span>
                 </div>
                 <div className="relative z-10">
-                  <h3 className="text-2xl font-bold mb-3 font-headline">AI-Powered Proctoring</h3>
+                  <h3 className="text-2xl font-bold mb-3 font-syne font-headline">AI-Powered Proctoring</h3>
                   <p className="text-on-surface-variant text-sm leading-relaxed font-body">Automated integrity scoring with flagged violations for eye-tracking and environmental precision monitoring.</p>
                 </div>
                 <div className="absolute bottom-0 right-0 w-24 h-24 bg-primary/5 blur-3xl group-hover:bg-primary/20 transition-all duration-700"></div>
@@ -159,7 +166,7 @@ function Landing() {
               {/* Feature 4 — Personalized Dashboard (wide) */}
               <div className="md:col-span-8 glass-panel rounded-3xl p-10 flex flex-col md:flex-row gap-8 items-center border-l border-primary/20 border border-white/10">
                 <div className="flex-1 space-y-4">
-                  <h3 className="text-3xl font-bold font-headline">Personalized Dashboard</h3>
+                  <h3 className="text-3xl font-bold font-syne font-headline">Personalized Dashboard</h3>
                   <p className="text-on-surface-variant font-body">Track your growth with a comprehensive history of every interview attempt, complete with session labels and high-fidelity reports.</p>
                   <div className="flex gap-4 pt-4">
                     <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-label uppercase tracking-widest text-on-surface">Data-Responsive</div>
@@ -184,25 +191,25 @@ function Landing() {
         </section>
 
         {/* ── Stats Section ── */}
-        <section className="py-24 relative overflow-hidden">
-          <div className="absolute inset-0 bg-primary/5 -skew-y-3 pointer-events-none"></div>
-          <div className="container max-w-7xl mx-auto px-6 relative z-10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-              <div className="space-y-2">
-                <div className="text-5xl md:text-6xl font-black font-headline" style={{ textShadow: '0 0 30px rgba(166, 140, 255, 0.4)' }}>98%</div>
-                <div className="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Precision Match Rate</div>
+        <section className="py-32 relative overflow-visible mt-16 mb-16">
+          <div className="absolute inset-x-0 top-0 bottom-0 bg-primary/5 -skew-y-3 pointer-events-none transform origin-left"></div>
+          <div className="container max-w-7xl mx-auto px-6 relative z-10 py-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-y-16 gap-x-4 text-center items-center justify-center">
+              <div className="space-y-3">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-black font-syne" style={{ textShadow: '0 0 30px rgba(166, 140, 255, 0.4)' }}>10+</div>
+                <div className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Adaptive Topics</div>
               </div>
-              <div className="space-y-2">
-                <div className="text-5xl md:text-6xl font-black font-headline text-secondary" style={{ textShadow: '0 0 30px rgba(0, 218, 243, 0.4)' }}>1.2M</div>
-                <div className="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Interviews Conducted</div>
+              <div className="space-y-3">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-black font-syne text-secondary" style={{ textShadow: '0 0 30px rgba(0, 218, 243, 0.4)' }}>&lt;0.5s</div>
+                <div className="font-label text-xs uppercase tracking-widest text-on-surface-variant">System Latency</div>
               </div>
-              <div className="space-y-2">
-                <div className="text-5xl md:text-6xl font-black font-headline" style={{ textShadow: '0 0 30px rgba(166, 140, 255, 0.4)' }}>0.1s</div>
-                <div className="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">System Latency</div>
+              <div className="space-y-3">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-black font-syne" style={{ textShadow: '0 0 30px rgba(166, 140, 255, 0.4)' }}>100%</div>
+                <div className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Real-Time Tracking</div>
               </div>
-              <div className="space-y-2">
-                <div className="text-5xl md:text-6xl font-black font-headline text-secondary" style={{ textShadow: '0 0 30px rgba(0, 218, 243, 0.4)' }}>40%</div>
-                <div className="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Time-to-Hire Reduction</div>
+              <div className="space-y-3">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-black font-syne text-secondary" style={{ textShadow: '0 0 30px rgba(0, 218, 243, 0.4)' }}>3</div>
+                <div className="font-label text-xs uppercase tracking-widest text-on-surface-variant">AI Models Running</div>
               </div>
             </div>
           </div>
