@@ -94,7 +94,7 @@ class ErrorResponse(BaseModel):
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 5000
 OPEN_URL = f"http://{HOST}:{PORT}"
 INTERVIEW_API_URL = os.getenv("INTERVIEW_API_URL", "http://localhost:5001")

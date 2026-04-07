@@ -1,0 +1,66 @@
+# SkillWise Deployment Architecture Prepared
+
+I've successfully updated your codebase to support a **zero-cost, unified cloud deployment** using Hugging Face Spaces!
+
+Here's a breakdown of the specific architectural changes and configurations we executed.
+
+## 1. Internal Networking Simplified
+Instead of splitting your resources across Render and Hugging Face, the entire brain of SkillWise now lives in one container.
+
+> [!NOTE]
+> **Port Assignments**
+> *   `Port 7860`: Bound to the Express server (this is the only port Hugging Face exposes to the internet).
+> *   `Port 5000`: Bound to FastAPI (Proctoring/CNN) running locally.
+> *   `Port 8000`: Bound to ML-Service (Adaptive Questioning) running locally.
+> 
+> The Express server acts as a unified gateway, automatically reverse-proxying requests made to `/api/proctoring` inward to Port 5000.
+
+## 2. Containerization Built
+I created the monorepo deployment formula that Hugging Face Spaces requires:
+
+*   [**Dockerfile**](file:///c:/Users/acer/Desktop/DL%20Project/Dockerfile): Automates the installation of Node.js 18 alongside Python 3.10. It processes the requirements for all three subdirectories.
+*   [**start.sh**](file:///c:/Users/acer/Desktop/DL%20Project/start.sh): Ensures a synchronized startup sequence, launching both Python APIs in the background before attaching the Express gateway to the foreground.
+
+## 3. Environment Variables Integrated
+The frontend must understand where it is hosted compared to where the backend lives.
+
+*   Updated `api.js` and `socket.js` to look for `VITE_API_URL` instead of relying on the local Vite proxy.
+*   Updated `environment.js` and `proctoringAdapter.js` in the Express server to use `PROCTOR_URL` and `ML_SERVICE_URL`.
+
+---
+
+## 🚀 Next Steps: Uploading to Hugging Face
+
+Now that this code is sealed in the `integration-version` branch, you are ready to upload!
+
+### Step 1: Create your Space
+1. Go to [huggingface.co/spaces](https://huggingface.co/spaces) and click **Create new Space**.
+2. Name it (e.g., `skillwise-platform`).
+3. Set the License as needed.
+4. Select **Docker** as your Space SDK -> choose **Blank**.
+5. Keep the hardware as the Free Tier (16GB RAM, 2 vCPU).
+
+### Step 2: Push your Code
+You can clone the HF Git repository and push this `integration-version` branch directly to it.
+```bash
+# Example
+git remote add huggingface https://huggingface.co/spaces/YOUR_USERNAME/skillwise-platform
+git push huggingface integration-version:main
+```
+
+### Step 3: Add your Secrets! -> CRITICAL
+> [!IMPORTANT]
+> The server will crash on startup if you do not add the database keys.
+
+Go to the **Settings** tab in your Hugging Face space, scroll down to **Variables and secrets**, and add these as **Secrets**:
+*   **`MONGODB_URI`**: `mongodb+srv://...`
+*   **`GEMINI_API_KEY`**: `AIzaSy...`
+
+Also add this as a standard **Variable**:
+*   **`CLIENT_URL`**: `https://your-vercel.vercel.app` (The URL where you hosted the Vercel frontend).
+
+### Step 4: Add Vercel Environment Variable
+Lastly, on the Vercel side, go to Settings -> Environment Variables, and add:
+*   **`VITE_API_URL`**: The URL of your running Hugging Face Space (e.g., `https://your-username-skillwise.hf.space/api`).
+
+Your deployment pipeline is now ready! Ensure you test it fully online before merging into main.
