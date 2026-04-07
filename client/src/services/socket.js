@@ -11,7 +11,11 @@ class SocketService {
       return this.socket;
     }
 
-    this.socket = io({
+    const socketUrl = import.meta.env.VITE_API_URL 
+      ? import.meta.env.VITE_API_URL.replace(/\/api$/, '') 
+      : undefined;
+
+    this.socket = io(socketUrl, {
       transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: 5,

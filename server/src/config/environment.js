@@ -17,7 +17,10 @@ const config = {
   clientUrl: process.env.CLIENT_URL || 'http://localhost:3000',
   
   // ML Service
-  mlServiceUrl: process.env.ML_SERVICE_URL || 'http://localhost:8000',
+  mlServiceUrl: process.env.ML_SERVICE_URL || 'http://127.0.0.1:8000',
+  
+  // Proctoring Service
+  proctorUrl: process.env.PROCTOR_URL || 'http://127.0.0.1:5000',
   
   // Gemini API
   geminiApiKey: process.env.GEMINI_API_KEY,

@@ -1,0 +1,58 @@
+# SkillWise — Unified "AI-in-a-Box" Deployment Plan
+
+Based on your feedback, we will consolidate the entire backend ecosystem onto **Hugging Face Spaces**. This makes the application significantly easier to manage and provides a massive 16GB RAM pool shared by all your AI models.
+
+## Updated Zero-Cost Architecture
+
+1.  **Vercel (Frontend):** Continues to host the React UI (best for CDN performance).
+2.  **Hugging Face Space (Unified Backend Container):**
+    *   **Port 7860 (Main Gateway):** The **Express Server (Node.js)** will listen here.
+    *   **Internal Port 5000:** The **Proctoring FastAPI** service (CNN/CV) runs here.
+    *   **Internal Port 8000:** The **ML-Service FastAPI** (MLP/Sentence-Transformers) runs here.
+    *   **Routing:** Express will act as a "Reverse Proxy". When the frontend calls `hf-url.space/api/proctoring`, Express will internally fetch from `localhost:5000`.
+
+## Why this is better?
+*   **Zero Cost:** Entirely free 16GB RAM + 2 vCPUs.
+*   **Simple Networking:** You only have **one** backend URL to provide to Vercel.
+*   **Full Model Support:** Both your Proctoring CNN and your Adaptive Questioning MLP (Sentence-Transformers) live in the same high-RAM environment.
+
+## Step-by-Step Execution Path
+
+### 1. Networking Infrastructure Updates
+*   **`client/src/services/api.js`**: Update to use `import.meta.env.VITE_API_URL`.
+*   **`server/src/config/environment.js`**: Update to use `process.env.PROCTOR_URL` and `process.env.ML_SERVICE_URL` defaulting to `localhost` for local dev.
+*   **Express Proxying:** Add internal proxy logic so that Express can route requests to the other two local services.
+
+### 2. Prepare for Hugging Face (Docker)
+*   **[NEW] `Dockerfile`**: A multi-stage Dockerfile that:
+    1.  Installs Node.js (for Express).
+    2.  Installs Python (for AI Services).
+    3.  Installs all requirements from `server/package.json`, `proctoring_fastapi/requirements.txt`, and `ml-service/requirements.txt`.
+    4.  Starts all three services using a process manager (`npm-run-all` or a background shell script).
+
+### 3. Secure Variables (Secrets)
+> [!IMPORTANT]
+> To hide your sensitive data, we will **NOT** commit any `.env` files.
+> You will add these keys to the **Hugging Face Settings -> Secrets** dashboard:
+> *   `MONGODB_URI`: Your Atlas connection string.
+> *   `GEMINI_API_KEY`: Your AI key.
+> *   `JWT_SECRET`: A random string for security.
+
+## Essential Code Changes (The "Must-Haves")
+
+### [MODIFY] [environment.js](file:///c:/Users/acer/Desktop/DL%20Project/server/src/config/environment.js)
+Update to ensure all service URLs are environment-aware.
+
+### [MODIFY] [server.py](file:///c:/Users/acer/Desktop/DL%20Project/proctoring_fastapi/server.py)
+Update to bind to `0.0.0.0` for container compatibility.
+
+### [NEW] [Dockerfile](file:///c:/Users/acer/Desktop/DL%20Project/Dockerfile)
+The recipe for building your "AI-in-a-Box" container.
+
+---
+
+## User Review Required
+1.  **Hugging Face Port:** HF Spaces only allow access to port 7860. By putting Express on 7860 and proxying internally, your frontend's `api.js` only needs one URL. Does this consolidated approach work for you?
+2.  **Environment Variables:** Are you comfortable adding the secrets (Mongo URI, Gemini Key) manually via the Hugging Face web interface once we are done? I will provide a list of exactly what to paste.
+
+If you approve, I'll start by making the **Express Gateway** env-aware and creating the **monorepo Dockerfile**.
