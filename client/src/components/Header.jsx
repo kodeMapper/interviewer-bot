@@ -29,9 +29,6 @@ function Header() {
         >
           Dashboard
         </Link>
-        <button className="flex items-center justify-center p-2 rounded-lg hover:bg-surface-container transition-colors text-outline">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>help_outline</span>
-        </button>
       </div>
     </header>
   );

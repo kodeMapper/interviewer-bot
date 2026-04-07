@@ -2,21 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import { useProctoring } from '../../context/ProctoringContext';
 
 const AlertOverlay = () => {
-  const { isSafe, isServiceConnected } = useProctoring();
+  const { isSafe, alertTrigger, isServiceConnected } = useProctoring();
   const audioRef = useRef(null);
 
+  // Re-play audio every time alertTrigger increments (every new alert detection)
   useEffect(() => {
-    // Only attempt to play if audio element is ready and in an alert state
-    if (!isSafe && isServiceConnected && audioRef.current) {
-      // Browsers may block auto-play if user hasn't interacted, but since 
-      // they clicked "Start Interview", the domain usually inherits interaction permission.
+    if (alertTrigger > 0 && !isSafe && isServiceConnected && audioRef.current) {
+      // Reset audio to start and play
+      audioRef.current.currentTime = 0;
       audioRef.current.play().catch(e => console.log('Audio blocked by browser policy:', e));
     }
-  }, [isSafe, isServiceConnected]);
-
-  // Generate a very brief silent 'bloop' dynamically or rely on local asset
-  // We use a dummy data URI for a tiny beep here if alert.mp3 is missing
-  const beepDataUri = "data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU";
+  }, [alertTrigger, isSafe, isServiceConnected]);
 
   if (isSafe || !isServiceConnected) return null;
 

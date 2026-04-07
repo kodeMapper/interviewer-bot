@@ -190,6 +190,13 @@
 .voice-bar:nth-child(4) { animation-delay: 0.3s; }
 .voice-bar:nth-child(5) { animation-delay: 0.4s; }
 
+/* Looping scanner line for camera feed */
+@keyframes scanLine {
+  0% { top: 0%; opacity: 0.3; }
+  50% { top: 100%; opacity: 0.8; }
+  100% { top: 0%; opacity: 0.3; }
+}
+
 /* Dashboard & Reporting Score Utilities */
 .score-excellent { @apply text-secondary; }
 .score-good { @apply text-primary; }

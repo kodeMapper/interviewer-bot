@@ -84,7 +84,7 @@ function Landing() {
                 onClick={handleStart}
                 className="px-10 py-5 rounded-full font-semibold text-lg text-on-surface border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-300"
               >
-                Watch System Demo
+                Start Assessment
               </button>
             </div>
           </div>
@@ -247,10 +247,10 @@ function Landing() {
                     Get Started for Free
                   </button>
                   <button
-                    onClick={(e) => { e.preventDefault(); alert('Enterprise Sales: coming soon.'); }}
+                    onClick={handleStart}
                     className="bg-surface-bright/20 backdrop-blur-md px-12 py-5 rounded-full font-bold border border-white/10 hover:bg-white/10 transition-all text-on-surface"
                   >
-                    Contact Enterprise Sales
+                    Start Assessment
                   </button>
                 </div>
               </div>

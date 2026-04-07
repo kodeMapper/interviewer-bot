@@ -8,6 +8,7 @@ export const useProctoring = () => useContext(ProctoringContext);
 export const ProctoringProvider = ({ children }) => {
   const [isSafe, setIsSafe] = useState(true);
   const [alertCount, setAlertCount] = useState(0);
+  const [alertTrigger, setAlertTrigger] = useState(0); // Increments on EACH new alert detection
   const [isServiceConnected, setIsServiceConnected] = useState(true);
   const [alertHistory, setAlertHistory] = useState([]);
   const [detailedMetrics, setDetailedMetrics] = useState({
@@ -30,9 +31,11 @@ export const ProctoringProvider = ({ children }) => {
           if (res.data.status === 'ALERT') {
             if (isSafe) {
               setIsSafe(false);
-              setAlertCount(prev => prev + 1);
-              setAlertHistory(prev => [...prev, { time: new Date().toLocaleTimeString(), reason: res.data.description || 'Violation Detected' }]);
             }
+            // Increment on EVERY new alert poll to re-trigger audio
+            setAlertCount(prev => prev + 1);
+            setAlertTrigger(prev => prev + 1);
+            setAlertHistory(prev => [...prev, { time: new Date().toLocaleTimeString(), reason: res.data.description || 'Violation Detected' }]);
           } else {
             if (!isSafe) setIsSafe(true);
           }
@@ -68,7 +71,7 @@ export const ProctoringProvider = ({ children }) => {
   };
 
   return (
-    <ProctoringContext.Provider value={{ isSafe, alertCount, isServiceConnected, alertHistory, detailedMetrics, stopProctoring }}>
+    <ProctoringContext.Provider value={{ isSafe, alertCount, alertTrigger, isServiceConnected, alertHistory, detailedMetrics, stopProctoring }}>
       {children}
     </ProctoringContext.Provider>
   );

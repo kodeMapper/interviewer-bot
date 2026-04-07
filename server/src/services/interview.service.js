@@ -508,8 +508,9 @@ async function getMixRoundQuestion(session) {
  */
 function getFinishMessage(session) {
   const answers = session.answers || [];
-  const totalScore = answers.reduce((sum, a) => sum + (a.score || 0), 0);
-  const avgScore = answers.length > 0 ? Math.round(totalScore / answers.length) : 0;
+  const nonSkipped = answers.filter(a => !a.isSkipped);
+  const totalScore = nonSkipped.reduce((sum, a) => sum + (a.score || 0), 0);
+  const avgScore = nonSkipped.length > 0 ? Math.round(totalScore / nonSkipped.length) : 0;
   
   let feedback = '';
   if (avgScore >= 80) {
@@ -681,8 +682,9 @@ function generateReport(session) {
     ? Math.round(localAnswers.reduce((s, a) => s + a.score, 0) / localAnswers.length) 
     : 0;
 
-  const totalScore = answers.length > 0
-    ? Math.round(answers.reduce((s, a) => s + a.score, 0) / answers.length)
+  const nonSkippedAll = answers.filter(a => !a.isSkipped);
+  const totalScore = nonSkippedAll.length > 0
+    ? Math.round(nonSkippedAll.reduce((s, a) => s + a.score, 0) / nonSkippedAll.length)
     : 0;
 
   // Generate question-wise feedback for final report

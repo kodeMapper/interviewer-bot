@@ -1,61 +1,43 @@
-1. initialize module 2 not working - "Failed to create session. Please try again." 
-Error: {
-  message: 'Session validation failed: username: Path `username` is required.',
-  stack: 'ValidationError: Session validation failed: username: Path `username` is required.\n' +
-    '    at Document.invalidate (C:\\Users\\acer\\Desktop\\DL Project\\server\\node_modules\\mongoose\\lib\\document.js:3381:32)\n' +
-    '    at C:\\Users\\acer\\Desktop\\DL Project\\server\\node_modules\\mongoose\\lib\\document.js:3142:17\n' +
-    '    at C:\\Users\\acer\\Desktop\\DL Project\\server\\node_modules\\mongoose\\lib\\schemaType.js:1446:9\n' +
-    '    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)',
-  path: '/api/interview/start',
-  method: 'POST'
-}
-POST /api/interview/start 400 6.628 ms - 87
-we need to modify database schema for interview, session and users. See the docs/deployment_needs.md
 
 
-2. landing page's hero section's background box is not alined properly. You can see the screenshots in design\stitch_ui_ux_design_execution\skillwise_landing_immersive
+1. Also as i had instructed, See the uiux design plan that i had provided. there are extra buttons/ missing navigations/ non functional componets which are not functional and should not be there in the desings. hence modify the UI according to our app's functionality.
 
-3. Also as i had instructed, See the uiux design plan that i had provided. there are extra buttons/ missing navigations/ non functional componets which are not functional and should not be there in the desings. hence modify the UI according to our app's functionality.
 
-4. do not completly rely on the html code from the stitch always. sometimes it does not give the actual UI. always recheck with the png of that page (screen) wether the UI is correct or not. some minor missmatches are ok, but try to develop as close as possible to the UI. 
+2. interview automatically stops sometimes. also proctoring systems stops working sometimes. i.e, camera turns off and the feed freezes.
 
-5. some pages designs are not friendly with Desktop. so make them friendly with Desktop by ajusting size.
 
-6. when we end the interview, on the report page, the expected answer should also be visible for each question as the bot giving us its feedback. see interview_controller.py.
+3. resume upload page design - keep left side of the current implementation as it is, right side should be the UI of the resume upload page which is at design\stitch_ui_ux_design_execution\resume_upload_immersive. current implementation is similar but not well defined. see the PNG img in that repo also.
 
-7. interview automatically stops sometimes. also proctoring systems stops working sometimes. i.e, camera turns off and the feed freezes.
+4. single conversation window - in the interview room, there are 2 blocks which diplays the ongoing question. keep only the bottom conversation window. make sure the question is properly visible
 
-8. admin page not opening (auth should be required) 
-Admin.jsx:45 Uncaught TypeError: sessions.filter is not a function
-    at Admin (Admin.jsx:45:37)
-Admin	@	Admin.jsx:45
+5. on module 3, 'initializing optics' should be at center of the camera feed. also keep moving that horizontal scanner line of the camera feed on that page.
 
-Admin.jsx:45 Uncaught TypeError: sessions.filter is not a function
-    at Admin (Admin.jsx:45:37)
-VM157:63 The above error occurred in the <Admin> component:
+6. first load the camera feed in the interview room. make sure backend is working. all the services are loaded properly then enter in the Interview room.
 
-    at Admin (http://localhost:3000/src/pages/Admin.jsx?t=1775380198900:24:20)
-    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=b9d6f27e:4131:5)
-    at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=b9d6f27e:4601:5)
-    at InterviewProvider (http://localhost:3000/src/context/InterviewContext.jsx:20:37)
-    at App
-    at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=b9d6f27e:4544:15)
-    at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=b9d6f27e:5290:5)
+7. multiple faces problem - record shows multiple faces, but the beep and UI does not show/reponse it.
 
-    
+8. 'interview completed' interruption. similar problem as 'interview started' interruption. see docs/PROBLEMS_SOLUTION_PLAN.md
 
-9. while setuping the environment, at any step when i refresh, the refresh causes all steps (modules) to refresh, not that specific step.
+9. when interview starts - 
+it goes like: `Hello! I am your AI Interviewer. Based on your selection, I will be asking you questions on ${skillList}. Let me start with a few warmup questions while I analyze your resume in the background. Get ready!`
+the above sentence does not gets complete. immidiatly the model starts asking questions. sometimes, it gets partially completed.
 
-10. do gemini api call only after interview starts, not immidiatly after uploading the resume.
+10. final score and avg scores are diffrent, why? i.e score being calculated during interview and the score calculated in the final report are diffrent.
 
-11. for doing system environment check, do not add that beep sound or check for the interview rules (do not involve the backend), just make sure camera is visible/accesible and enough lighting is there. if possible then check for are there multiple Monitors or not. (single screen should be there). also make the user to do full screen for attempting the interview.
+11.once the app start (first load), after completing a interview, the report gets generated. Its ok. but when we try to give another interview, we dont see the module 1 which is domain selection. it directly gets shifted to module 3. so the session should be created only when all the modules are completed and when user clicks launch interview, then it starts. meanwhile, when seesion is being created (data entry) user should be able to modify any of the 3 module. it does not mean that a refresh should wipe out all the filled data.
 
-12. resume upload page design - keep left side of the current implementation as it is, right side should be the UI of the resume upload page which is at design\stitch_ui_ux_design_execution\resume_upload_immersive
 
-13. single conversation window - in the interview room, there are 2 blocks which diplays the ongoing question. keep only the bottom conversation window. make sure the question is properly visible
+FUTURE - 
 
-14. the vedio feed recording should start only after the interview starts, not before that.
+1. Tell me about yourself --> first phase (collect keywords)
 
-15. landing page - human figure integration: move the section relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6 overflow-hidden to left side. on the right side, human figure/model should be there. see the provided img to agent. just place that model near the card.
+2. also we need overall cleanup. its got too messy. first, manage and arrange the database properly. rethink the schema. define user scopes, authorizations, permissions, contraints, etc. what admin can do, what a user can do. admin is like a owner company, it has user data (signed up users), who opted thier servies (might be individual or colleges) data not like not like how much interview he has given or when he started interview. 
+Admin - what is models performance (all the metrices), application's state, api/db connections checks, global users, thier basic data, no of ongoing interviews, any other imp logs and add if i miss anything.
 
-16. while checking the environment (after resume upload), along with the small window of camera preview, other parameretes like, single screen, camera permission, mic permission, full screen such checklist should be there. and as the app check the parameter, it should be marked as checked.
+colleges should have access to monitor thier student's performace. like students are listed branch wise. in each branch, list of registered students should be there. each entry navigates to overall performance of the student. suject-wise, datewise, and all the assessment details, how to student is growing, and eveything a college should know about thier student. then no of live students giving interview, top performing students, weak/avg students and feedback for them by our model so that faculty would get to know where is the candidate facing problem, add if i miss any point by yourself.
+
+
+3.after that, as you have created the landing page, with get started btn, login+signup page should open (can be done by Admin/college(university)/individual). college can provide specific creadentials to their students to login to this platform. on candidate's dashboard, their college name would be mentioned if this case. not it may possible some individual opted our platform services indivisually, then he need not require that special creadentials. he will just login/signup by his credentials.
+
+then after all the interface would show only releavant info for those role. not evrything. 
+

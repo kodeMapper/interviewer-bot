@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { proctoringAPI } from '../../services/api';
 
 const CHECKLIST_ITEMS = [
   { id: 'camera', label: 'Camera Detected', icon: 'videocam' },
@@ -6,6 +7,7 @@ const CHECKLIST_ITEMS = [
   { id: 'lighting', label: 'Lighting Adequate', icon: 'light_mode' },
   { id: 'screen', label: 'Single Screen Detected', icon: 'desktop_windows' },
   { id: 'browser', label: 'Browser Compatible', icon: 'language' },
+  { id: 'services', label: 'Backend Services Online', icon: 'cloud_done' },
 ];
 
 const PreCheck = ({ sessionId, onComplete }) => {
@@ -19,7 +21,7 @@ const PreCheck = ({ sessionId, onComplete }) => {
   const canvasRef = useRef(null);
   const brightnessIntervalRef = useRef(null);
 
-  const allCriticalPassed = checks.camera === 'passed' && checks.mic === 'passed' && checks.browser === 'passed';
+  const allCriticalPassed = checks.camera === 'passed' && checks.mic === 'passed' && checks.browser === 'passed' && checks.services === 'passed';
 
   const updateCheck = useCallback((id, status) => {
     setChecks(prev => ({ ...prev, [id]: status }));
@@ -87,6 +89,19 @@ const PreCheck = ({ sessionId, onComplete }) => {
       } catch {
         updateCheck('screen', 'passed'); // permission denied = assume single screen
       }
+
+      // 5. Backend services check
+      updateCheck('services', 'checking');
+      await delay(300);
+      try {
+        await proctoringAPI.getStatus();
+        if (mounted) updateCheck('services', 'passed');
+      } catch {
+        if (mounted) {
+          updateCheck('services', 'failed');
+          setErrorMsg(prev => prev || 'Backend proctoring service is offline. Please ensure the server is running.');
+        }
+      }
     };
 
     runChecks();
@@ -145,16 +160,6 @@ const PreCheck = ({ sessionId, onComplete }) => {
         {/* Left: Camera Preview */}
         <div className="relative aspect-video md:aspect-auto md:min-h-[350px] rounded-2xl overflow-hidden glass-panel border border-white/10 group">
           <div className="absolute inset-0 bg-surface-container-lowest flex items-center justify-center">
-            {!cameraActive && !errorMsg && (
-              <div className="flex flex-col items-center gap-4">
-                <div className="relative w-16 h-16">
-                  <div className="absolute inset-0 border-2 border-primary/20 rounded-full"></div>
-                  <div className="absolute inset-0 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                  <span className="absolute inset-0 flex items-center justify-center material-symbols-outlined text-primary/50">nest_cam_iq</span>
-                </div>
-                <span className="font-label text-xs uppercase tracking-widest text-primary animate-pulse">Initializing Optics</span>
-              </div>
-            )}
             {errorMsg && (
               <div className="flex flex-col items-center gap-3 w-3/4 text-center z-20">
                 <span className="material-symbols-outlined text-[48px] text-error">warning</span>
@@ -163,8 +168,20 @@ const PreCheck = ({ sessionId, onComplete }) => {
               </div>
             )}
             <video ref={videoRef} autoPlay muted playsInline className={`w-full h-full object-cover transition-opacity duration-1000 ${cameraActive ? 'opacity-100' : 'opacity-0'}`} />
+            {/* Centered "Initializing Optics" overlay — shown while camera is loading */}
+            {!cameraActive && !errorMsg && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-surface-container-lowest/80 backdrop-blur-sm">
+                <div className="relative w-16 h-16 mb-4">
+                  <div className="absolute inset-0 border-2 border-primary/20 rounded-full"></div>
+                  <div className="absolute inset-0 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <span className="absolute inset-0 flex items-center justify-center material-symbols-outlined text-primary/50">nest_cam_iq</span>
+                </div>
+                <span className="font-label text-xs uppercase tracking-widest text-primary animate-pulse">Initializing Optics</span>
+              </div>
+            )}
+            {/* Looping horizontal scanner line */}
             {cameraActive && (
-              <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-30 scan-line shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
+              <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_rgba(34,211,238,0.5)] animate-[scanLine_2.5s_ease-in-out_infinite] z-10"></div>
             )}
           </div>
 

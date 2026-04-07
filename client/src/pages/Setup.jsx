@@ -42,6 +42,16 @@ function Setup() {
       alert('Please enter a username');
       return;
     }
+    if (!candidateName.trim()) {
+      alert('Please enter your candidate name');
+      return;
+    }
+
+    // Prevent duplicate session creation — if we already have one, just advance
+    if (sessionId) {
+      setStep(2);
+      return;
+    }
 
     setIsCreatingSession(true);
     try {
@@ -79,6 +89,18 @@ function Setup() {
     if (sessionId) {
       setStep(3);
     }
+  };
+
+  const handleEnterInterview = () => {
+    // Clear setup state so next visit starts fresh
+    sessionStorage.removeItem('setup_step');
+    sessionStorage.removeItem('setup_sessionId');
+    sessionStorage.removeItem('setup_username');
+    sessionStorage.removeItem('setup_candidateName');
+    sessionStorage.removeItem('setup_sessionName');
+    sessionStorage.removeItem('setup_skills');
+    sessionStorage.removeItem('setup_uploadResult');
+    navigate(`/interview/${sessionId}`);
   };
 
   return (
@@ -169,7 +191,7 @@ function Setup() {
                       />
                     </div>
                     <div>
-                      <label className="block text-on-surface-variant text-xs font-label uppercase tracking-widest mb-2">Display Name (Optional)</label>
+                      <label className="block text-on-surface-variant text-xs font-label uppercase tracking-widest mb-2">Candidate Name (Required)</label>
                       <input 
                         type="text" 
                         value={candidateName}
@@ -207,7 +229,7 @@ function Setup() {
               <div className="flex justify-end">
                 <button
                   onClick={handleStartSession}
-                  disabled={selectedSkills.length === 0 || !username.trim() || isCreatingSession}
+                  disabled={selectedSkills.length === 0 || !username.trim() || !candidateName.trim() || isCreatingSession}
                   className="bg-primary text-on-primary px-10 py-4 rounded-full font-bold flex items-center gap-3 hover:scale-105 transition-all disabled:opacity-50 disabled:hover:scale-100 shadow-[0_0_30px_rgba(166,140,255,0.2)]"
                 >
                   {isCreatingSession ? 'Initializing Session...' : 'Initialize Module 02'}
@@ -218,8 +240,17 @@ function Setup() {
           )}
 
           {step === 2 && (
-            <div className="space-y-8 flex flex-col items-center">
-              <div className="text-center mb-6 max-w-2xl mx-auto">
+            <div className="space-y-8 flex flex-col items-center relative">
+              {/* Step Indicator */}
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] font-label uppercase tracking-[0.2em] text-secondary mb-2">Step 02</span>
+                <div className="h-[2px] w-32 bg-surface-container-highest overflow-hidden rounded-full">
+                  <div className="h-full w-2/3 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+                </div>
+              </div>
+
+              {/* Section Header */}
+              <div className="text-center mb-2 max-w-2xl mx-auto">
                 <h1 className="text-4xl md:text-5xl font-headline font-extrabold tracking-tight text-on-surface mb-4 text-glow">
                   The <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-fixed to-secondary-fixed">Source</span> Material
                 </h1>
@@ -228,13 +259,26 @@ function Setup() {
                 </p>
               </div>
 
-              <ResumeUpload
-                onUpload={handleResumeUpload}
-                isUploading={isUploadingResume}
-                uploadResult={uploadResult}
-                error={uploadError}
-              />
+              {/* Portal + Side Decoration Container */}
+              <div className="relative w-full flex justify-center">
+                <ResumeUpload
+                  onUpload={handleResumeUpload}
+                  isUploading={isUploadingResume}
+                  uploadResult={uploadResult}
+                  error={uploadError}
+                />
 
+                {/* Right-Side Ethereal Decoration Element */}
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-1 opacity-20 hover:opacity-100 transition-opacity duration-500">
+                  <div className="w-1 h-1 rounded-full bg-secondary"></div>
+                  <div className="w-[1px] h-20 bg-gradient-to-b from-secondary to-transparent"></div>
+                  <div className="[writing-mode:vertical-lr] font-label text-[10px] uppercase tracking-[0.5em] text-on-surface-variant mt-2">
+                    Data Extraction Engine v2.0
+                  </div>
+                </div>
+              </div>
+
+              {/* Control Actions */}
               <div className="flex justify-between items-center mt-12 pt-6 border-t border-white/5 w-full">
                 <button
                   onClick={() => setStep(1)}
@@ -269,7 +313,7 @@ function Setup() {
                <div className="glass-panel rounded-3xl p-2 md:p-6 pb-0">
                   <PreCheck 
                     sessionId={sessionId}
-                    onComplete={() => navigate(`/interview/${sessionId}`)}
+                    onComplete={handleEnterInterview}
                   />
                </div>
             </div>

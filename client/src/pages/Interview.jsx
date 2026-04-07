@@ -104,7 +104,22 @@ function Interview() {
 
     const unsubMessage = on('interview-message', async (data) => {
       setMessages(prev => [...prev, { type: 'system', text: data.message }]);
-      if (data.speakText && ttsSupported) speak(data.speakText);
+      if (data.speakText && ttsSupported) {
+        speak(data.speakText).then(() => {
+          // Signal server that intro speech has finished
+          if (data.type === 'intro') {
+            emit('intro-complete');
+          }
+        }).catch(() => {
+          // TTS failed — still signal server so the interview isn't stuck
+          if (data.type === 'intro') {
+            emit('intro-complete');
+          }
+        });
+      } else if (data.type === 'intro') {
+        // TTS not supported — signal immediately
+        emit('intro-complete');
+      }
     });
 
     const unsubQuestion = on('question', async (data) => {
@@ -147,10 +162,30 @@ function Interview() {
     });
 
     const unsubComplete = on('interview-complete', async (data) => {
+      // Clear the fallback navigation timer so TTS isn't interrupted
+      if (endFallbackRef.current) {
+        clearTimeout(endFallbackRef.current);
+        endFallbackRef.current = null;
+      }
+      
       setMessages(prev => [...prev, { type: 'complete', text: data.message }]);
+      // Show the "Finalizing Session" overlay immediately
+      setInterviewComplete(true);
       try { await proctoringAPI.stop(); } catch (err) {}
-      if (data.speakText && ttsSupported) speak(data.speakText);
-      setTimeout(() => navigate(`/interview/${sessionId}/complete`), 3000);
+      if (data.speakText && ttsSupported) {
+        speak(data.speakText).then(() => {
+          // Navigate after TTS finishes, with a minimum 2s for the overlay animation
+          setTimeout(() => {
+            cancelSpeech();
+            navigate(`/interview/${sessionId}/complete`);
+          }, 2000);
+        }).catch(() => {
+          setTimeout(() => navigate(`/interview/${sessionId}/complete`), 3000);
+        });
+      } else {
+        // No TTS — give the overlay 5 seconds to show
+        setTimeout(() => navigate(`/interview/${sessionId}/complete`), 5000);
+      }
     });
 
     const unsubError = on('error', (data) => {
@@ -163,26 +198,34 @@ function Interview() {
     };
   }, [isConnected, on, speak, ttsSupported, navigate, sessionId, currentQuestion, addAnswer, resetTranscript, setCurrentQuestion, setProgress]);
 
-  // Separate cleanup — stop proctoring ONLY when leaving the page, NOT on re-renders
+  // Track whether interview actually started for cleanup guard
+  const interviewStartedRef = useRef(false);
+  useEffect(() => {
+    interviewStartedRef.current = interviewStarted;
+  }, [interviewStarted]);
+
+  // Fallback timer ref for early termination
+  const endFallbackRef = useRef(null);
+
+  // Separate cleanup — stop proctoring ONLY when leaving the page AND interview was started
   useEffect(() => {
     return () => {
-      proctoringAPI.stop().catch(() => {});
+      if (interviewStartedRef.current) {
+        proctoringAPI.stop().catch(() => {});
+      }
     };
   }, []);
 
   const handleStart = useCallback(async () => {
     try {
       setIsInitializing(true);
-      setInitCountdown(3);
+      setInitCountdown(10);
       
       // Tell server/proctoring to start
       await proctoringAPI.setMeta(sessionId, { name: 'Candidate' });
       await proctoringAPI.start();
-      
-      // Start the interview on the server immediately, but wait for UI transition
-      emit('start-interview');
 
-      // Countdown for camera initialization
+      // Countdown for camera initialization & backend setup
       const timer = setInterval(() => {
         setInitCountdown(prev => {
           if (prev <= 1) {
@@ -193,8 +236,11 @@ function Interview() {
         });
       }, 1000);
 
-      // Wait 3 seconds for camera to warm up
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Wait 10 seconds before entering the room
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      
+      // Start the interview on the server only AFTER entering the room
+      emit('start-interview');
       
       setInterviewStarted(true);
       setIsInitializing(false);
@@ -269,11 +315,11 @@ function Interview() {
       // Emit event to server
       emit('end-interview');
       
-      // Fallback navigation if socket/server is slow (2 seconds)
-      setTimeout(() => {
+      // Fallback navigation if socket/server is slow (5 seconds — allows overlay animation)
+      endFallbackRef.current = setTimeout(() => {
         console.log('[Interview] Fallback navigation triggered');
         navigate(`/interview/${sessionId}/complete`);
-      }, 2000);
+      }, 5000);
     } catch (err) {
       console.error('Error during end interview:', err);
       navigate(`/interview/${sessionId}/complete`);
@@ -336,7 +382,7 @@ function Interview() {
                     fill="none" stroke="currentColor" strokeWidth="6"
                     strokeDasharray={276}
                     initial={{ strokeDashoffset: 276 }}
-                    animate={{ strokeDashoffset: 276 - (276 * (3 - initCountdown) / 3) }}
+                    animate={{ strokeDashoffset: 276 - (276 * (10 - initCountdown) / 10) }}
                     className="text-primary"
                     transition={{ duration: 0.5 }}
                   />

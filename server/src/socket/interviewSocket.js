@@ -43,6 +43,13 @@ module.exports = function (io) {
         session.socketId = socket.id;
         await session.save();
 
+        // Cancel any pending proctoring-stop grace period timer
+        if (io._gracePeriodTimers && io._gracePeriodTimers.has(sessionId)) {
+          clearTimeout(io._gracePeriodTimers.get(sessionId));
+          io._gracePeriodTimers.delete(sessionId);
+          console.log(`[Join] Cancelled grace period timer for session ${sessionId}`);
+        }
+
         // Join socket room for this session
         socket.join(sessionId);
 
@@ -131,8 +138,10 @@ module.exports = function (io) {
           reloadedSession.lastQuestion = firstQuestion;
           await reloadedSession.save();
 
-          // Longer delay to let intro speech complete fully (8 seconds)
-          setTimeout(() => {
+          // Wait for client 'intro-complete' signal (TTS finished) OR 15s fallback
+          const sendFirstQuestion = () => {
+            if (socket._introQuestionSent) return; // Prevent double-send
+            socket._introQuestionSent = true;
             socket.isWaitingForIntro = false;
             socket.emit('question', {
               ...firstQuestion,
@@ -140,7 +149,27 @@ module.exports = function (io) {
             });
             socket.currentQuestion = firstQuestion;
             socket.questionStartTime = Date.now();
-          }, 8000);
+            // Clean up the listener and timer
+            socket.removeAllListeners('intro-complete');
+            if (socket._introFallbackTimer) {
+              clearTimeout(socket._introFallbackTimer);
+              socket._introFallbackTimer = null;
+            }
+          };
+
+          socket._introQuestionSent = false;
+
+          // Primary: client signals intro speech is done
+          socket.once('intro-complete', () => {
+            console.log(`[Socket] ✅ Client signaled intro-complete. Sending first question.`);
+            sendFirstQuestion();
+          });
+
+          // Fallback: 15s max wait in case TTS event never arrives
+          socket._introFallbackTimer = setTimeout(() => {
+            console.log(`[Socket] ⏱️ Intro fallback timer fired (15s). Sending first question.`);
+            sendFirstQuestion();
+          }, 15000);
         } else {
           // Legacy flow: Get the skill prompt question
           const reloadedSession = await Session.findById(sessionId);
@@ -613,7 +642,7 @@ module.exports = function (io) {
     });
 
     /**
-     * Disconnect handler
+     * Disconnect handler — 10-second grace period before stopping proctoring
      */
     socket.on('disconnect', async () => {
       console.log(`🔌 Client disconnected: ${socket.id}`);
@@ -624,11 +653,25 @@ module.exports = function (io) {
           const session = await Session.findById(sessionId);
           if (session && session.state !== 'FINISHED') {
             // Mark session as interrupted but don't end it
-            // User can reconnect
             session.socketId = null;
             await session.save();
-            // IMPORTANT: Stop proctoring camera to prevent infinite memory leak
-            await stopProctoringInternal();
+            
+            // Grace period: wait 10 seconds before stopping proctoring
+            // If client reconnects, the timer is cancelled in join-session
+            const gracePeriodTimer = setTimeout(async () => {
+              // Check if someone reconnected to this session
+              const reloadedSession = await Session.findById(sessionId);
+              if (!reloadedSession || !reloadedSession.socketId) {
+                console.log(`[Disconnect] Grace period expired for session ${sessionId}. Stopping proctoring.`);
+                await stopProctoringInternal();
+              } else {
+                console.log(`[Disconnect] Client reconnected to session ${sessionId}. Proctoring continues.`);
+              }
+            }, 10000);
+            
+            // Store the timer so it can be cancelled on reconnect
+            if (!io._gracePeriodTimers) io._gracePeriodTimers = new Map();
+            io._gracePeriodTimers.set(sessionId, gracePeriodTimer);
           }
         } catch (error) {
           console.error('Error handling disconnect:', error);
