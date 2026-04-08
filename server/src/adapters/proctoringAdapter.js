@@ -194,8 +194,28 @@ async function downloadPackage(req, res) {
   }
 }
 
+/**
+ * POST /api/proctoring/process_frame
+ * Receives base64 frame from React and forwards to FastAPI for analysis
+ */
+async function processFrame(req, res) {
+  try {
+    const { data } = await axios.post(`${PROCTOR_BASE}/process_frame`, req.body, { timeout: 3000 });
+    res.json({ success: true, data });
+  } catch (err) {
+    if (err.code === 'ECONNREFUSED') {
+      return res.status(503).json({
+        success: false,
+        error: 'Proctoring service is not running'
+      });
+    }
+    // Don't crash Express on parsing errors, just pass false success
+    res.status(502).json({ success: false, error: err.message });
+  }
+}
+
 module.exports = { 
   getStatus, startProctoring, stopProctoring, videoFeed, 
   setSessionMeta, getReport, stopProctoringInternal,
-  downloadLog, downloadVideo, downloadPackage
+  downloadLog, downloadVideo, downloadPackage, processFrame
 };

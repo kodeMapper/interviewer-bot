@@ -7,6 +7,8 @@ import threading
 import time
 import uvicorn
 import zipfile
+import base64
+import platform
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
@@ -24,6 +26,7 @@ from proctor_live import (
     start_proctoring,
     stop_proctoring,
     update_settings,
+    process_single_frame,
 )
 
 
@@ -39,6 +42,10 @@ class SessionMetadataPayload(BaseModel):
     roll_number: str = Field(default="", description="Candidate roll or registration number")
     subject: str = Field(default="", description="Exam subject or interview track")
     exam_id: str = Field(default="", description="Exam or session identifier")
+
+
+class FramePayload(BaseModel):
+    image: str = Field(..., description="Base64 encoded JPEG image from the frontend")
 
 
 class StatusResponse(BaseModel):
@@ -188,7 +195,11 @@ app.add_middleware(
 logger = logging.getLogger("proctoring.api")
 
 proctor_thread = None
-CAMERA_BACKENDS = (cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY)
+_IS_WINDOWS = platform.system() == "Windows"
+if _IS_WINDOWS:
+    CAMERA_BACKENDS = (cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY)
+else:
+    CAMERA_BACKENDS = (cv2.CAP_ANY,)
 
 
 def probe_camera(index: int) -> bool:
@@ -521,6 +532,50 @@ def start():
 @app.post("/start", response_model=MessageResponse, include_in_schema=False)
 def start_post():
     return _start_proctoring_response()
+
+
+@app.post(
+    "/process_frame",
+    response_model=StatusResponse,
+    tags=["Streaming"],
+    summary="Process a single frame from the frontend",
+)
+def process_frame_route(payload: FramePayload):
+    try:
+        # Extract base64 part (remove data:image/jpeg;base64, if present)
+        img_data = payload.image
+        if "base64," in img_data:
+            img_data = img_data.split("base64,")[1]
+            
+        img_bytes = base64.b64decode(img_data)
+        result = process_single_frame(img_bytes)
+        
+        # If there's an error, return a fallback safe response or error response based on structure
+        if result.get("status") in ["ERROR", "STOPPED"]:
+            return StatusResponse(
+                status=result["status"],
+                reason=result.get("reason", "Unknown"),
+                faces_detected=0,
+                gaze_direction="Unknown",
+                cellphone_detected=False
+            )
+            
+        return StatusResponse(
+            status=result["status"],
+            reason=result["reason"],
+            faces_detected=result.get("faces_detected", 1),
+            gaze_direction=result.get("gaze_direction", "Center"),
+            cellphone_detected=result.get("cellphone_detected", False)
+        )
+    except Exception as e:
+        logger.error("Error processing frame: %s", e)
+        return StatusResponse(
+            status="ERROR",
+            reason="Failed to process frame",
+            faces_detected=0,
+            gaze_direction="Unknown",
+            cellphone_detected=False
+        )
 
 
 def _stop_proctoring_response() -> StopResponse:

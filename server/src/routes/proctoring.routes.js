@@ -14,7 +14,8 @@ const {
   getReport,
   downloadLog,
   downloadVideo,
-  downloadPackage
+  downloadPackage,
+  processFrame
 } = require('../adapters/proctoringAdapter');
 
 router.get('/status', getStatus);
@@ -23,6 +24,7 @@ router.post('/stop', stopProctoring);
 router.get('/video', videoFeed);
 router.post('/session/meta', setSessionMeta);
 router.get('/report', getReport);
+router.post('/process_frame', processFrame);
 router.get('/download/csv', downloadLog);
 router.get('/download/video', downloadVideo);
 router.get('/download/package', downloadPackage);

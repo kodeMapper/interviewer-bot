@@ -45,7 +45,20 @@ const PreCheck = ({ sessionId, onComplete }) => {
       updateCheck('camera', 'checking');
       updateCheck('mic', 'checking');
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: { width: 640, height: 480 } });
+        let videoConstraints = { width: 640, height: 480 };
+        
+        try {
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const videoDevices = devices.filter(device => device.kind === 'videoinput');
+          if (videoDevices.length > 1) {
+             // Prefer the last device added (often external webcams)
+             videoConstraints.deviceId = { exact: videoDevices[videoDevices.length - 1].deviceId };
+          }
+        } catch (e) {
+          console.warn("Could not enumerate devices in PreCheck:", e);
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: videoConstraints });
         if (!mounted) { stream.getTracks().forEach(t => t.stop()); return; }
 
         streamRef.current = stream;

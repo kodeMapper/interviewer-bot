@@ -19,29 +19,35 @@ export function useSpeechSynthesis() {
     if ('speechSynthesis' in window) {
       setIsSupported(true);
       
-      // Get available voices
       const loadVoices = () => {
         const availableVoices = window.speechSynthesis.getVoices();
         setVoices(availableVoices);
         
-        // Select default English voice
-        const englishVoice = availableVoices.find(
-          voice => voice.lang.startsWith('en') && voice.name.includes('Google')
-        ) || availableVoices.find(
-          voice => voice.lang.startsWith('en')
-        );
+        // Priority 1: Google Female Voice
+        const googleFemale = availableVoices.find(v => v.lang.startsWith('en') && v.name.includes('Google') && (v.name.includes('Female') || v.name.includes('UK') || v.name.includes('US')));
+        // Priority 2: Edge/Microsoft Female Voice
+        const msFemale = availableVoices.find(v => v.lang.startsWith('en') && (v.name.includes('Zira') || v.name.includes('Hazel') || v.name.includes('Jenny') || v.name.includes('Aria') || v.name.toLowerCase().includes('female')));
+        // Priority 3: Any English voice that doesn't say "David" or "Mark"
+        const anyEnglishFemale = availableVoices.find(v => v.lang.startsWith('en') && !v.name.includes('David') && !v.name.includes('Mark'));
         
-        if (englishVoice) {
-          setSelectedVoice(englishVoice);
+        const bestVoice = googleFemale || msFemale || anyEnglishFemale || availableVoices.find(v => v.lang.startsWith('en'));
+        if (bestVoice) {
+          setSelectedVoice(bestVoice);
         }
       };
       
       loadVoices();
       
-      // Chrome loads voices async
+      // Async load for web voices
       if (window.speechSynthesis.onvoiceschanged !== undefined) {
         window.speechSynthesis.onvoiceschanged = loadVoices;
       }
+
+      // Voice Warm-up: Play a silent utterance to lock the engine
+      const warmup = new SpeechSynthesisUtterance('');
+      warmup.volume = 0;
+      window.speechSynthesis.speak(warmup);
+      
     } else {
       setIsSupported(false);
     }
@@ -67,7 +73,7 @@ export function useSpeechSynthesis() {
     utterance.voice = options.voice || selectedVoice;
     utterance.rate = options.rate || 1;
     utterance.pitch = options.pitch || 1;
-    utterance.volume = options.volume || 1;
+    utterance.volume = options.volume || 0.8; // Default to 0.8 to prevent loud spikes
     
     utterance.onstart = () => {
       setIsSpeaking(true);

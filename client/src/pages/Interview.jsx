@@ -8,7 +8,7 @@ import ProctoringPanel from '../components/proctoring/ProctoringPanel';
 import AlertOverlay from '../components/proctoring/AlertOverlay';
 import { proctoringAPI } from '../services/api';
 
-function Interview() {
+function InterviewContent() {
   const { sessionId } = useParams();
   const navigate = useNavigate();
   
@@ -412,7 +412,7 @@ function Interview() {
   }
 
   return (
-    <ProctoringProvider>
+    <>
       <AlertOverlay />
       <div className="bg-background text-on-surface font-body min-h-screen relative overflow-hidden flex flex-col pt-4">
         {/* Ambient Glows */}
@@ -698,8 +698,14 @@ function Interview() {
           
         </main>
       </div>
-    </ProctoringProvider>
+    </>
   );
 }
 
-export default Interview;
+export default function Interview() {
+  return (
+    <ProctoringProvider>
+      <InterviewContent />
+    </ProctoringProvider>
+  );
+}

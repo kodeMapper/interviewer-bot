@@ -149,6 +149,11 @@ export const proctoringAPI = {
       ...metaData
     });
     return response.data;
+  },
+
+  processFrame: async (base64Image) => {
+    const response = await api.post('/proctoring/process_frame', { image: base64Image });
+    return response.data;
   }
 };
 

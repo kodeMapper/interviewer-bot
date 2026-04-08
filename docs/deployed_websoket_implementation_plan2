@@ -1,0 +1,114 @@
+# Cloud-Native Proctoring: Frontend-Push Architecture
+
+Transition the proctoring system from **Backend-Pull** (server controls `cv2.VideoCapture`) to **Frontend-Push** (browser owns the camera, sends frame snapshots to the server for analysis).
+
+**Why?** On Hugging Face Spaces (and any cloud host), the Python backend cannot access a webcam — there is no hardware camera. The browser already has `getUserMedia()` access. We let the browser capture frames and POST them to the server.
+
+**Key constraint:** All local development functionality must remain intact. The old `/start` → `/stop` session lifecycle stays the same; only the *camera source* changes.
+
+---
+
+## Proposed Changes
+
+### Layer 1 — FastAPI Backend (Python)
+
+#### [MODIFY] [proctor_live.py](file:///c:/Users/acer/Desktop/DL%20Project/proctoring_fastapi/proctor_live.py)
+
+The biggest change. The current `start_proctoring()` function:
+1. Opens `cv2.VideoCapture` → **remove entirely**
+2. Runs a `while running:` loop reading frames → **remove entirely**
+3. Processes each frame through MediaPipe + CNN → **keep this logic**
+4. Records events, snapshots, video → **keep this logic**
+
+Refactor into:
+- **`process_single_frame(image_bytes)`** — A new stateless function that receives raw image bytes (from the frontend POST), decodes with `cv2.imdecode`, runs the full MediaPipe/CNN pipeline on that single frame, updates global state (events, status, snapshots), and returns the current status.
+- **`start_proctoring()`** — Simplified to just initialize session state (session_id, events, report paths, video writer, face_mesh). No camera opening, no loop.
+- **`stop_proctoring()`** — Unchanged, still finalizes reports.
+- Guard `winsound` import with `try/except` (it's Windows-only and will crash on Linux/HF).
+- Guard `CAMERA_BACKENDS` references (cv2.CAP_DSHOW etc.) — only needed locally.
+
+#### [MODIFY] [server.py](file:///c:/Users/acer/Desktop/DL%20Project/proctoring_fastapi/server.py)
+
+- **Add `POST /process_frame`** endpoint that accepts `{ image: "<base64>" }` JSON body.
+  - Decodes Base64 → bytes → calls `process_single_frame()`.
+  - Returns the status response (`SAFE`/`ALERT` + reason + metrics).
+- Guard `cv2.VideoCapture` usage in `probe_camera()` (keep for local, skip in cloud).
+- Keep existing `/start`, `/stop`, `/status`, `/video_feed`, `/frame` endpoints for backward compatibility (local mode still works).
+
+---
+
+### Layer 2 — Express Gateway (Node.js)
+
+#### [MODIFY] [proctoringAdapter.js](file:///c:/Users/acer/Desktop/DL%20Project/server/src/adapters/proctoringAdapter.js)
+
+- **Add `processFrame(req, res)`** — Proxies the frame payload from the React client to `POST ${PROCTOR_BASE}/process_frame`.
+- Keep all existing functions for backward compatibility.
+
+#### [MODIFY] [proctoring.routes.js](file:///c:/Users/acer/Desktop/DL%20Project/server/src/routes/proctoring.routes.js)
+
+- **Add route** `router.post('/process_frame', processFrame)`.
+
+---
+
+### Layer 3 — React Frontend
+
+#### [MODIFY] [ProctoringContext.jsx](file:///c:/Users/acer/Desktop/DL%20Project/client/src/context/ProctoringContext.jsx)
+
+Major changes:
+- Use `navigator.mediaDevices.getUserMedia({ video: true })` to acquire the camera stream.
+- Store the `MediaStream` in a ref and expose it via context so ProctoringPanel can display it.
+- Set up an interval (~1000ms) to:
+  1. Draw the current video frame onto a hidden `<canvas>`.
+  2. Export as JPEG Base64 (compressed, ~480p).
+  3. POST to `/api/proctoring/process_frame`.
+  4. Use the response to update `isSafe`, `alertCount`, `detailedMetrics`, etc.
+- **Replace the polling interval** (`/api/proctoring/status` every 500ms) — the frame-push response IS the status update. No more separate polling.
+- On cleanup, stop the MediaStream tracks.
+
+#### [MODIFY] [ProctoringPanel.jsx](file:///c:/Users/acer/Desktop/DL%20Project/client/src/components/proctoring/ProctoringPanel.jsx)
+
+- Replace `<img src="/api/proctoring/video?t=...">` with `<video ref={...} autoPlay muted playsInline>`.
+- Attach the MediaStream from context to the video element via `videoRef.current.srcObject = stream`.
+- This gives a smooth 30/60FPS live preview instead of choppy MJPEG.
+- Remove `imageLoaded`/`retryCount` state (no longer needed).
+
+#### [MODIFY] [api.js](file:///c:/Users/acer/Desktop/DL%20Project/client/src/services/api.js)
+
+- **Add `processFrame(base64Image)`** to `proctoringAPI` — sends the frame to the Express proxy.
+
+---
+
+### Layer 4 — Deployment Infrastructure
+
+#### [MODIFY] [Dockerfile](file:///c:/Users/acer/Desktop/DL%20Project/Dockerfile)
+
+- No structural changes needed. The Dockerfile already installs opencv-python and the correct Python dependencies.
+
+#### [MODIFY] [start.sh](file:///c:/Users/acer/Desktop/DL%20Project/start.sh)
+
+- No changes needed. The startup script already launches the proctoring service.
+
+---
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Frame rate & bandwidth tradeoff:** The browser will send ~1 frame per second at 480p JPEG quality. This keeps bandwidth low (~20-50KB per frame) while still catching violations in near-real-time. Is 1 FPS acceptable for proctoring accuracy?
+
+> [!WARNING]
+> **`winsound` module:** The current `proctor_live.py` imports `winsound` (Windows-only) at the top level. On Linux/Docker, this will crash the import. I will guard it with a `try/except` and make the buzzer a no-op on non-Windows platforms.
+
+> [!NOTE]
+> **Local dev is unchanged:** If you run locally, the old MJPEG flow (`/video_feed`) still works. The frontend-push is used *in addition to* the old mode — the ProctoringPanel now shows the native browser `<video>` element instead of the MJPEG `<img>`, and frames are pushed to the backend for analysis. The backend no longer needs to open `cv2.VideoCapture` — it just receives frames from the browser.
+
+---
+
+## Verification Plan
+
+### Manual Verification
+1. Run all 3 services locally (`python server.py`, `node server.js`, `npm run dev`).
+2. Start an interview — verify camera feed appears in the ProctoringPanel as a smooth `<video>` element.
+3. Check Express terminal logs to confirm frame POSTs are reaching FastAPI.
+4. Test violations: look away, cover camera, have someone else appear — verify alerts still trigger.
+5. End the session — verify reports (JSON, CSV, snapshots) are generated correctly.
+6. Build Docker image and verify the container starts without `winsound` or `cv2.VideoCapture` crashes.

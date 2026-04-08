@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useProctoring } from '../../context/ProctoringContext';
 
 const ProctoringPanel = () => {
-  const { isSafe, alertCount, isServiceConnected, alertHistory, detailedMetrics } = useProctoring();
+  const { isSafe, alertCount, isServiceConnected, alertHistory, detailedMetrics, stream } = useProctoring();
   const logContainerRef = useRef(null);
+  const videoRef = useRef(null);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
 
   // Auto-scroll the security log to the latest entry
   useEffect(() => {
@@ -13,6 +13,14 @@ const ProctoringPanel = () => {
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [alertHistory]);
+
+  // Bind stream to video element
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+      setImageLoaded(true);
+    }
+  }, [stream]);
 
   return (
     <div className="flex flex-col gap-6 w-full h-full max-h-screen">
@@ -26,15 +34,12 @@ const ProctoringPanel = () => {
                 <span className="font-label text-[10px] uppercase tracking-[0.2em] text-primary animate-pulse font-bold">Synchronizing Feed</span>
               </div>
             )}
-            <img 
-              src={`/api/proctoring/video?t=${retryCount}`} 
+            <video 
+              ref={videoRef}
+              autoPlay 
+              muted 
+              playsInline
               className={`w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`} 
-              alt="Live Feed"
-              onLoad={() => setImageLoaded(true)}
-              onError={() => {
-                setImageLoaded(false);
-                setTimeout(() => setRetryCount(prev => prev + 1), 2000);
-              }}
             />
           </>
         ) : (

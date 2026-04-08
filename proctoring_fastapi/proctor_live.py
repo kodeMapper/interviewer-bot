@@ -12,10 +12,19 @@ try:
 except Exception:
     mp = None
 import threading
-import winsound
+import platform
 from collections import deque
 from collections import Counter
 from datetime import datetime
+
+# ===================== PLATFORM-SAFE BUZZER =====================
+# winsound is Windows-only. On Linux/Docker it doesn't exist.
+_IS_WINDOWS = platform.system() == "Windows"
+if _IS_WINDOWS:
+    try:
+        import winsound
+    except ImportError:
+        _IS_WINDOWS = False
 
 
 # ===================== IMPORT MODEL =====================
@@ -63,7 +72,6 @@ MULTI_FACE_TIMEOUT = 0.9
 CONF_THRESHOLD = 0.90
 FRAME_SIZE = (640, 480)
 MAX_CAMERA_INDEX_TO_TRY = 3
-CAMERA_BACKENDS = (cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY)
 DARK_BRIGHTNESS_THRESHOLD = 45
 RECORDING_FPS = 12.0
 RECORDING_FRAME_STRIDE = 2
@@ -71,11 +79,52 @@ RECORD_WITH_OVERLAY = False
 SNAPSHOT_SCALE = 0.75
 SNAPSHOT_JPEG_QUALITY = 85
 
+# Camera backends — only meaningful on Windows with local hardware
+if _IS_WINDOWS:
+    CAMERA_BACKENDS = (cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY)
+else:
+    CAMERA_BACKENDS = (cv2.CAP_ANY,)
+
 violation_start_time = None
 active_violation = None
 
 gaze_buffer = deque(maxlen=5)
-head_buffer = deque(maxlen=5)   # 🔥 NEW: smoothing for head pose
+head_buffer = deque(maxlen=5)
+
+# ===================== MEDIAPIPE (lazy init) =====================
+_face_mesh = None
+_face_mesh_initialized = False
+
+def get_face_mesh_module():
+    if mp is None:
+        raise Exception("MediaPipe is not imported. Install mediapipe package.")
+    if hasattr(mp, "solutions") and hasattr(mp.solutions, "face_mesh"):
+        return mp.solutions.face_mesh
+    try:
+        from mediapipe.python.solutions import face_mesh
+        return face_mesh
+    except ImportError:
+        raise Exception("MediaPipe FaceMesh is unavailable. Install a compatible mediapipe package.")
+
+def _get_or_init_face_mesh():
+    """Lazily initialize MediaPipe FaceMesh once, reuse across frames."""
+    global _face_mesh, _face_mesh_initialized
+    if _face_mesh_initialized:
+        return _face_mesh
+    _face_mesh_initialized = True
+    try:
+        mp_face_mesh = get_face_mesh_module()
+        _face_mesh = mp_face_mesh.FaceMesh(
+            max_num_faces=5,
+            refine_landmarks=True,
+            min_detection_confidence=0.4,
+            min_tracking_confidence=0.4
+        )
+    except Exception as e:
+        print("MediaPipe FaceMesh init failed:", e)
+        _face_mesh = None
+    return _face_mesh
+
 
 # ===================== DEVICE =====================
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -93,9 +142,33 @@ def get_frame():
     return latest_frame
 
 def stop_proctoring():
-    global running
+    global running, session_end_time, _face_mesh, _face_mesh_initialized
+    global video_writer
     running = False
     stop_buzzer()
+
+    # Finalize session
+    if session_start_time is not None and session_end_time is None:
+        session_end_time = time.time()
+        _record_event("SESSION_ENDED", current_status["status"], current_status["reason"], "Proctoring session stopped")
+        _write_report_files(current_dir)
+
+    # Release video writer
+    if video_writer is not None:
+        try:
+            video_writer.release()
+        except Exception:
+            pass
+        video_writer = None
+
+    # Release face mesh
+    if _face_mesh is not None:
+        try:
+            _face_mesh.close()
+        except Exception:
+            pass
+        _face_mesh = None
+        _face_mesh_initialized = False
 
 def set_camera(index):
     global camera_index
@@ -268,17 +341,23 @@ def get_face_mesh_module():
                 "MediaPipe FaceMesh is unavailable. Install a compatible mediapipe package."
             ) from e
 
-# ===================== BUZZER =====================
+# ===================== BUZZER (platform-safe) =====================
 def play_buzzer():
     global buzzer_active
-    while buzzer_active:
-        winsound.Beep(1000, 150)
+    if not _IS_WINDOWS:
+        return  # No-op on Linux/Docker
+    # Beep twice per alert frame, keeping duration short so it doesn't linger
+    for _ in range(2):
         if not buzzer_active:
             break
+        winsound.Beep(1000, 150)
         time.sleep(0.05)
+    buzzer_active = False
 
 def start_buzzer():
     global buzzer_active, buzzer_thread
+    if not _IS_WINDOWS:
+        return  # No-op on Linux/Docker
     if not buzzer_active:
         buzzer_active = True
         buzzer_thread = threading.Thread(target=play_buzzer, daemon=True)
@@ -287,48 +366,8 @@ def start_buzzer():
 def stop_buzzer():
     global buzzer_active
     buzzer_active = False
-    time.sleep(0.05)
-
-# ===================== CAMERA =====================
-def open_camera_with_backends(index):
-    for backend in CAMERA_BACKENDS:
-        cap = cv2.VideoCapture(index, backend)
-        if cap.isOpened():
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_SIZE[0])
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_SIZE[1])
-            cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-
-            for _ in range(8):
-                ret, frame = cap.read()
-                if ret and frame is not None and frame.size > 0:
-                    return cap
-                time.sleep(0.02)
-
-        cap.release()
-    return None
-
-
-def open_best_camera():
-    if camera_index is not None:
-        cap = open_camera_with_backends(camera_index)
-        if cap is not None:
-            print(f"Selected camera opened at index {camera_index}")
-            return cap
-
-    # Try laptop camera (index 0) FIRST — most common case
-    cap = open_camera_with_backends(0)
-    if cap is not None:
-        print("Laptop camera opened")
-        return cap
-
-    # Then try external cameras
-    for idx in range(1, MAX_CAMERA_INDEX_TO_TRY + 1):
-        cap = open_camera_with_backends(idx)
-        if cap is not None:
-            print(f"External camera opened at index {idx}")
-            return cap
-
-    return None
+    if _IS_WINDOWS:
+        time.sleep(0.05)
 
 # ===================== HEAD POSE DETECTION =====================
 def detect_head_pose(landmarks, frame_w, frame_h):
@@ -397,18 +436,247 @@ def predict_face(face_img):
     except:
         return 1
 
-# ===================== MAIN ENGINE =====================
+# ===================== FRAME ANALYSIS CORE =====================
+def _analyze_frame(frame):
+    """
+    Run the full detection pipeline on a single frame.
+    Returns (violation_reason, timeout, current_face_count, current_gaze).
+    This is the shared analysis logic used by both the old loop and the new
+    process_single_frame() path.
+    """
+    global head_buffer, gaze_buffer
+
+    violation_reason = None
+    timeout = GAZE_ALERT_TIMEOUT
+    current_face_count = 1
+    current_gaze = "Center"
+
+    # --- Dark environment check ---
+    if detection_settings["dark_environment"]:
+        gray_for_brightness = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        brightness = float(np.mean(gray_for_brightness))
+        if brightness < DARK_BRIGHTNESS_THRESHOLD:
+            violation_reason = "DARK ENVIRONMENT"
+            timeout = 0.7
+            return violation_reason, timeout, current_face_count, current_gaze
+
+    # --- MediaPipe face detection + gaze ---
+    face_mesh = _get_or_init_face_mesh()
+    if face_mesh is not None:
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = face_mesh.process(rgb)
+
+        face_count = len(results.multi_face_landmarks) if results.multi_face_landmarks else 0
+        current_face_count = face_count
+
+        if detection_settings["face_detection"] and face_count == 0:
+            violation_reason = "NO FACE"
+            timeout = NO_FACE_TIMEOUT
+
+        elif detection_settings["multiple_people"] and face_count > 1:
+            violation_reason = "MULTIPLE FACES"
+            timeout = MULTI_FACE_TIMEOUT
+
+        else:
+            if face_count == 0:
+                # No face, but face_detection is disabled — just return safe
+                return None, timeout, current_face_count, current_gaze
+
+            landmarks = results.multi_face_landmarks[0]
+
+            head_pose = None
+            if detection_settings["gaze_tracking"]:
+                head_pose = detect_head_pose(landmarks, FRAME_SIZE[0], FRAME_SIZE[1])
+
+            if head_pose:
+                head_buffer.append(head_pose)
+                if head_buffer.count(head_pose) >= 3:
+                    violation_reason = head_pose
+                current_gaze = head_pose.replace("HEAD ", "").capitalize()
+            else:
+                head_buffer.clear()
+
+                x_coords = [lm.x for lm in landmarks.landmark]
+                y_coords = [lm.y for lm in landmarks.landmark]
+
+                x_min = int(max(0, min(x_coords) * FRAME_SIZE[0]))
+                x_max = int(min(FRAME_SIZE[0], max(x_coords) * FRAME_SIZE[0]))
+                y_min = int(max(0, min(y_coords) * FRAME_SIZE[1]))
+                y_max = int(min(FRAME_SIZE[1], max(y_coords) * FRAME_SIZE[1]))
+
+                face_crop = frame[y_min:y_max, x_min:x_max]
+
+                if detection_settings["gaze_tracking"] and face_crop.size > 0:
+                    gray = cv2.cvtColor(face_crop, cv2.COLOR_BGR2GRAY)
+                    gray = cv2.resize(gray, (64, 64))
+
+                    pred = predict_face(gray)
+                    gaze_buffer.append(pred)
+
+                    if sum(gaze_buffer) >= 3:
+                        violation_reason = "LOOKING AWAY"
+                        current_gaze = "Away"
+    else:
+        # Fallback: OpenCV Haar cascade (no MediaPipe available)
+        head_buffer.clear()
+        cascade_path = os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
+        face_detector = cv2.CascadeClassifier(cascade_path)
+        if face_detector.empty():
+            return "FACE DETECTOR INIT FAILED", 0, 0, current_gaze
+
+        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = face_detector.detectMultiScale(
+            gray_frame,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(60, 60)
+        )
+
+        face_count = len(faces)
+        current_face_count = face_count
+
+        if detection_settings["face_detection"] and face_count == 0:
+            violation_reason = "NO FACE"
+            timeout = NO_FACE_TIMEOUT
+
+        elif detection_settings["multiple_people"] and face_count > 1:
+            violation_reason = "MULTIPLE FACES"
+            timeout = MULTI_FACE_TIMEOUT
+
+        else:
+            if face_count == 0:
+                return None, timeout, current_face_count, current_gaze
+
+            x, y, w, h = faces[0]
+            face_crop = frame[y:y + h, x:x + w]
+
+            if detection_settings["gaze_tracking"] and face_crop.size > 0:
+                gray = cv2.cvtColor(face_crop, cv2.COLOR_BGR2GRAY)
+                gray = cv2.resize(gray, (64, 64))
+
+                pred = predict_face(gray)
+                gaze_buffer.append(pred)
+
+                if sum(gaze_buffer) >= 3:
+                    violation_reason = "LOOKING AWAY"
+                    current_gaze = "Away"
+
+    return violation_reason, timeout, current_face_count, current_gaze
+
+
+def _apply_violation_logic(violation_reason, timeout, current_face_count, current_gaze, frame):
+    """
+    Given analysis results, update global status, fire events/snapshots, handle buzzer.
+    Shared by both the old camera loop and the new process_single_frame path.
+    """
+    global active_violation, violation_start_time
+
+    if violation_reason:
+        if "HEAD" in violation_reason:
+            violation_key = "HEAD_POSE"
+        elif "LOOKING" in violation_reason:
+            violation_key = "GAZE"
+        else:
+            violation_key = violation_reason
+
+        if active_violation != violation_key:
+            active_violation = violation_key
+            violation_start_time = time.time()
+
+        elapsed = time.time() - violation_start_time
+
+        if elapsed >= timeout:
+            current_status["status"] = "ALERT"
+            current_status["reason"] = violation_reason
+    else:
+        active_violation = None
+        violation_start_time = None
+        gaze_buffer.clear()
+        current_status["status"] = "SAFE"
+        current_status["reason"] = "SAFE"
+
+    current_status["faces_detected"] = current_face_count
+    current_status["gaze_direction"] = current_gaze
+
+    # Event logging — only log on status/reason transitions
+    prev_status = session_events[-1]["status"] if session_events else "SAFE"
+    prev_reason = session_events[-1]["reason"] if session_events else "SAFE"
+    current_state_status = current_status["status"]
+    current_state_reason = current_status["reason"]
+
+    if current_state_status != prev_status or current_state_reason != prev_reason:
+        event_type = "ALERT_TRIGGERED" if current_state_status == "ALERT" else "STATUS_RECOVERED"
+        note = "Violation detected" if current_state_status == "ALERT" else "Back to safe state"
+        snapshot_file = None
+        if event_type == "ALERT_TRIGGERED":
+            snapshot_frame = _draw_frame_overlay(frame, current_state_status, current_state_reason)
+            snapshot_file = _capture_snapshot(snapshot_frame, current_state_reason)
+        _record_event(event_type, current_state_status, current_state_reason, note, snapshot_file=snapshot_file)
+
+
+# ===================== FRONTEND-PUSH: process_single_frame =====================
+def process_single_frame(image_bytes):
+    """
+    Called by the POST /process_frame endpoint.
+    Receives raw image bytes from the browser, decodes, runs the full
+    detection pipeline, updates global state, and returns the current status.
+    """
+    global latest_frame, record_frame_counter, video_writer
+
+    if not running:
+        return {"status": "STOPPED", "reason": "Proctoring not active"}
+
+    # Decode image bytes to OpenCV frame
+    np_arr = np.frombuffer(image_bytes, np.uint8)
+    frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+    if frame is None:
+        return {"status": "ERROR", "reason": "Failed to decode image"}
+
+    # Resize to standard processing size
+    frame = cv2.resize(frame, FRAME_SIZE)
+
+    try:
+        violation_reason, timeout, current_face_count, current_gaze = _analyze_frame(frame)
+        _apply_violation_logic(violation_reason, timeout, current_face_count, current_gaze, frame)
+    except Exception as e:
+        print("Frame processing error:", e)
+
+    # Record to video if writer is active
+    if video_writer is not None:
+        record_frame_counter += 1
+        if record_frame_counter % RECORDING_FRAME_STRIDE == 0:
+            if RECORD_WITH_OVERLAY:
+                output_frame = _draw_frame_overlay(frame, current_status["status"], current_status["reason"])
+            else:
+                output_frame = frame
+            video_writer.write(output_frame)
+
+    latest_frame = frame.copy()
+
+    return {
+        "status": current_status["status"],
+        "reason": current_status["reason"],
+        "faces_detected": current_status["faces_detected"],
+        "gaze_direction": current_status["gaze_direction"],
+        "cellphone_detected": current_status["cellphone_detected"],
+    }
+
+
+# ===================== SESSION LIFECYCLE =====================
 def start_proctoring():
+    """
+    Initialize a new proctoring session.
+    In frontend-push mode, this just sets up session state.
+    Frames arrive later via process_single_frame().
+    """
     global running, latest_frame
     global violation_start_time, active_violation
     global session_start_time, session_end_time, session_id, session_events
     global video_writer, video_output_path, snapshot_output_dir, record_frame_counter
+    global _face_mesh, _face_mesh_initialized
 
     running = True
     stop_buzzer()
-
-    # Brief delay to let the browser fully release camera from PreCheck getUserMedia
-    time.sleep(1.5)
 
     session_start_time = time.time()
     session_end_time = None
@@ -421,26 +689,19 @@ def start_proctoring():
     latest_report_paths["snapshots"] = []
     snapshot_output_dir = None
     record_frame_counter = 0
+    violation_start_time = None
+    active_violation = None
+    gaze_buffer.clear()
+    head_buffer.clear()
+    latest_frame = None
+
+    # Reset face mesh for fresh session
+    _face_mesh = None
+    _face_mesh_initialized = False
+
     _record_event("SESSION_STARTED", "SAFE", "SAFE", "Proctoring session started")
 
-    cap = open_best_camera()
-    if cap is None:
-        current_status["status"] = "ALERT"
-        current_status["reason"] = "CAMERA NOT ACCESSIBLE"
-        _record_event("ALERT_TRIGGERED", "ALERT", "CAMERA NOT ACCESSIBLE", "Camera could not be opened")
-        session_end_time = time.time()
-        _record_event("SESSION_ENDED", "ALERT", "CAMERA NOT ACCESSIBLE", "Session ended due to camera failure")
-        _write_report_files(current_dir)
-        start_buzzer()
-        return
-
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_SIZE[0])
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_SIZE[1])
-    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-
-    for _ in range(5):
-        cap.read()
-
+    # Setup report output directories and video writer
     _, videos_dir, snapshots_dir = _ensure_reports_dirs(current_dir)
     snapshot_output_dir = snapshots_dir
     video_output_path = os.path.join(videos_dir, f"{session_id}.mp4")
@@ -452,278 +713,3 @@ def start_proctoring():
         _record_event("VIDEO_RECORDING", "SAFE", "SAFE", "Video writer initialization failed")
     else:
         _record_event("VIDEO_RECORDING", "SAFE", "SAFE", "Video recording started")
-
-    face_mesh = None
-    use_mediapipe = True
-
-    try:
-        mp_face_mesh = get_face_mesh_module()
-        face_mesh = mp_face_mesh.FaceMesh(
-            max_num_faces=5,
-            refine_landmarks=True,
-            min_detection_confidence=0.4,
-            min_tracking_confidence=0.4
-        )
-    except Exception as e:
-        use_mediapipe = False
-        print("MediaPipe unavailable, using OpenCV fallback:", e)
-
-    face_detector = None
-    if not use_mediapipe:
-        cascade_path = os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
-        face_detector = cv2.CascadeClassifier(cascade_path)
-        if face_detector.empty():
-            current_status["status"] = "ALERT"
-            current_status["reason"] = "FACE DETECTOR INIT FAILED"
-            _record_event("ALERT_TRIGGERED", "ALERT", "FACE DETECTOR INIT FAILED", "Face detector initialization failed")
-            cap.release()
-            session_end_time = time.time()
-            _record_event("SESSION_ENDED", "ALERT", "FACE DETECTOR INIT FAILED", "Session ended due to detector failure")
-            _write_report_files(current_dir)
-            start_buzzer()
-            return
-
-    consecutive_failures = 0
-    MAX_CONSECUTIVE_FAILURES = 50
-    reconnect_attempts = 0
-    MAX_RECONNECT_ATTEMPTS = 3
-
-    while running:
-        ret, frame = cap.read()
-        if not ret:
-            consecutive_failures += 1
-            time.sleep(0.05)  # yield CPU instead of spinning
-
-            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
-                reconnect_attempts += 1
-                print(f"Camera feed lost. Reconnect attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS}...")
-
-                if reconnect_attempts > MAX_RECONNECT_ATTEMPTS:
-                    current_status["status"] = "ALERT"
-                    current_status["reason"] = "CAMERA DISCONNECTED"
-                    _record_event("ALERT_TRIGGERED", "ALERT", "CAMERA DISCONNECTED",
-                                  f"Camera lost after {MAX_RECONNECT_ATTEMPTS} reconnect attempts")
-                    break
-
-                # Release old capture and try to re-open
-                try:
-                    cap.release()
-                except Exception:
-                    pass
-                time.sleep(1.0)  # wait before retry
-
-                cap = open_best_camera()
-                if cap is None:
-                    print("Reconnect failed — no camera found.")
-                    continue  # will try again next iteration
-                else:
-                    cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_SIZE[0])
-                    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_SIZE[1])
-                    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                    for _ in range(5):
-                        cap.read()  # flush buffer
-                    consecutive_failures = 0
-                    print("Camera reconnected successfully.")
-            continue
-
-        # Reset failure counter on successful frame
-        consecutive_failures = 0
-        reconnect_attempts = 0
-
-        frame = cv2.resize(frame, FRAME_SIZE)
-
-        try:
-            violation_reason = None
-            timeout = GAZE_ALERT_TIMEOUT
-            current_face_count = 1
-            current_gaze = "Center"
-
-            if detection_settings["dark_environment"]:
-                gray_for_brightness = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                brightness = float(np.mean(gray_for_brightness))
-                if brightness < DARK_BRIGHTNESS_THRESHOLD:
-                    violation_reason = "DARK ENVIRONMENT"
-                    timeout = 0.7
-
-            if violation_reason is None and use_mediapipe:
-                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                results = face_mesh.process(rgb)
-
-                face_count = len(results.multi_face_landmarks) if results.multi_face_landmarks else 0
-                current_face_count = face_count
-
-                if detection_settings["face_detection"] and face_count == 0:
-                    violation_reason = "NO FACE"
-                    timeout = NO_FACE_TIMEOUT
-
-                elif detection_settings["multiple_people"] and face_count > 1:
-                    violation_reason = "MULTIPLE FACES"
-                    timeout = MULTI_FACE_TIMEOUT
-
-                else:
-                    if face_count == 0:
-                        active_violation = None
-                        violation_start_time = None
-                        gaze_buffer.clear()
-                        current_status["status"] = "SAFE"
-                        current_status["reason"] = "SAFE"
-                        current_status["faces_detected"] = current_face_count
-                        current_status["gaze_direction"] = current_gaze
-                        stop_buzzer()
-                        latest_frame = frame.copy()
-                        time.sleep(0.01)
-                        continue
-
-                    landmarks = results.multi_face_landmarks[0]
-
-                    head_pose = None
-                    if detection_settings["gaze_tracking"]:
-                        head_pose = detect_head_pose(landmarks, FRAME_SIZE[0], FRAME_SIZE[1])
-
-                    if head_pose:
-                        head_buffer.append(head_pose)
-
-                        if head_buffer.count(head_pose) >= 3:
-                            violation_reason = head_pose
-                        current_gaze = head_pose.replace("HEAD ", "").capitalize()
-                    else:
-                        head_buffer.clear()
-
-                        x_coords = [lm.x for lm in landmarks.landmark]
-                        y_coords = [lm.y for lm in landmarks.landmark]
-
-                        x_min = int(max(0, min(x_coords) * FRAME_SIZE[0]))
-                        x_max = int(min(FRAME_SIZE[0], max(x_coords) * FRAME_SIZE[0]))
-                        y_min = int(max(0, min(y_coords) * FRAME_SIZE[1]))
-                        y_max = int(min(FRAME_SIZE[1], max(y_coords) * FRAME_SIZE[1]))
-
-                        face_crop = frame[y_min:y_max, x_min:x_max]
-
-                        if detection_settings["gaze_tracking"] and face_crop.size > 0:
-                            gray = cv2.cvtColor(face_crop, cv2.COLOR_BGR2GRAY)
-                            gray = cv2.resize(gray, (64, 64))
-
-                            pred = predict_face(gray)
-                            gaze_buffer.append(pred)
-
-                            if sum(gaze_buffer) >= 3:
-                                violation_reason = "LOOKING AWAY"
-                                current_gaze = "Away"
-
-            elif violation_reason is None:
-                head_buffer.clear()
-                gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                faces = face_detector.detectMultiScale(
-                    gray_frame,
-                    scaleFactor=1.1,
-                    minNeighbors=5,
-                    minSize=(60, 60)
-                )
-
-                face_count = len(faces)
-                current_face_count = face_count
-
-                if detection_settings["face_detection"] and face_count == 0:
-                    violation_reason = "NO FACE"
-                    timeout = NO_FACE_TIMEOUT
-
-                elif detection_settings["multiple_people"] and face_count > 1:
-                    violation_reason = "MULTIPLE FACES"
-                    timeout = MULTI_FACE_TIMEOUT
-
-                else:
-                    if face_count == 0:
-                        active_violation = None
-                        violation_start_time = None
-                        gaze_buffer.clear()
-                        current_status["status"] = "SAFE"
-                        current_status["reason"] = "SAFE"
-                        current_status["faces_detected"] = current_face_count
-                        current_status["gaze_direction"] = current_gaze
-                        stop_buzzer()
-                        latest_frame = frame.copy()
-                        time.sleep(0.01)
-                        continue
-
-                    x, y, w, h = faces[0]
-                    face_crop = frame[y:y + h, x:x + w]
-
-                    if detection_settings["gaze_tracking"] and face_crop.size > 0:
-                        gray = cv2.cvtColor(face_crop, cv2.COLOR_BGR2GRAY)
-                        gray = cv2.resize(gray, (64, 64))
-
-                        pred = predict_face(gray)
-                        gaze_buffer.append(pred)
-
-                        if sum(gaze_buffer) >= 3:
-                            violation_reason = "LOOKING AWAY"
-                            current_gaze = "Away"
-
-            if violation_reason:
-
-                if "HEAD" in violation_reason:
-                    violation_key = "HEAD_POSE"
-                elif "LOOKING" in violation_reason:
-                    violation_key = "GAZE"
-                else:
-                    violation_key = violation_reason
-
-                if active_violation != violation_key:
-                    active_violation = violation_key
-                    violation_start_time = time.time()
-
-                elapsed = time.time() - violation_start_time
-
-                if elapsed >= timeout:
-                    current_status["status"] = "ALERT"
-                    current_status["reason"] = violation_reason
-                    start_buzzer()
-
-            else:
-                active_violation = None
-                violation_start_time = None
-                gaze_buffer.clear()
-                current_status["status"] = "SAFE"
-                current_status["reason"] = "SAFE"
-                stop_buzzer()
-
-        except Exception as e:
-            print("Processing error:", e)
-
-        prev_status = session_events[-1]["status"] if session_events else "SAFE"
-        prev_reason = session_events[-1]["reason"] if session_events else "SAFE"
-        current_state_status = current_status["status"]
-        current_state_reason = current_status["reason"]
-        if current_state_status != prev_status or current_state_reason != prev_reason:
-            event_type = "ALERT_TRIGGERED" if current_state_status == "ALERT" else "STATUS_RECOVERED"
-            note = "Violation detected" if current_state_status == "ALERT" else "Back to safe state"
-            snapshot_file = None
-            if event_type == "ALERT_TRIGGERED":
-                snapshot_frame = _draw_frame_overlay(frame, current_state_status, current_state_reason)
-                snapshot_file = _capture_snapshot(snapshot_frame, current_state_reason)
-            _record_event(event_type, current_state_status, current_state_reason, note, snapshot_file=snapshot_file)
-
-        if video_writer is not None:
-            record_frame_counter += 1
-            if record_frame_counter % RECORDING_FRAME_STRIDE == 0:
-                if RECORD_WITH_OVERLAY:
-                    output_frame = _draw_frame_overlay(frame, current_status["status"], current_status["reason"])
-                else:
-                    output_frame = frame
-                video_writer.write(output_frame)
-
-        latest_frame = frame.copy()
-        time.sleep(0.01)
-
-    if face_mesh is not None:
-        face_mesh.close()
-
-    if video_writer is not None:
-        video_writer.release()
-        video_writer = None
-
-    cap.release()
-    session_end_time = time.time()
-    _record_event("SESSION_ENDED", current_status["status"], current_status["reason"], "Proctoring session stopped")
-    _write_report_files(current_dir)
-    stop_buzzer()
