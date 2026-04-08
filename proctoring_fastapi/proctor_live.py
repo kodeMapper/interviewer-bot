@@ -26,7 +26,7 @@ if current_dir not in sys.path:
 from eye_cnn_model import EyeCNN
 
 # ===================== GLOBAL STATE =====================
-current_status = {"status": "SAFE", "reason": "SAFE"}
+current_status = {"status": "SAFE", "reason": "SAFE", "faces_detected": 1, "gaze_direction": "Center", "cellphone_detected": False}
 latest_frame = None
 running = False
 camera_index = None
@@ -459,10 +459,10 @@ def start_proctoring():
     try:
         mp_face_mesh = get_face_mesh_module()
         face_mesh = mp_face_mesh.FaceMesh(
-            max_num_faces=2,
+            max_num_faces=5,
             refine_landmarks=True,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
+            min_detection_confidence=0.4,
+            min_tracking_confidence=0.4
         )
     except Exception as e:
         use_mediapipe = False
@@ -535,6 +535,8 @@ def start_proctoring():
         try:
             violation_reason = None
             timeout = GAZE_ALERT_TIMEOUT
+            current_face_count = 1
+            current_gaze = "Center"
 
             if detection_settings["dark_environment"]:
                 gray_for_brightness = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -548,6 +550,7 @@ def start_proctoring():
                 results = face_mesh.process(rgb)
 
                 face_count = len(results.multi_face_landmarks) if results.multi_face_landmarks else 0
+                current_face_count = face_count
 
                 if detection_settings["face_detection"] and face_count == 0:
                     violation_reason = "NO FACE"
@@ -564,6 +567,8 @@ def start_proctoring():
                         gaze_buffer.clear()
                         current_status["status"] = "SAFE"
                         current_status["reason"] = "SAFE"
+                        current_status["faces_detected"] = current_face_count
+                        current_status["gaze_direction"] = current_gaze
                         stop_buzzer()
                         latest_frame = frame.copy()
                         time.sleep(0.01)
@@ -580,6 +585,7 @@ def start_proctoring():
 
                         if head_buffer.count(head_pose) >= 3:
                             violation_reason = head_pose
+                        current_gaze = head_pose.replace("HEAD ", "").capitalize()
                     else:
                         head_buffer.clear()
 
@@ -602,6 +608,7 @@ def start_proctoring():
 
                             if sum(gaze_buffer) >= 3:
                                 violation_reason = "LOOKING AWAY"
+                                current_gaze = "Away"
 
             elif violation_reason is None:
                 head_buffer.clear()
@@ -614,6 +621,7 @@ def start_proctoring():
                 )
 
                 face_count = len(faces)
+                current_face_count = face_count
 
                 if detection_settings["face_detection"] and face_count == 0:
                     violation_reason = "NO FACE"
@@ -630,6 +638,8 @@ def start_proctoring():
                         gaze_buffer.clear()
                         current_status["status"] = "SAFE"
                         current_status["reason"] = "SAFE"
+                        current_status["faces_detected"] = current_face_count
+                        current_status["gaze_direction"] = current_gaze
                         stop_buzzer()
                         latest_frame = frame.copy()
                         time.sleep(0.01)
@@ -647,6 +657,7 @@ def start_proctoring():
 
                         if sum(gaze_buffer) >= 3:
                             violation_reason = "LOOKING AWAY"
+                            current_gaze = "Away"
 
             if violation_reason:
 

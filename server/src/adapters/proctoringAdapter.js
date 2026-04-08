@@ -183,8 +183,19 @@ async function downloadVideo(req, res) {
   }
 }
 
+async function downloadPackage(req, res) {
+  try {
+    const response = await axios.get(`${PROCTOR_BASE}/report/download/package`, { responseType: 'stream', timeout: 30000 });
+    res.setHeader('Content-Disposition', 'attachment; filename="proctoring_package.zip"');
+    res.setHeader('Content-Type', 'application/zip');
+    response.data.pipe(res);
+  } catch (err) {
+    res.status(404).send('Report package not found or service offline');
+  }
+}
+
 module.exports = { 
   getStatus, startProctoring, stopProctoring, videoFeed, 
   setSessionMeta, getReport, stopProctoringInternal,
-  downloadLog, downloadVideo
+  downloadLog, downloadVideo, downloadPackage
 };

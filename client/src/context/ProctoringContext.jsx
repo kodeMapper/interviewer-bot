@@ -35,7 +35,7 @@ export const ProctoringProvider = ({ children }) => {
             // Increment on EVERY new alert poll to re-trigger audio
             setAlertCount(prev => prev + 1);
             setAlertTrigger(prev => prev + 1);
-            setAlertHistory(prev => [...prev, { time: new Date().toLocaleTimeString(), reason: res.data.description || 'Violation Detected' }]);
+            setAlertHistory(prev => [...prev, { time: new Date().toLocaleTimeString(), reason: res.data.reason || res.data.description || 'Violation Detected' }]);
           } else {
             if (!isSafe) setIsSafe(true);
           }

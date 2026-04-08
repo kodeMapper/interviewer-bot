@@ -44,6 +44,10 @@ class SessionMetadataPayload(BaseModel):
 class StatusResponse(BaseModel):
     status: str = Field(..., examples=["SAFE"])
     reason: str = Field(..., examples=["SAFE"])
+    faces_detected: int = Field(default=1)
+    gaze_direction: str = Field(default="Center")
+    cellphone_detected: bool = Field(default=False)
+
 
 
 class MessageResponse(BaseModel):

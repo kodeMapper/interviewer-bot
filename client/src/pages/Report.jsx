@@ -250,6 +250,18 @@ function Report() {
                   </div>
                   <span className="material-symbols-outlined text-on-surface-variant opacity-50 text-sm group-hover:translate-y-1 transition-transform">download</span>
                 </a>
+                
+                <a 
+                  href={`/api/proctoring/download/package`} 
+                  download
+                  className="flex items-center justify-between p-4 rounded-xl border border-white/10 hover:bg-surface-bright/50 transition-colors group cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-tertiary opacity-70 group-hover:opacity-100 transition-opacity">folder_zip</span>
+                    <span className="font-label text-xs uppercase tracking-widest text-on-surface group-hover:text-tertiary transition-colors">Violation Images (.zip)</span>
+                  </div>
+                  <span className="material-symbols-outlined text-on-surface-variant opacity-50 text-sm group-hover:translate-y-1 transition-transform">download</span>
+                </a>
               </div>
             </div>
             

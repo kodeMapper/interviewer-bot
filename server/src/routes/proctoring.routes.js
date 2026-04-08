@@ -13,7 +13,8 @@ const {
   setSessionMeta,
   getReport,
   downloadLog,
-  downloadVideo
+  downloadVideo,
+  downloadPackage
 } = require('../adapters/proctoringAdapter');
 
 router.get('/status', getStatus);
@@ -24,5 +25,6 @@ router.post('/session/meta', setSessionMeta);
 router.get('/report', getReport);
 router.get('/download/csv', downloadLog);
 router.get('/download/video', downloadVideo);
+router.get('/download/package', downloadPackage);
 
 module.exports = router;

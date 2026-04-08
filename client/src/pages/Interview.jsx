@@ -219,7 +219,7 @@ function Interview() {
   const handleStart = useCallback(async () => {
     try {
       setIsInitializing(true);
-      setInitCountdown(10);
+      setInitCountdown(5);
       
       // Tell server/proctoring to start
       await proctoringAPI.setMeta(sessionId, { name: 'Candidate' });
@@ -236,8 +236,8 @@ function Interview() {
         });
       }, 1000);
 
-      // Wait 10 seconds before entering the room
-      await new Promise(resolve => setTimeout(resolve, 10000));
+      // Wait 5 seconds before entering the room
+      await new Promise(resolve => setTimeout(resolve, 5000));
       
       // Start the interview on the server only AFTER entering the room
       emit('start-interview');
@@ -382,7 +382,7 @@ function Interview() {
                     fill="none" stroke="currentColor" strokeWidth="6"
                     strokeDasharray={276}
                     initial={{ strokeDashoffset: 276 }}
-                    animate={{ strokeDashoffset: 276 - (276 * (10 - initCountdown) / 10) }}
+                    animate={{ strokeDashoffset: 276 - (276 * (5 - initCountdown) / 5) }}
                     className="text-primary"
                     transition={{ duration: 0.5 }}
                   />
