@@ -1204,3 +1204,9 @@ Very short viva script you can say:
 
 ### Q: Why did one new docs file stay unpushed, and why does the Git graph look distorted after Hugging Face integration?
 **A:** The new docs file stayed unpushed because we intentionally committed only deployment-fix files (`Dockerfile` and `docs/questions.md`) to avoid accidentally committing a partial docs rename (one file deleted, one new file untracked). The graph looks branched because we merged Hugging Face with `--allow-unrelated-histories`, so Git shows two independent roots joined by a merge commit. This is normal and safe, but visually less clean.
+
+### Q: Space starts but shows "GEMINI_API_KEY not found" and "MongoDB Connection Error: ECONNREFUSED 127.0.0.1:27017". What does it mean and how to fix?
+**A:** It means the app booted correctly, but required environment variables were not configured in Hugging Face. Without `MONGODB_URI`, the backend falls back to local MongoDB (`localhost:27017`), which does not exist in the Space container, so connection is refused. Add `MONGODB_URI` as a Secret in Space Settings. Add `GEMINI_API_KEY` as a Secret to enable resume question generation; without it, fallback questions are used.
+
+### Q: What is SESSION_SECRET? Do we need it? Can we use 3 Gemini keys as fallback if one fails?
+**A:** `SESSION_SECRET` is used to sign session/cookie data in many Node apps. In this codebase, it is currently defined in config but not actively used by a session middleware yet, so the app can run without it. Still, set it in production as a good security practice for future updates. For Gemini fallback: yes, this project supports multiple keys. Set `GEMINI_API_KEYS` (or `GEMINIAPIKEYS`) to a comma-separated list. On rate-limit/quota errors, the service rotates to the next key automatically and retries.
