@@ -53,14 +53,28 @@ git push huggingface integration-version:main
 > The server will crash on startup if you do not add the database keys.
 
 Go to the **Settings** tab in your Hugging Face space, scroll down to **Variables and secrets**, and add these as **Secrets**:
-*   **`MONGODB_URI`**: `mongodb+srv://...`
-*   **`GEMINI_API_KEY`**: `AIzaSy...`
+*   **`MONGODBURI`**: `mongodb+srv://...`
+*   **`GEMINIAPIKEY1`**: `AIzaSy...`
+*   **`GEMINIAPIKEY2`**: `AIzaSy...` (optional fallback)
+*   **`GEMINIAPIKEY3`**: `AIzaSy...` (optional fallback)
 
 Also add this as a standard **Variable**:
-*   **`CLIENT_URL`**: `https://your-vercel.vercel.app` (The URL where you hosted the Vercel frontend).
+*   **`CLIENTURL`**: `https://your-vercel.vercel.app` (The URL where you hosted the Vercel frontend).
+
+Optional (recommended later for security hardening):
+*   **`SESSIONSECRET`**: Any long random string
 
 ### Step 4: Add Vercel Environment Variable
-Lastly, on the Vercel side, go to Settings -> Environment Variables, and add:
-*   **`VITE_API_URL`**: The URL of your running Hugging Face Space (e.g., `https://your-username-skillwise.hf.space/api`).
+On the Vercel side:
+1. Import your GitHub repo as a new project.
+2. Set **Root Directory** to `client`.
+3. Keep framework as **Vite**.
+4. In Settings -> Environment Variables, add:
+	* **`VITE_API_URL`** = `https://your-username-skillwise.hf.space/api`
+5. Redeploy after saving env vars.
+
+Final link check:
+* Vercel frontend -> Hugging Face backend via `VITE_API_URL`
+* Hugging Face CORS allowlist -> Vercel URL via `CLIENTURL`
 
 Your deployment pipeline is now ready! Ensure you test it fully online before merging into main.

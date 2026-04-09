@@ -39,7 +39,16 @@ app.use('/api', (req, res, next) => {
 });
 
 // Security middleware
-app.use(helmet());
+// Allow embedding inside Hugging Face Spaces "App" tab iframe.
+app.use(helmet({
+  frameguard: false,
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      'frame-ancestors': ["'self'", 'https://huggingface.co', 'https://*.huggingface.co']
+    }
+  }
+}));
 
 // CORS configuration
 app.use(cors({
@@ -71,6 +80,11 @@ app.get('/health', (req, res) => {
     environment: config.nodeEnv,
     uptime: process.uptime()
   });
+});
+
+// Root route for platform health (useful for Space app iframe rendering)
+app.get('/', (req, res) => {
+  res.redirect('/api/docs');
 });
 
 // API Routes

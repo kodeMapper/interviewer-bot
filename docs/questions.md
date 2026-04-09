@@ -1210,3 +1210,9 @@ Very short viva script you can say:
 
 ### Q: What is SESSION_SECRET? Do we need it? Can we use 3 Gemini keys as fallback if one fails?
 **A:** `SESSION_SECRET` is used to sign session/cookie data in many Node apps. In this codebase, it is currently defined in config but not actively used by a session middleware yet, so the app can run without it. Still, set it in production as a good security practice for future updates. For Gemini fallback: yes, this project supports multiple keys. Set `GEMINI_API_KEYS` (or `GEMINIAPIKEYS`) to a comma-separated list. On rate-limit/quota errors, the service rotates to the next key automatically and retries.
+
+### Q: Hugging Face is rejecting commas in secret value. How can we still use 3 Gemini keys with fallback? Also can we skip SESSION_SECRET now?
+**A:** Use separate secrets instead of one comma-separated value: `GEMINIAPIKEY1`, `GEMINIAPIKEY2`, `GEMINIAPIKEY3`. The backend now supports numbered keys and will rotate automatically on quota/rate-limit errors. For `SESSION_SECRET`: in the current code it is not actively used by session middleware, so you can skip it temporarily to unblock deployment; adding it is still recommended for future-proof security.
+
+### Q: Backend is running on Hugging Face. What are the next steps, and how do we connect Vercel frontend?
+**A:** After backend health is green, deploy frontend (`client/`) on Vercel and set `VITE_API_URL` to your Hugging Face Space base with `/api` (example: `https://your-space.hf.space/api`). In Hugging Face, set `CLIENTURL` to your Vercel production URL so CORS allows browser calls. Then test in order: health endpoint, resume upload, live interview socket flow, and final report endpoint.
