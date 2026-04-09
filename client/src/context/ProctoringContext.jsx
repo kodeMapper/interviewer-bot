@@ -31,51 +31,139 @@ export const ProctoringProvider = ({ children }) => {
     let mounted = true;
     let localStream = null;
     let intervalId = null;
+    let recovering = false;
+
+    const getVideoStreamWithFallback = async () => {
+      let attempts = [
+        {
+          video: {
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            frameRate: { ideal: 15, max: 24 }
+          }
+        },
+        { video: true }
+      ];
+
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+        if (videoDevices.length > 0) {
+          // "ideal" avoids hard failures seen on some laptops/virtual webcams.
+          attempts = [
+            {
+              video: {
+                deviceId: { ideal: videoDevices[0].deviceId },
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                frameRate: { ideal: 15, max: 24 }
+              }
+            },
+            ...attempts
+          ];
+        }
+      } catch (e) {
+        console.warn('Could not enumerate devices for proctoring:', e);
+      }
+
+      let lastError = null;
+      for (const constraints of attempts) {
+        try {
+          return await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (err) {
+          lastError = err;
+        }
+      }
+
+      throw lastError;
+    };
+
+    const stopLocalStream = () => {
+      if (localStream) {
+        localStream.getTracks().forEach((track) => track.stop());
+        localStream = null;
+      }
+    };
+
+    const bindStream = async (nextStream) => {
+      localStream = nextStream;
+      if (!mounted) {
+        nextStream.getTracks().forEach((track) => track.stop());
+        return;
+      }
+
+      setStream(nextStream);
+
+      if (!videoRef.current) {
+        videoRef.current = document.createElement('video');
+        videoRef.current.autoplay = true;
+        videoRef.current.muted = true;
+        videoRef.current.playsInline = true;
+      }
+      videoRef.current.srcObject = nextStream;
+      try {
+        await videoRef.current.play();
+      } catch (e) {
+        console.error('Error playing hidden proctoring video:', e);
+      }
+
+      if (!canvasRef.current) {
+        canvasRef.current = document.createElement('canvas');
+        canvasRef.current.width = 640;
+        canvasRef.current.height = 480;
+      }
+
+      nextStream.getVideoTracks().forEach((track) => {
+        track.onended = () => {
+          if (mounted) {
+            recoverCamera('track-ended');
+          }
+        };
+      });
+    };
+
+    const recoverCamera = async (reason = 'unknown') => {
+      if (!mounted || recovering) return;
+      recovering = true;
+      try {
+        stopLocalStream();
+        const nextStream = await getVideoStreamWithFallback();
+        await bindStream(nextStream);
+        if (mounted) setIsServiceConnected(true);
+      } catch (err) {
+        console.error(`Proctoring camera recovery failed (${reason}):`, err);
+        if (mounted) setIsServiceConnected(false);
+      } finally {
+        recovering = false;
+      }
+    };
 
     const initCamera = async () => {
       try {
-        let videoConstraints = { width: 640, height: 480, frameRate: { ideal: 15 } };
-        
-        // Auto-select best camera (prefer external webcams which are usually listed last)
-        try {
-          const devices = await navigator.mediaDevices.enumerateDevices();
-          const videoDevices = devices.filter(device => device.kind === 'videoinput');
-          if (videoDevices.length > 1) {
-             videoConstraints.deviceId = { exact: videoDevices[videoDevices.length - 1].deviceId };
-          }
-        } catch (e) {
-          console.warn("Could not enumerate devices:", e);
-        }
-
-        localStream = await navigator.mediaDevices.getUserMedia({
-          video: videoConstraints
-        });
-        
-        if (mounted) {
-          setStream(localStream);
-          
-          if (!videoRef.current) {
-             videoRef.current = document.createElement('video');
-             videoRef.current.autoplay = true;
-             videoRef.current.muted = true;
-             videoRef.current.playsInline = true;
-          }
-          videoRef.current.srcObject = localStream;
-          videoRef.current.play().catch(e => console.error("Error playing hidden video for snapshot:", e));
-          
-          if (!canvasRef.current) {
-            canvasRef.current = document.createElement('canvas');
-            canvasRef.current.width = 640;
-            canvasRef.current.height = 480;
-          }
-        }
+        const nextStream = await getVideoStreamWithFallback();
+        await bindStream(nextStream);
       } catch (err) {
-        console.error("Proctoring camera access denied or missing:", err);
+        console.error('Proctoring camera access denied or missing:', err);
         if (mounted) setIsServiceConnected(false);
       }
     };
     
     initCamera();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        const dead = !localStream || localStream.getVideoTracks().every((t) => t.readyState === 'ended');
+        if (dead) recoverCamera('visibilitychange');
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      const dead = !localStream || localStream.getVideoTracks().every((t) => t.readyState === 'ended');
+      if (dead) recoverCamera('fullscreenchange');
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
 
     let failedPolls = 0;
 
@@ -128,9 +216,9 @@ export const ProctoringProvider = ({ children }) => {
     return () => {
       mounted = false;
       if (intervalId) clearInterval(intervalId);
-      if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      stopLocalStream();
     };
   }, []);
 

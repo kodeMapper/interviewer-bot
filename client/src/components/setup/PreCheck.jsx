@@ -23,6 +23,53 @@ const PreCheck = ({ sessionId, onComplete }) => {
 
   const allCriticalPassed = checks.camera === 'passed' && checks.mic === 'passed' && checks.browser === 'passed' && checks.services === 'passed';
 
+  const getCameraStreamWithFallback = async () => {
+    let attempts = [
+      {
+        audio: false,
+        video: {
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+          frameRate: { ideal: 24, max: 30 }
+        }
+      },
+      { audio: false, video: true }
+    ];
+
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+      if (videoDevices.length > 0) {
+        // Use "ideal" (not "exact") to prevent hard failures on unstable/virtual devices.
+        attempts = [
+          {
+            audio: false,
+            video: {
+              deviceId: { ideal: videoDevices[0].deviceId },
+              width: { ideal: 640 },
+              height: { ideal: 480 },
+              frameRate: { ideal: 24, max: 30 }
+            }
+          },
+          ...attempts
+        ];
+      }
+    } catch (e) {
+      console.warn('Could not enumerate devices in PreCheck:', e);
+    }
+
+    let lastError = null;
+    for (const constraints of attempts) {
+      try {
+        return await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (err) {
+        lastError = err;
+      }
+    }
+
+    throw lastError;
+  };
+
   const updateCheck = useCallback((id, status) => {
     setChecks(prev => ({ ...prev, [id]: status }));
   }, []);
@@ -31,6 +78,9 @@ const PreCheck = ({ sessionId, onComplete }) => {
     let mounted = true;
 
     const runChecks = async () => {
+      let cameraPassed = false;
+      let micPassed = false;
+
       // 1. Browser compatibility
       updateCheck('browser', 'checking');
       await delay(400);
@@ -41,52 +91,55 @@ const PreCheck = ({ sessionId, onComplete }) => {
         return;
       }
 
-      // 2. Camera + Mic
+      // 2. Camera + Mic (checked separately to avoid one failure masking the other)
       updateCheck('camera', 'checking');
       updateCheck('mic', 'checking');
-      try {
-        let videoConstraints = { width: 640, height: 480 };
-        
-        try {
-          const devices = await navigator.mediaDevices.enumerateDevices();
-          const videoDevices = devices.filter(device => device.kind === 'videoinput');
-          if (videoDevices.length > 1) {
-             // Prefer the last device added (often external webcams)
-             videoConstraints.deviceId = { exact: videoDevices[videoDevices.length - 1].deviceId };
-          }
-        } catch (e) {
-          console.warn("Could not enumerate devices in PreCheck:", e);
-        }
 
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: videoConstraints });
+      // Camera check + preview
+      try {
+        const stream = await getCameraStreamWithFallback();
         if (!mounted) { stream.getTracks().forEach(t => t.stop()); return; }
 
         streamRef.current = stream;
         if (videoRef.current) videoRef.current.srcObject = stream;
         setCameraActive(true);
 
-        // Check audio tracks
-        const audioTracks = stream.getAudioTracks();
-        updateCheck('mic', audioTracks.length > 0 ? 'passed' : 'failed');
-
         // Check video tracks
         const videoTracks = stream.getVideoTracks();
-        updateCheck('camera', videoTracks.length > 0 ? 'passed' : 'failed');
+        cameraPassed = videoTracks.length > 0;
+        updateCheck('camera', cameraPassed ? 'passed' : 'failed');
       } catch (err) {
-        if (mounted) {
-          updateCheck('camera', 'failed');
-          updateCheck('mic', 'failed');
-          setErrorMsg('Camera/Microphone access denied. Please grant permissions.');
-          console.error(err);
-        }
-        return;
+        if (mounted) updateCheck('camera', 'failed');
+        console.error('PreCheck camera error:', err);
+      }
+
+      // Microphone check (independent stream)
+      try {
+        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        const audioTracks = micStream.getAudioTracks();
+        micPassed = audioTracks.length > 0;
+        updateCheck('mic', micPassed ? 'passed' : 'failed');
+        micStream.getTracks().forEach((t) => t.stop());
+      } catch (err) {
+        updateCheck('mic', 'failed');
+        console.error('PreCheck microphone error:', err);
+      }
+
+      if (!cameraPassed || !micPassed) {
+        setErrorMsg('Camera or microphone access failed. Please re-check browser permissions and OS privacy settings.');
+      } else {
+        setErrorMsg(null);
       }
 
       // 3. Lighting check (delayed to let camera warm up)
-      updateCheck('lighting', 'checking');
-      await delay(1500);
-      if (mounted) checkBrightness();
-      brightnessIntervalRef.current = setInterval(() => { if (mounted) checkBrightness(); }, 3000);
+      if (cameraPassed) {
+        updateCheck('lighting', 'checking');
+        await delay(1500);
+        if (mounted) checkBrightness();
+        brightnessIntervalRef.current = setInterval(() => { if (mounted) checkBrightness(); }, 3000);
+      } else {
+        updateCheck('lighting', 'failed');
+      }
 
       // 4. Screen check
       updateCheck('screen', 'checking');
@@ -146,7 +199,6 @@ const PreCheck = ({ sessionId, onComplete }) => {
   };
 
   const handleEnterRoom = async () => {
-    if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
     try {
       if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
     } catch (err) { console.log("Fullscreen denied", err); }

@@ -1216,3 +1216,27 @@ Very short viva script you can say:
 
 ### Q: Backend is running on Hugging Face. What are the next steps, and how do we connect Vercel frontend?
 **A:** After backend health is green, deploy frontend (`client/`) on Vercel and set `VITE_API_URL` to your Hugging Face Space base with `/api` (example: `https://your-space.hf.space/api`). In Hugging Face, set `CLIENTURL` to your Vercel production URL so CORS allows browser calls. Then test in order: health endpoint, resume upload, live interview socket flow, and final report endpoint.
+
+### Q: Is my `VITE_API_URL` value correct? Why does Hugging Face App tab show "refused to connect" even when API is up?
+**A:** Correct Vercel value is `https://<space-subdomain>.hf.space/api` (for this project: `https://kodefordl-skillwise.hf.space/api`). The "refused to connect" screen is usually not an API-down issue; it happens when iframe/security headers block embedding in the Hugging Face App tab (`x-frame-options` / `frame-ancestors`). If `/health` and `/api/docs` open directly on `hf.space`, backend is running and VITE API value is fine.
+
+### Q: `https://<space>.hf.space/` redirects to `/api/docs`, and `GET /api` returns "Route not found". Is this normal?
+**A:** Yes, this is normal for the current backend design. Root (`/`) is intentionally redirected to API docs, and `/api` itself is not defined as a standalone endpoint. Use concrete routes like `/health`, `/api/docs`, `/api/interview/*`, `/api/resume/*`, etc.
+
+### Q: What should we set in Hugging Face when testing Vercel Preview (not merged to main)?
+**A:** Keep backend secrets same, but set `CLIENTURL` to the exact Vercel Preview domain you are opening in browser (for example, branch preview `...git-integrati...vercel.app`). `VITE_API_URL` stays on Vercel side as `https://kodefordl-skillwise.hf.space/api`. If you switch to another preview URL, update `CLIENTURL` again or CORS will block requests.
+
+### Q: Why does preview frontend show "Failed to create session" even though Hugging Face backend is healthy?
+**A:** The usual cause is Preview build not receiving `VITE_API_URL`, so frontend falls back to relative `/api` and calls Vercel itself (`/api/interview/start`) instead of Hugging Face. In protected Preview deployments, that path returns auth/401 or not-found, so session creation fails. The backend is fine if direct POST to `https://kodefordl-skillwise.hf.space/api/interview/start` succeeds.
+
+### Q: Why is `integration-version` not visible in Vercel "Redeploy" list?
+**A:** In the screenshot, `Choose Environment` is set to **Production**. That list shows production deployments from the configured production branch (usually `main`), so `integration-version` preview deployments do not appear there. To deploy `integration-version`, either use the **Preview** environment list, click **Promote to Production** from that preview deployment, or temporarily change Project Settings -> Git -> Production Branch to `integration-version`.
+
+### Q: Vercel Preview has `VITE_API_URL` set, but network still calls `https://<preview>.vercel.app/api/interview/start` and returns 404. What is the simplest fix?
+**A:** This means the currently running preview build was created before the env update (or env did not apply), so frontend fell back to relative `/api`. In Vite, env vars are build-time only. Redeploy preview **after** setting `VITE_API_URL`, then hard refresh browser. Also set Hugging Face `CLIENTURL` exactly to preview origin **without trailing slash**.
+
+### Q: In Vercel Preview redeploy dialog, why is `integration-version` branch not visible?
+**A:** That dialog only shows deployments that already exist for that environment in this project. If `integration-version` is not listed, there is no current preview deployment for that branch in this project list (or you are viewing a different project/deployment scope). Create a fresh preview by pushing a new commit to `integration-version`, then it will appear.
+
+### Q: Why does camera/microphone work sometimes, but fail on my device (especially after fullscreen), while it works on my friend's machine?
+**A:** This is often a device/browser-specific media negotiation issue, not a backend outage. Hard-selecting one camera device or requesting audio+video in a single strict call can fail on some laptops/virtual-camera setups. Fullscreen transitions can also end tracks on certain browser/device combinations. The mitigation is: use fallback media constraints, check camera and microphone separately, and auto-recover stream on `fullscreenchange` / `visibilitychange` / track-ended events.
