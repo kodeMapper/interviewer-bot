@@ -20,6 +20,27 @@ export function useSpeechRecognition() {
   const recognitionRef = useRef(null);
   const shouldRestartRef = useRef(false); // Track if we should auto-restart
 
+  const ensureMicReady = useCallback(async () => {
+    if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+      return true;
+    }
+
+    let tempStream = null;
+    try {
+      tempStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      return true;
+    } catch (e) {
+      const reason = e?.name || 'not-allowed';
+      setError(reason);
+      console.error('🎤 Microphone permission/availability check failed:', e);
+      return false;
+    } finally {
+      if (tempStream) {
+        tempStream.getTracks().forEach((t) => t.stop());
+      }
+    }
+  }, []);
+
   useEffect(() => {
     // Check browser support
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -82,6 +103,20 @@ export function useSpeechRecognition() {
           console.error('Microphone permission denied');
           shouldRestartRef.current = false;
           setIsListening(false);
+        } else if (event.error === 'audio-capture') {
+          console.error('Microphone device unavailable/busy');
+          // Try one soft recovery while user still intends to listen.
+          if (shouldRestartRef.current) {
+            setTimeout(async () => {
+              const micOk = await ensureMicReady();
+              if (!micOk || !shouldRestartRef.current || !recognitionRef.current) return;
+              try {
+                recognitionRef.current.start();
+              } catch (e) {
+                console.error('🎤 Failed to recover speech recognition after audio-capture:', e);
+              }
+            }, 400);
+          }
         } else if (event.error === 'network') {
           console.error('Network error in speech recognition');
           // Network errors might be temporary, let onend try restart
@@ -127,11 +162,19 @@ export function useSpeechRecognition() {
     };
   }, []);
 
-  const startListening = useCallback(() => {
+  const startListening = useCallback(async () => {
     if (recognitionRef.current && !isListening) {
       setTranscript('');
       setInterimTranscript('');
       setError(null);
+
+      const micOk = await ensureMicReady();
+      if (!micOk) {
+        shouldRestartRef.current = false;
+        setIsListening(false);
+        return;
+      }
+
       shouldRestartRef.current = true; // Enable auto-restart
       try {
         recognitionRef.current.start();
@@ -145,7 +188,7 @@ export function useSpeechRecognition() {
         }
       }
     }
-  }, [isListening]);
+  }, [isListening, ensureMicReady]);
 
   const stopListening = useCallback(() => {
     shouldRestartRef.current = false; // Disable auto-restart FIRST

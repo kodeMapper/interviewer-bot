@@ -11,6 +11,17 @@ function Report() {
   const [error, setError] = useState(null);
   const [expandedAnswers, setExpandedAnswers] = useState({});
 
+  let apiBase = import.meta.env.VITE_API_URL || '/api';
+  if (apiBase && !apiBase.endsWith('/api') && !apiBase.endsWith('/api/')) {
+    apiBase = apiBase.replace(/\/$/, '') + '/api';
+  }
+
+  const buildDownloadUrl = (resourcePath) => {
+    const normalizedBase = (apiBase || '/api').replace(/\/$/, '');
+    const normalizedPath = resourcePath.startsWith('/') ? resourcePath : `/${resourcePath}`;
+    return `${normalizedBase}${normalizedPath}`;
+  };
+
   useEffect(() => {
     const loadReport = async () => {
       try {
@@ -228,7 +239,7 @@ function Report() {
               
               <div className="flex flex-col gap-3">
                 <a 
-                  href={`/api/proctoring/download/video`} 
+                  href={buildDownloadUrl('/proctoring/download/video')} 
                   download
                   className="flex items-center justify-between p-4 rounded-xl border border-white/10 hover:bg-surface-bright/50 transition-colors group cursor-pointer"
                 >
@@ -240,7 +251,7 @@ function Report() {
                 </a>
                 
                 <a 
-                  href={`/api/proctoring/download/csv`} 
+                  href={buildDownloadUrl('/proctoring/download/csv')} 
                   download
                   className="flex items-center justify-between p-4 rounded-xl border border-white/10 hover:bg-surface-bright/50 transition-colors group cursor-pointer"
                 >
@@ -252,7 +263,7 @@ function Report() {
                 </a>
                 
                 <a 
-                  href={`/api/proctoring/download/package`} 
+                  href={buildDownloadUrl('/proctoring/download/package')} 
                   download
                   className="flex items-center justify-between p-4 rounded-xl border border-white/10 hover:bg-surface-bright/50 transition-colors group cursor-pointer"
                 >

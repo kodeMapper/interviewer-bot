@@ -1240,3 +1240,12 @@ Very short viva script you can say:
 
 ### Q: Why does camera/microphone work sometimes, but fail on my device (especially after fullscreen), while it works on my friend's machine?
 **A:** This is often a device/browser-specific media negotiation issue, not a backend outage. Hard-selecting one camera device or requesting audio+video in a single strict call can fail on some laptops/virtual-camera setups. Fullscreen transitions can also end tracks on certain browser/device combinations. The mitigation is: use fallback media constraints, check camera and microphone separately, and auto-recover stream on `fullscreenchange` / `visibilitychange` / track-ended events.
+
+### Q: Mic is unstable on my machine (local + deployed). Can we run proctoring at 2 fps, and will it overload the server?
+**A:** Yes, 2 fps is usually safe for a single interview session and gives better responsiveness than 1 fps. It doubles frame-processing load, so if many concurrent users are expected, monitor CPU usage and lower fps if needed. Mic instability is usually browser/device/permission related (audio-capture/no-device/busy mic), so adding microphone warm-up and recovery before speech recognition improves reliability.
+
+### Q: If I push to GitHub, does Hugging Face backend auto-restart?
+**A:** Not in this current workflow. Hugging Face rebuild/restart is triggered by commits pushed to the Hugging Face Space repository (`huggingface` remote), not by GitHub-only pushes. If GitHub is updated but Space repo is unchanged, backend will not auto-refresh.
+
+### Q: Why were users unable to download report artifacts (video/log/package) from deployed frontend?
+**A:** The report page was using relative links like `/api/proctoring/download/...`. On Vercel frontend, those links hit Vercel origin instead of Hugging Face backend, causing 404/failed downloads. Fix: build download URLs from configured `VITE_API_URL` so downloads target Hugging Face API host.

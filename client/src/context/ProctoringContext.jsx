@@ -3,6 +3,12 @@ import { proctoringAPI } from '../services/api';
 
 const ProctoringContext = createContext();
 
+const DEFAULT_FRAME_INTERVAL_MS = 500; // 2 fps
+const parsedInterval = Number(import.meta.env.VITE_PROCTOR_FRAME_INTERVAL_MS);
+const FRAME_INTERVAL_MS = Number.isFinite(parsedInterval) && parsedInterval >= 250
+  ? parsedInterval
+  : DEFAULT_FRAME_INTERVAL_MS;
+
 export const useProctoring = () => useContext(ProctoringContext);
 
 export const ProctoringProvider = ({ children }) => {
@@ -210,8 +216,8 @@ export const ProctoringProvider = ({ children }) => {
       }
     };
 
-    // Replace isSafe dependency with empty array so effect never re-runs and camera stays locked on
-    intervalId = setInterval(processFrame, 1000);
+    // Keep effect static so camera stream isn't recreated on every safety state change.
+    intervalId = setInterval(processFrame, FRAME_INTERVAL_MS);
 
     return () => {
       mounted = false;
