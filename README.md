@@ -1,3 +1,14 @@
+---
+title: Skillwise
+emoji: 👁
+colorFrom: gray
+colorTo: green
+sdk: docker
+pinned: false
+license: mit
+short_description: AI Smart Interviewer Bot and Proctoring System
+---
+
 # SkillWise — Unified AI Interview & Proctoring Platform
 ### Enterprise-Grade Assessment Engine | MERN + FastAPI + Deep Learning
 
