@@ -1183,3 +1183,21 @@ Key code locations and what each does:
 
 Very short viva script you can say:
 "Training is in train_intent_model.py. We first convert text to 384-d embeddings using SentenceTransformer in data_loader.py, then pass embeddings to IntentClassifier MLP defined in intent_classifier.py, train with BCEWithLogitsLoss, and save checkpoint. During inference in intent_predictor.py, we encode new text, run MLP forward pass, apply sigmoid, and threshold probabilities to get final intent labels."
+\n\n### Q: Why did we get a [rejected] (fetch first) error when pushing our code to Hugging Face, and what does --allow-unrelated-histories do?\n**A:** We got the error because the Hugging Face repository had auto-generated files (like an initial README) that our local repository didn't have. Git prevents pushing to avoid overwriting data on the remote. We used git pull --allow-unrelated-histories to tell Git to safely merge the remote's history with our local project history, even though they started independently. After merging, we could safely push our code.
+
+
+### Q: What does the Git error "URL rejected: Port number was not a decimal number" mean?
+**A:** It means the URL format for authentication is wrong. When we put our username and password/token directly in a Git URL, it must look like https://username:token@website.com. If we forget the @ symbol after the token, Git gets confused and thinks the text is supposed to be a port number.
+
+
+### Q: What does the Git error "fatal: expected 'acknowledgments'" mean when working with Hugging Face?
+**A:** This error happens when Git tries to talk to the Hugging Face server, but instead of getting standard Git data back, it receives an HTML webpage (usually an "Unauthorized" or "Sign In" error page). This almost always means the Access Token is invalid, expired, or missing "Write" permissions for the repository.
+
+### Q: Why did Hugging Face reject our push even after auth was fixed, and how did we finally deploy?
+**A:** Auth and remote setup were correct, but Hugging Face blocked two things: (1) old commit history had files larger than 10 MB, and (2) current snapshot still contained raw binary files. We solved this by creating a clean deployment snapshot in a temporary repository, tracking binary extensions with Git LFS so they became pointer files, and force-pushing that clean `main` branch to the Space remote. This avoided both oversized-history and raw-binary rejection.
+
+### Q: Why did Docker build fail with "Package libgl1-mesa-glx has no installation candidate" on Hugging Face?
+**A:** Hugging Face now builds on newer Debian images (trixie), where `libgl1-mesa-glx` is deprecated/removed. The fix is to install `libgl1` instead. After replacing that package in Dockerfile, apt installation proceeds and the build can continue.
+
+### Q: Should we commit to GitHub while Hugging Face is still building? Are GitHub and Hugging Face Git states different?
+**A:** Yes, committing now is safe and recommended. Hugging Face build runs from the snapshot already pushed to the Space, so new local/GitHub commits do not disturb the ongoing build. Also yes, GitHub and Hugging Face are currently different: GitHub branch `integration-version` and Hugging Face `main` are on different commit IDs/history. They can have similar content, but they are not the same commit graph right now.
