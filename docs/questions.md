@@ -1249,3 +1249,30 @@ Very short viva script you can say:
 
 ### Q: Why were users unable to download report artifacts (video/log/package) from deployed frontend?
 **A:** The report page was using relative links like `/api/proctoring/download/...`. On Vercel frontend, those links hit Vercel origin instead of Hugging Face backend, causing 404/failed downloads. Fix: build download URLs from configured `VITE_API_URL` so downloads target Hugging Face API host.
+
+### Q: GitHub and Hugging Face are different repositories. When I push code to GitHub, why doesn't Hugging Face backend auto-refresh, even though Vercel frontend immediately gets latest code?
+**A:** This is because of how the deployments connect to Git:
+1. **Vercel ↔ GitHub**: Linked directly. When you push to `integration-version` on GitHub, Vercel webhook automatically triggers a rebuild. Vercel watches GitHub events.
+2. **Hugging Face ↔ GitHub**: No automatic link. The Hugging Face Space is a separate Git repository. Pushing to GitHub does not notify Hugging Face.
+3. **Result**: Frontend (Vercel) gets latest code → runs new API calls. Backend (HF Space) is old → doesn't have new endpoints. API version mismatch.
+
+**How to keep them in sync:**
+- After pushing to GitHub, manually push to Hugging Face too: `git push huggingface integration-version:main`
+- Or set up a GitHub Action webhook to auto-push on every GitHub commit (advanced).
+- Or periodically pull from GitHub into Hugging Face repo before pushing: `git pull origin integration-version; git push huggingface main`
+
+**Viva point**: You can explain this shows understanding of how different deployment platforms work independently, and why distributed systems need explicit sync strategies.
+
+### Q: If I just restart Hugging Face Space, will it pick latest GitHub code automatically?
+**A:** No. Restart only reloads the code that is already inside the Hugging Face Space repository. It does not pull from GitHub. So you still need to push code to the `huggingface` remote.
+
+### Q: Why did `git push huggingface integration-version:main` show "fetch first"?
+**A:** Because Space `main` had a newer commit than local (`non-fast-forward` situation). Git blocks push to prevent accidental overwrite until you integrate or intentionally force-update.
+
+### Q: Why did push fail again with "files larger than 10 MiB" and then "contains binary files"?
+**A:** Hugging Face validated the pushed snapshot and found restricted files:
+1. Some old history/files were larger than 10 MiB.
+2. Some binary files (PNG/PDF/models) were not stored as pointers.
+
+### Q: What was the final working deployment fix for Hugging Face in this case?
+**A:** We created a clean one-commit deployment snapshot from latest code, tracked binary/model files with Git LFS, and then force-updated Space `main` using `--force-with-lease`. This kept latest app code while satisfying Space repository checks.
