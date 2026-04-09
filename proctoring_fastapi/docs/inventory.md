@@ -1,6 +1,7 @@
 # Service Inventory
 
 > Generated: 2026-02-08 | Branch: `integration/agent-2026-02-08T19-53-02`
+> 2026-04 Update: Proctoring is now FastAPI-based and integrated through Express adapter routes.
 
 ---
 
@@ -12,8 +13,8 @@
 | `server/` | Express.js + Socket.io backend (MERN) | **Active** — port 5001 |
 | `ml-service/` | FastAPI wrapper over original Python ML code | **Active** — port 8000 |
 | `backend/` | **Original** Python ML/DL code (IntentClassifier, AnswerEvaluator, ResumeParser) | **Active** — imported by `ml-service/` at runtime |
-| `proctoring/` | Flask-based eye-tracking proctoring system (PyTorch CNN + OpenCV) | **Standalone** — port 5000 |
-| `frontend/` | **Legacy** vanilla HTML/CSS/JS frontend (pre-MERN) | **Deprecated** — replaced by `client/` |
+| `proctoring_fastapi/` | FastAPI-based eye-tracking proctoring system (PyTorch CNN + OpenCV) | **Active** — port 5000 |
+| `frontend/` | Legacy vanilla HTML/CSS/JS frontend (pre-MERN) | **Historical** — not part of current run guide |
 | `tests/` | Legacy Python test suite for the CLI interview bot | **Legacy** — not wired to MERN |
 | `venv/` | Root-level Python virtual environment (legacy CLI bot) | **Legacy** — separate venvs exist per service |
 | `docs/` | Documentation (created by this integration pass) | **New** |
@@ -31,7 +32,7 @@
 | **Entrypoint** | `npm run dev` → Vite dev server |
 | **Port** | 3000 |
 | **Dependencies** | `client/package.json` (React 18, Vite 5, Socket.io-client, TailwindCSS, Framer Motion, Recharts) |
-| **Env file** | `client/.env` → `VITE_API_URL=http://localhost:5001` |
+| **Env file** | `client/.env` → `VITE_API_URL=http://localhost:5001/api` |
 | **Build** | `npm run build` → `client/dist/` |
 | **Key Pages** | Home, Interview (voice), Report, Dashboard |
 | **External APIs** | Connects to server via REST + WebSocket |
@@ -72,18 +73,18 @@
 | **Trained assets** | `ml/models/saved/intent_model.pth`, `ml/data/interview_intents.json` |
 | **Dependencies** | Listed in root `requirements.txt` |
 
-### 5. Proctoring (Flask + PyTorch CNN)
+### 5. Proctoring (FastAPI + PyTorch CNN)
 
 | Property | Value |
 |----------|-------|
-| **Path** | `proctoring/` |
-| **Entrypoint** | `python server.py` (Flask) |
+| **Path** | `proctoring_fastapi/` |
+| **Entrypoint** | `python server.py` (FastAPI app) |
 | **Port** | 5000 |
-| **Dependencies** | Flask, flask-cors, OpenCV, PyTorch, dlib (per `proctoring/` imports — no pinned requirements.txt) |
+| **Dependencies** | FastAPI, uvicorn, OpenCV, PyTorch, dlib, mediapipe (`proctoring_fastapi/requirements.txt`) |
 | **Endpoints** | `/`, `/start`, `/stop`, `/status`, `/cameras`, `/set_camera/<n>`, `/video_feed`, `/frame` |
 | **Model files** | `eye_cnn_final.pth`, `pretrained_eye_cnn.pth` |
 | **Frontend** | Serves own `index.html` + `style.css` (standalone dashboard) |
-| **Integration** | Currently **standalone** — no adapter connects it to the MERN app |
+| **Integration** | **Integrated** through `server/src/adapters/proctoringAdapter.js` and `/api/proctoring/*` routes |
 
 ---
 
@@ -104,7 +105,7 @@
 
 | Service | File | Key Variables |
 |---------|------|---------------|
-| Root | `.env` | `GPT_API_KEY` (deprecated), `GEMINI_API_KEY` |
+| Root | `.env` | Historical/optional for legacy flows (current web app uses `server/.env`) |
 | Server | `server/.env` | `PORT`, `MONGODB_URI`, `CLIENT_URL`, `ML_SERVICE_URL`, `GEMINI_API_KEY`, `GEMINI_API_KEYS`, `SESSION_SECRET` |
 | Client | `client/.env` | `VITE_API_URL` |
 | ML Service | (none — uses `config.py` defaults) | `PORT`, `HOST` (via dotenv) |

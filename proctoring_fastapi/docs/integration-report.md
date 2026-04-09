@@ -4,6 +4,8 @@
 **Base:** `main` @ `5e58626`  
 **Date:** 2026-02-08  
 
+> 2026-04 Update: This file keeps the historical integration snapshot, but proctoring is now FastAPI-based and integrated through the Express adapter in active flow.
+
 ---
 
 ## 1. Commits
@@ -21,13 +23,13 @@
 | `docs/migration-notes.md` | Architectural decisions, dependency isolation, planned removals, known issues |
 | `docs/RUN_GUIDE.md` | Per-service setup instructions, env-var reference, troubleshooting guide |
 | `scripts/smoke-check.ps1` | Automated health-check script — hits `/health` on all services, exits non-zero on failure |
-| `server/src/adapters/proctoringAdapter.js` | HTTP proxy forwarding `/api/proctoring/*` to Flask service on port 5000 |
+| `server/src/adapters/proctoringAdapter.js` | HTTP proxy forwarding `/api/proctoring/*` to FastAPI service on port 5000 |
 | `server/src/routes/proctoring.routes.js` | Express route file wiring the adapter into the app |
-| `proctoring/requirements.txt` | Pinned Python dependencies for the proctoring service |
+| `proctoring_fastapi/requirements.txt` | Pinned Python dependencies for the proctoring service |
 | `server/.env.example` | Template for Express server environment variables |
 | `client/.env.example` | Template for React client environment variables |
 | `ml-service/.env.example` | Template for ML service environment variables |
-| `proctoring/.env.example` | Template for proctoring service environment variables |
+| `proctoring env template (historical)` | Template entry from the original integration branch snapshot |
 
 ## 3. Files Modified
 
@@ -45,7 +47,7 @@ All three main services started and passed health checks:
 | Express Server | 5001 | `GET /health` | `{"status":"ok", ...}` |
 | Client (Vite) | 3000 | `GET /` | HTML served, title present |
 
-**Proctoring** (port 5000) was not smoke-tested because it requires a webcam and is optional.
+**Proctoring** (port 5000) is now integrated in the end-to-end flow; webcam-dependent checks are still validated manually.
 
 ## 5. Known Issues
 
@@ -66,7 +68,7 @@ All three main services started and passed health checks:
                            │ /api/proctoring/*
                            ▼
                     ┌──────────────┐
-                    │ Flask Proctor│
+                    │FastAPI Proctor│
                     │  :5000       │
                     └──────────────┘
 ```
@@ -76,6 +78,6 @@ All three main services started and passed health checks:
 1. **Review & merge** this branch into `main` after team approval.
 2. **Delete legacy files** listed in `docs/migration-notes.md` §5 (requires human sign-off).
 3. **Add CI pipeline** — use `scripts/smoke-check.ps1` as a post-deploy gate (or port to `smoke-check.sh` for Linux CI runners).
-4. **Integrate proctoring UI** — the React client can now call `/api/proctoring/start`, `/status`, `/video` through the Express proxy.
+4. **Harden proctoring integration** — current UI already calls `/api/proctoring/*`; next focus is reliability/load testing and auth hardening.
 5. **Pin ml-service deps** — run `pip freeze > ml-service/requirements-lock.txt` inside the ml-service venv for reproducible builds.
 6. **Add authentication middleware** to the proctoring adapter routes before production use.

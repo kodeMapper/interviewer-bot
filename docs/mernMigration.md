@@ -1,6 +1,8 @@
 # MERN Stack Migration Roadmap
 ## AI Smart Interviewer & Proctoring System
 
+> Status Update (April 2026): This file is a historical migration roadmap. The migration is now implemented in the active codebase (React + Express + FastAPI ML + FastAPI proctoring). For current usage, see `README.md`, `RUN_GUIDE.md`, and live app `https://www.skillwise.live`.
+
 **Document Version:** 1.0  
 **Created:** January 31, 2026  
 **Purpose:** Complete migration plan from Python/Flask to MERN stack (MongoDB, Express.js, React, Node.js)

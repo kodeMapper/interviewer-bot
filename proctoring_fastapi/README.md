@@ -1,5 +1,7 @@
 # SecureProctor AI
 
+Part of the SkillWise platform (live app: https://www.skillwise.live).
+
 AI-based interview/exam proctoring system with:
 
 - Live webcam monitoring
@@ -42,11 +44,9 @@ pip install -r requirements.txt
 
 Main dependencies:
 
-- FastAPI
+- fastapi
 - uvicorn
 - pydantic
-- Flask
-- flask-cors
 - opencv-python
 - torch
 - numpy
@@ -187,7 +187,7 @@ python collect_images.py
 - Install dependencies from `requirements.txt`.
 - Runtime now automatically falls back to OpenCV if MediaPipe fails.
 
-### `Import "flask" could not be resolved` in editor
+### `Import "fastapi" could not be resolved` in editor
 
 - Usually VS Code interpreter mismatch.
 - Select the same interpreter where you installed requirements.
@@ -195,7 +195,7 @@ python collect_images.py
 ## Notes
 
 - `server.py` is the preferred backend entrypoint.
-- `app.py` is an older Flask server variant kept for compatibility.
+- `app.py` is an older experimental server variant kept for compatibility.
 - Buzzer uses `winsound`, so alert sound is Windows-oriented.
 
 ## License

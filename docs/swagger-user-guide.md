@@ -25,6 +25,9 @@ In simple words:
 
 ## 2. Which Swagger pages are available in this project?
 
+Production app is live at `https://www.skillwise.live`.
+For API docs and debugging, use local service URLs after starting services.
+
 This project now has **3 main API docs pages**:
 
 ### A. Proctoring FastAPI Swagger

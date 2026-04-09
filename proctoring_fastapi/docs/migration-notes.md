@@ -1,6 +1,7 @@
 # Migration Notes
 
 > Generated: 2026-02-08 | Branch: `integration/agent-2026-02-08T19-53-02`
+> 2026-04 Update: Proctoring integration is now implemented in active flow.
 
 This document tracks architectural decisions, file movements, and planned future removals.
 
@@ -16,8 +17,7 @@ Browser (React) ──WebSocket/REST──▶ Express.js ──REST──▶ Fas
                                       │
                                       └──▶ MongoDB
                                       └──▶ Gemini API
-
-Proctoring (Flask) ◀── standalone, not yet integrated
+                                      └──▶ Proctoring FastAPI (via adapter)
 ```
 
 ---
@@ -34,9 +34,9 @@ After analysis, moving `client/` and `server/` would break:
 
 **Decision:** Keep `client/`, `server/`, `ml-service/` at root level. Create `docs/` and `scripts/` for organization. The "desired layout" from the prompt is documented as a future target but NOT enacted to avoid breaking running services.
 
-### 2.2 Proctoring stays in `proctoring/`
+### 2.2 Proctoring runs in `proctoring_fastapi/`
 
-The Flask proctoring system is standalone and has its own frontend (`index.html` + `style.css`). It runs independently on port 5000. Integration with the MERN app will require an **adapter** in the Express server (see Section 4).
+The proctoring system runs as a FastAPI service with its own frontend (`index.html` + `style.css`) on port 5000. It is integrated with the MERN app through the Express adapter (`server/src/adapters/proctoringAdapter.js`).
 
 ### 2.3 `backend/` is a library, not a service
 
@@ -64,29 +64,30 @@ The `frontend/` directory contains the old vanilla HTML/JS/CSS interface from be
 
 ### 3.2 Proctoring Dependencies
 
-**Problem:** `proctoring/` has NO `requirements.txt`. Dependencies are inferred from imports: Flask, flask-cors, OpenCV (cv2), PyTorch, dlib.
-
-**Action:** Created `proctoring/requirements.txt` with pinned versions.
+**Current:** `proctoring_fastapi/requirements.txt` is present and used for setup. Runtime stack is FastAPI + OpenCV + PyTorch (+ MediaPipe fallback logic in runtime path).
 
 ---
 
-## 4. Planned Adapter: Proctoring → Express
+## 4. Adapter: Proctoring → Express (Implemented)
 
-The MERN app needs to control proctoring during interviews. The proposed adapter:
+The MERN app controls proctoring during interviews through this adapter:
 
 ```
-client/ ──▶ server/src/adapters/proctoringAdapter.js ──▶ Flask (localhost:5000)
+client/ ──▶ server/src/adapters/proctoringAdapter.js ──▶ FastAPI (localhost:5000)
 ```
 
-**Adapter endpoints (future):**
-- `POST /api/proctoring/start` → forwards to Flask `/start`
-- `POST /api/proctoring/stop` → forwards to Flask `/stop`
-- `GET /api/proctoring/status` → forwards to Flask `/status`
-- WebSocket: emit proctoring warnings to interview session
+**Adapter endpoints (current):**
+- `POST /api/proctoring/start` → forwards to FastAPI `/start`
+- `POST /api/proctoring/stop` → forwards to FastAPI `/stop`
+- `GET /api/proctoring/status` → forwards to FastAPI `/status`
 
-**Status:** NOT implemented in this pass. Requires human review of:
-1. Whether proctoring should share the same session as the interview
-2. Whether proctoring warnings should affect interview scoring
+Additional current routes:
+- `POST /api/proctoring/process_frame`
+- `POST /api/proctoring/session/meta`
+- `GET /api/proctoring/report`
+- `GET /api/proctoring/download/{csv|video|package}`
+
+**Status:** Implemented and used in report flow.
 
 ---
 
@@ -128,5 +129,5 @@ No files were moved with `git mv` in this pass. Rationale:
 | Low speech recognition accuracy | High | Web Speech API + Indian accent. See Problem 3 |
 | TTS volume inconsistency | Medium | No audio normalization. See Problem 4 |
 | Final vs avg score mismatch | Medium | See Problem 6 in `problemsAfterMigration.txt` |
-| Proctoring not integrated | Low | Standalone Flask app, no adapter to MERN |
+| Proctoring integration hardening | Low | Integration is done; remaining work is auth hardening and load testing |
 | Root venv conflicts | Low | NumPy binary incompatibility in root venv |

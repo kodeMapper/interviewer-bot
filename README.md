@@ -1,16 +1,52 @@
----
-title: Skillwise
-emoji: 👁
-colorFrom: gray
-colorTo: green
-sdk: docker
-pinned: false
-license: mit
-short_description: AI Smart Interviewer Bot and Proctoring System
----
-
 # SkillWise — Unified AI Interview & Proctoring Platform
 ### Enterprise-Grade Assessment Engine | MERN + FastAPI + Deep Learning
+
+---
+
+## Live Deployment
+
+- Public app (Production): https://www.skillwise.live
+
+If you only want to try the product as a visitor, open `www.skillwise.live` and start from setup.
+For backend host details, use developer docs like `RUN_GUIDE.md`.
+
+---
+
+## Beginner Overview (Read This First)
+
+SkillWise is an AI interview platform that does two things together:
+
+1. It conducts a technical interview (adaptive questions + answer evaluation).
+2. It runs proctoring checks (camera-based monitoring + violation logs).
+
+### What a beginner should know
+
+- You can run it fully on your machine with 4 services.
+- You can also use the deployed production app at `www.skillwise.live`.
+- The interview report is a merged result of:
+  - Interview performance report (from Express backend)
+  - Proctoring report (from FastAPI proctoring service)
+
+### What happens when a candidate uses SkillWise
+
+1. Candidate selects skills and optionally uploads resume.
+2. Interview session starts and adaptive questions begin.
+3. Resume-based personalized questions are generated in background.
+4. Camera frames are analyzed for proctoring alerts.
+5. Final report shows score, topic breakdown, and proctoring artifacts.
+
+### Service map in simple words
+
+- `client/` (React, port 3000): UI pages (setup, interview, report, dashboard)
+- `server/` (Express, port 5001): Main API, interview state flow, report merge
+- `ml-service/` (FastAPI, port 8000): Intent prediction + answer scoring APIs
+- `proctoring_fastapi/` (FastAPI, port 5000): Camera monitoring and report artifacts
+
+### Deployment behavior (important)
+
+- Vercel frontend auto-updates when you push to GitHub.
+- Hugging Face backend does not auto-pull from GitHub.
+- So backend updates require push to `huggingface` remote.
 
 ---
 
@@ -36,6 +72,18 @@ SkillWise consists of four integrated services. Follow the [Run Guide](RUN_GUIDE
 | **Backend** | 5001 | Node.js + Express | API Gateway & Interview State Machine |
 | **Proctoring** | 5000 | FastAPI + OpenCV | Real-time AI Eye-Tracking & Monitoring |
 | **ML Service** | 8000 | FastAPI + PyTorch | Intent Classification & Answer Evaluation |
+
+## Current Implementation Snapshot (April 2026)
+
+This section is the source of truth for what is running now.
+
+- The web app uses 4 services: frontend (3000), backend (5001), proctoring (5000), and ml-service (8000).
+- Resume question generation in the web app is handled in `server/src/services/resume.service.js` using Gemini.
+- Proctoring is already implemented and active in production flow (not just planned).
+- Frontend speech input uses browser Web Speech API. Whisper notes in this README are legacy/CLI context.
+- Report page downloads now use API base URL correctly (`VITE_API_URL`) so deployed downloads work.
+- Proctoring frame interval is configurable with `VITE_PROCTOR_FRAME_INTERVAL_MS` (default 500 ms = ~2 fps).
+- Vercel auto-deploys from GitHub, but Hugging Face Space does not auto-sync from GitHub.
 
 ---
 
@@ -168,7 +216,7 @@ To ensure this project gets full marks, we have mapped every feature we plan to 
 | **Module 3** | Optimization (GD, Adam, RMSProp) | **Custom Optimizers:** We will experiment with different optimizers (SGD vs Adam) to train our "Brain" model and plot the loss curves. |
 | **Module 4** | Convolutional Neural Networks (CNNs) | **The "Proctoring Eye":** We will build a Custom CNN (LeNet style) to analyze webcam video and detect if the candidate is looking away (cheating). |
 | **Module 6** | Regularization (Dropout, Data Augmentation) | **Anti-Overfitting:** We will apply Dropout layers to our CNN to prevent it from memorizing specific background images. |
-| **Bonus** | API Integration, System Design | **Phase 2.75 Resume Upload:** GPT-4o integration for personalized question generation from resume analysis. |
+| **Bonus** | API Integration, System Design | **Phase 2.75 Resume Upload:** Gemini-based personalized question generation from resume analysis. |
 
 ---
 
@@ -216,7 +264,7 @@ We introduced **Resume-Based Dynamic Question Generation** to make interviews tr
 │                                                                             │
 │  1. UPLOAD          2. EXTRACT           3. PARSE            4. GENERATE   │
 │  ┌─────────┐       ┌─────────────┐      ┌────────────┐      ┌────────────┐ │
-│  │  Resume │ ───►  │ PyMuPDF /   │ ───► │  Section   │ ───► │   GPT-4o   │ │
+│  │  Resume │ ───►  │ PyMuPDF /   │ ───► │  Section   │ ───► │  Gemini    │ │
 │  │  (PDF)  │       │ python-docx │      │  Detection │      │   Prompt   │ │
 │  └─────────┘       └─────────────┘      └────────────┘      └────────────┘ │
 │                          │                    │                    │        │
@@ -236,11 +284,11 @@ We introduced **Resume-Based Dynamic Question Generation** to make interviews tr
 1. **Upload:** User provides resume path (PDF, DOCX, or TXT supported)
 2. **Extract:** `ResumeExtractor` uses PyMuPDF for PDFs, python-docx for Word files
 3. **Parse:** `ResumeParser` detects sections (education, experience, skills, projects, internships, leadership, achievements)
-4. **Generate:** `QuestionGenerator` sends parsed data to GPT-4o-mini with engineered prompts to create industry-level questions
+4. **Generate:** Resume service sends parsed data to Gemini (2.5 Flash) with engineered prompts to create industry-level questions
 
 #### 3. Zero-Latency Architecture (Critical Design)
 
-**The Challenge:** GPT API calls take 5-15 seconds. We cannot make the candidate wait.
+**The Challenge:** Gemini API calls can still take a few seconds. We cannot make the candidate wait.
 
 **Our Solution: Parallel Warmup Strategy**
 ```
@@ -271,7 +319,7 @@ Timeline:
 
 #### 4. What Questions Are Generated?
 
-The GPT prompt is engineered to cover **all resume sections** with **all question types**:
+The Gemini prompt is engineered to cover **all resume sections** with **all question types**:
 
 | Resume Section | Question Types Generated |
 |----------------|--------------------------|
@@ -298,20 +346,23 @@ The GPT prompt is engineered to cover **all resume sections** with **all questio
 
 #### 6. Module Structure (Code Organization)
 
+Current web implementation uses:
+
 ```
+server/src/services/resume.service.js
+  - Extract text from PDF/DOCX
+  - Detect skills
+  - Generate resume questions with Gemini
+  - Fallback question generation when API is unavailable
+
 backend/resume/
-├── __init__.py              # Module exports
-├── extractor.py             # PDF/DOCX/TXT text extraction
-├── parser.py                # Section detection & parsing
-├── gpt_client.py            # OpenAI API wrapper with retry logic
-├── question_generator.py    # Prompt engineering & question generation
-└── resume_question_bank.py  # Thread-safe priority queue for questions
+  - Legacy Python resume modules kept for CLI/research flow
 ```
 
-**Why Modular?**
-- Each component can be tested independently
-- Easy to swap GPT provider (e.g., Claude, Gemini) by changing only `gpt_client.py`
-- Resume processing doesn't interfere with existing interview logic
+**Why this is useful:**
+- Web app stays simple: React -> Express API -> Gemini
+- Backend controls retries, key rotation, and fallback
+- Old Python modules are preserved for experimentation
 
 #### 7. How to Use
 
@@ -343,12 +394,20 @@ python backend/core/interview_controller.py
 
 #### 9. Configuration
 
-The system uses your existing `.env` file:
+For current web flow, set Gemini keys in `server/.env`.
+You can use single key, comma-separated keys, or numbered keys.
+
 ```
-GPT_API_KEY=sk-proj-xxxxx...
+GEMINI_API_KEY=your-key
+# OR
+GEMINI_API_KEYS=key1,key2,key3
+# OR (for strict secret UIs)
+GEMINIAPIKEY1=key1
+GEMINIAPIKEY2=key2
+GEMINIAPIKEY3=key3
 ```
 
-**Cost Estimate:** ~$0.01-0.02 per interview (using GPT-4o-mini / Gemini 2.5 Flash)
+**Note:** If Gemini is unavailable, the app falls back to local question generation so interview flow can continue.
 
 ### ✅ Phase 2.75 Updates: Gemini Migration & Natural Interviewing (Completed) ✅
 
@@ -474,20 +533,15 @@ This ensures that follow-up questions stay connected:
 - Q2: "Why did you choose Redis for caching?" ← References Q1's answer
 - Q3: "What if Redis went down? How did you handle that?" ← Builds on Q2
 
-### 🔴 Phase 3: The "Eye" - Proctoring System (Planned) 🚧
-This is the next major step. We will build a **Convolutional Neural Network (CNN)** to detect if the candidate is cheating.
+### 🟢 Phase 3: The "Eye" - Proctoring System (Completed) ✅
+The proctoring system is now implemented and integrated.
 
-**How it will work (The Logic):**
-1.  **Data Collection:** We will write a script to capture 200 images of your face:
-    *   100 images: "Looking at Screen" (Good)
-    *   100 images: "Looking Away / Phone" (Bad)
-2.  **The Brain (CNN):** We will design a customized LeNet-5 architecture.
-    *   **Convolution Layer:** Scans the image to find "Edges" (eyes, nose boundaries).
-    *   **Pooling Layer:** Reduces the image size (keeping only important features).
-    *   **Fully Connected Layer:** Decides "Cheating" vs "Safe".
-3.  **Real-Time Integration:**
-    *   The camera will run in a transparent background window.
-    *   If you look away for > 3 seconds, the bot will pause and say: *"Warning: Please look at the screen."*
+**How it works now:**
+1.  **Realtime camera checks:** Frontend captures frames and sends them to proctoring API.
+2.  **Detection engine:** Proctoring service evaluates gaze/head direction, face presence, and suspicious states.
+3.  **Alert telemetry:** Alerts are counted and included in the final combined report.
+4.  **Artifacts:** CSV/video/package downloads are available through backend proxy routes.
+5.  **Stability layer:** Camera fallback and recovery logic handles fullscreen and device-level drops.
 
 ---
 
@@ -498,7 +552,7 @@ This is the next major step. We will build a **Convolutional Neural Network (CNN
 | **Accents & Noise** | Standard models failed to transcribe Indian English accents correctly. | **Model Selection:** We benchmarked `base.en` vs `medium`. We found `medium` (multilingual) had better robustness for accents than the specialized English model. |
 | **Latency (Lag)** | Waiting for transcription + analysis made the bot feel robotic (3-4s delay). | **Async Architecture:** We decoupled the "Listening" loop from the "Processing" loop. The bot asks Q2 *while* Q1 is still being graded in the background. Latency dropped to **0s**. |
 | **Context Loss** | Simple bots don't know if you are talking about "Java" or "JavaScript". | **Custom MLP:** We trained our own neural network (`IntentClassifier`) on a synthetic dataset to classify technical context with 99% accuracy. |
-| **Resume API Latency** | GPT calls take 5-15 seconds, causing awkward silence. | **Parallel Warmup:** We ask local questions while GPT generates resume questions in the background. Zero perceived latency. |
+| **Resume API Latency** | Gemini calls can take a few seconds, causing awkward silence. | **Parallel Warmup:** We ask local questions while Gemini generates resume questions in the background. Zero perceived latency. |
 | **Thin Resumes** | Freshers have minimal content, forcing boring/repetitive questions. | **Adaptive Fallback:** `is_thin_resume()` detects low-content resumes and falls back to local question bank gracefully. |
 | **Process Collision** | Resume processing + Adaptive questioning + Async transcription could conflict. | **Thread-Safe Design:** Mutex locks, priority queues, and event signaling ensure processes don't interfere. |
 | **Generic Questions** | AI-generated questions were robotic and boring. | **Prompt Overhaul:** Complete rewrite of system prompts with "FAANG Interviewer" persona, forbidden patterns, and natural flow requirements. |
@@ -511,32 +565,20 @@ This is the next major step. We will build a **Convolutional Neural Network (CNN
 ## 5. App Workflow (User Journey)
 
 ### Standard Mode (Without Resume)
-1.  **Initialization:** The system loads the 1.5GB Whisper model and our custom PyTorch MLP.
-2.  **The "Handshake":** User introduces themselves. The **MLP Brain** analyzes the speech to detect skills (e.g., `['Python', 'Deep Learning']`).
-3.  **The Strategy:** The Controller builds a dynamic interview path: *Introduction -> Python Deep Dive -> DL Deep Dive -> Mix Round*.
-4.  **The Loop (Deep Dive):**
-    *   **Ask:** Bot asks a scenario-based question.
-    *   **Listen & Queue:** Bot records answer and *immediately* queues it for background processing.
-    *   **Next:** Bot asks the next question instantly.
-5.  **The Verdict:** Once finished, the bot generates a text report with scores and verbally explains the mistakes.
+1.  **Setup:** User selects skills, enters identity fields, and completes system pre-check.
+2.  **Session Start:** Frontend calls `POST /api/interview/start` and opens socket session.
+3.  **Interview Loop:** Bot asks questions, user answers via mic (Web Speech API), backend evaluates answers.
+4.  **Adaptive Flow:** Questions continue by skill/topic state machine (`INTRO -> DEEP_DIVE -> MIX_ROUND`).
+5.  **Final Report:** Backend generates interview report, and frontend shows merged report (interview + proctoring).
 
 ### Resume Mode (With Resume Upload) - Phase 2.75
-1.  **Initialization:** Same as above, plus resume module components.
-2.  **Resume Upload:** User provides path to resume file (PDF/DOCX/TXT).
-3.  **Parallel Processing Begins:**
-    *   **Main Thread:** Asks for introduction, detects skills via MLP.
-    *   **Background Thread:** Extracts text → Parses sections → Calls GPT → Generates 15-20 questions.
-4.  **Warmup Phase:** Bot asks 2-3 local questions while resume processing completes.
-5.  **Resume Deep Dive:** Bot transitions to asking resume-based questions:
-    *   Questions about specific projects
-    *   Questions about work experience
-    *   Skill-specific theoretical questions
-    *   Behavioral questions about leadership/internships
-6.  **Adaptive Questioning:** Even during resume questions, the bot adapts based on keywords detected in answers.
-7.  **The Verdict:** Enhanced report showing:
-    *   Resume summary
-    *   Score breakdown (Resume Questions vs General Questions)
-    *   Verbal feedback on weak areas
+1.  **Resume Upload:** User uploads PDF/DOCX from setup flow.
+2.  **Backend Parse:** Express service extracts text and detects resume sections/skills.
+3.  **Question Generation:** Gemini generates resume-specific interview questions.
+4.  **Warmup + Transition:** Local questions are used while resume questions are getting ready.
+5.  **Resume Deep Dive:** Bot asks targeted project, experience, and skill questions.
+6.  **Fallback Safety:** If Gemini fails, interview continues with local question bank.
+7.  **Final Output:** Combined report still gets generated and shown on report page.
 
 ---
 
@@ -546,48 +588,56 @@ This is the next major step. We will build a **Convolutional Neural Network (CNN
 
 ### A. What we USED (Pre-trained)
 *   **Why:** Some tasks (Speech Recognition, Language Embeddings) require Google-scale compute to train. It is scientifically impossible to train a Whisper-level model on a laptop.
-*   **Tools:** OpenAI Whisper, SentenceTransformers, GPT-4o-mini (for resume question generation).
+*   **Tools:** Browser Web Speech API (web flow), SentenceTransformers, Gemini 2.5 Flash (resume question generation). Whisper remains in legacy/CLI paths.
 *   **Academic Value:** Integration, System Design, Latency Optimization, API Engineering.
 
 ### B. What we BUILT (Custom Training) - *This is the Syllabus Part*
 *   **Phase 1 (The Brain - Done):**
     *   **Task:** Text Classification (INTENT).
     *   **Work:** We designed a PyTorch MLP (`Linear` -> `ReLU` -> `Linear`). We wrote the training loop, loss function (`BCEWithLogitsLoss`), and created the dataset. **This covers Modules 1, 2, & 3.**
-*   **Phase 3 (The Eye - Upcoming):**
+*   **Phase 3 (The Eye - Done):**
     *   **Task:** Computer Vision (PROCTORING).
-    *   **Work:** We will build a CNN (`Conv2d` -> `MaxPool` -> `Dropout`). We will collect our own dataset of *your* face. We will train it to detect "Cheating" vs "Focused". **This covers Module 4.**
+  *   **Work:** We built and integrated the proctoring pipeline with Eye-CNN based checks, realtime frame analysis, and report artifact generation. **This covers Module 4.**
 
 **Conclusion:** We use pre-trained models for the "Senses" (Ears/Mouth) but we build custom Neural Networks for the "Cognition" (Brain/Eye), ensuring strictly original Deep Learning work where it counts.
 
 ---
 
 ## 7. Conclusion
-By implementing the **Proctoring CNN**, the **Adaptive MLP**, and the **Resume-Based Question Generation**, this project transforms from a simple script into a robust demonstration of **Deep Learning fundamentals** combined with **modern AI integration**. It moves beyond simply "detecting text" to actually "understanding context" (via MLP), "seeing the world" (via CNN), and "personalizing interviews" (via GPT), perfectly matching the modules in your syllabus while adding real-world practicality.
+By implementing the **Proctoring pipeline**, the **Adaptive MLP**, and the **Resume-Based Question Generation**, this project transforms from a simple script into a robust demonstration of **Deep Learning fundamentals** combined with **modern AI integration**. It moves beyond simply "detecting text" to actually "understanding context" (via MLP), "seeing the world" (via proctoring CNN logic), and "personalizing interviews" (via Gemini), matching the syllabus while staying practical.
 
 ---
 
 ## 8. Dependencies (requirements.txt)
 
 ```
-# Core ML / Deep Learning
-torch>=2.2,<3
+# Root Python dependencies (CLI interviewer + shared backend modules)
+# Install: pip install -r requirements.txt
+
+# Core numerical + ML stack
 numpy>=1.26,<2.0
+torch>=2.2,<3
 sentence-transformers>=3.0,<6
 scikit-learn>=1.4,<2
 
-# Audio Processing
+# Speech + audio (CLI interviewer)
 sounddevice>=0.4,<1
 faster-whisper>=1.1,<2
+pywin32>=306; platform_system == "Windows"
 
-# Phase 2.75: Resume Upload
-PyMuPDF>=1.24,<2         # PDF extraction
-python-docx>=1.1,<2      # DOCX parsing
-google-genai>=1.0,<2     # Gemini API
+# Resume parsing + LLM integration
+python-dotenv>=1.0,<2
+PyMuPDF>=1.24,<2
+python-docx>=1.1,<2
+google-genai>=1.0,<2
 google-generativeai>=0.8,<1
-python-dotenv>=1.0,<2    # Environment variables
 
-# Windows TTS
-pywin32>=306
+# Optional OCR fallback for scanned PDFs
+pdf2image>=1.17,<2
+pytesseract>=0.3,<1
+
+# Optional utilities
+matplotlib>=3.8,<4
 ```
 
 ---
@@ -595,12 +645,34 @@ pywin32>=306
 ## 9. Environment Variables (.env)
 
 ```env
-# Google Gemini API (Phase 2.75)
-GEMINI_API_KEY=your-gemini-api-key-here
+# server/.env
+PORT=5001
+NODE_ENV=development
+MONGODB_URI=mongodb+srv://<user>:<pass>@<cluster>/<db>
+CLIENT_URL=http://localhost:3000
+ML_SERVICE_URL=http://127.0.0.1:8000
+PROCTOR_URL=http://127.0.0.1:5000
+SESSION_SECRET=change-this-in-production
 
-# Legacy OpenAI (optional, for fallback)
-GPT_API_KEY=sk-proj-xxxxx...
+# Gemini (any one format is fine)
+GEMINI_API_KEY=your-key
+# OR
+GEMINI_API_KEYS=key1,key2,key3
+# OR numbered
+GEMINIAPIKEY1=key1
+GEMINIAPIKEY2=key2
+GEMINIAPIKEY3=key3
+# OR numbered with underscores
+# GEMINI_API_KEY_1=key1
+# GEMINI_API_KEY_2=key2
+# GEMINI_API_KEY_3=key3
+
+# client/.env
+VITE_API_URL=http://localhost:5001/api
+VITE_PROCTOR_FRAME_INTERVAL_MS=500
 ```
+
+For Hugging Face Spaces, secret names without underscores are also supported (example: `CLIENTURL`, `MONGODBURI`, `GEMINIAPIKEY1`).
 
 ---
 
@@ -610,12 +682,16 @@ GPT_API_KEY=sk-proj-xxxxx...
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  Terminal 1: ML Service       │  Terminal 2: Backend    │  Terminal 3: UI  │
-│  cd ml-service                │  cd server              │  cd client        │
-│  .\venv\Scripts\activate      │  npm install            │  npm install      │
-│  pip install -r requirements  │  npm run dev            │  npm run dev      │
-│  uvicorn main:app --port 8000 │                         │                   │
-└─────────────────────────────────────────────────────────────────────────────┘
+│  Terminal 1: ML Service       │  Terminal 2: Proctoring │  Terminal 3: Backend │
+│  cd ml-service                │  cd proctoring_fastapi  │  cd server           │
+│  .\venv\Scripts\activate      │  .\venv\Scripts\activate │  npm install         │
+│  uvicorn main:app --port 8000 │  python server.py       │  npm run dev         │
+└────────────────────────────────────────────┬──────────────────────────────────┘
+               ▼
+           Terminal 4: Frontend (UI)
+             cd client
+             npm install
+             npm run dev
 ```
 
 Open http://localhost:3000 in your browser.
@@ -624,9 +700,22 @@ Open http://localhost:3000 in your browser.
 |-----------|------------|------|
 | **Frontend** | React + Vite + Web Speech API | 3000 |
 | **Backend** | Express.js + Socket.io + MongoDB | 5001 |
+| **Proctoring** | FastAPI + OpenCV | 5000 |
 | **ML Service** | FastAPI (wraps original `backend/`) | 8000 |
 
 > **Important:** The deep learning models (`IntentClassifier`, `AnswerEvaluator`) are **NOT reimplemented**. The FastAPI service simply imports and exposes them as HTTP endpoints.
+
+### Option A.1: Deployment Sync Note (Vercel + Hugging Face)
+
+- Vercel frontend updates when you push to GitHub branch.
+- Hugging Face Space backend updates only when you push to the `huggingface` remote.
+- Restarting Space does not pull new GitHub code by itself.
+
+Typical sync command:
+
+```bash
+git push huggingface integration-version:main
+```
 
 ### Option B: Original Python CLI (Backend Only)
 
@@ -699,35 +788,19 @@ When a resume is uploaded, the system extracts **ANY skill** mentioned and gener
 ## 13. Directory Structure
 
 ```
-interviewer-bot/
-├── backend/                    # ORIGINAL Python ML Code (NOT MODIFIED)
-│   ├── core/                   # Question bank, answer evaluator
-│   ├── ml/                     # Custom MLP classifier (PyTorch)
-│   │   ├── models/saved/       # Trained intent_model.pth
-│   │   └── training/           # IntentPredictor
-│   └── resume/                 # Resume parser (optional, Gemini integration)
-│
-├── ml-service/                 # FastAPI WRAPPER (imports from backend/)
-│   ├── main.py                 # Exposes /predict-intent, /evaluate endpoints
-│   └── requirements.txt        # FastAPI + original ML dependencies
-│
-├── server/                     # Express.js Backend
-│   ├── src/
-│   │   ├── services/           # Resume parsing, question generation, interview flow
-│   │   ├── socket/             # WebSocket handlers
-│   │   └── models/             # MongoDB schemas
-│   └── .env                    # PORT=5001, GEMINI_API_KEY
-│
-├── client/                     # React Frontend
-│   ├── src/
-│   │   ├── components/         # MicrophoneButton, ResumeUpload, etc.
-│   │   ├── hooks/              # useSpeechRecognition, useSpeechSynthesis
-│   │   └── pages/              # Home, Interview, Report
-│   └── vite.config.js          # Proxy to backend:5001
-│
-├── README.md                   # This file
-├── RUN_GUIDE.md               # Detailed setup instructions
-└── requirements.txt           # Original Python dependencies
+project-root/
+├── backend/                    # Original Python ML/CLI modules
+├── client/                     # React + Vite frontend (port 3000)
+├── server/                     # Express + Socket.io backend (port 5001)
+├── ml-service/                 # FastAPI wrapper for intent/evaluate (port 8000)
+├── proctoring_fastapi/         # FastAPI proctoring service (port 5000)
+├── docs/                       # Technical docs, migration history, API guides
+├── design/                     # UI/UX text plans and screen drafts
+├── scripts/                    # Utility scripts (smoke checks, helpers)
+├── tests/                      # Interview flow simulation tests
+├── README.md                   # Project overview (this file)
+├── RUN_GUIDE.md                # Local run + deployment sync guide
+└── requirements.txt            # Root Python dependencies
 ```
 
 ---
@@ -779,5 +852,5 @@ Admin (/admin)
 ```
 
 ### Future Scope
-See [`docs/deployment_needs.md`](docs/deployment_needs.md) for unimplemented features including Authentication/RBAC, Talent Pool, Insights analytics, and deployment infrastructure.
+See [`docs/deployment_needs_and_futureScope.md`](docs/deployment_needs_and_futureScope.md) for unimplemented features including Authentication/RBAC, Talent Pool, Insights analytics, and deployment infrastructure.
 

@@ -1,6 +1,6 @@
 /**
  * Proctoring Adapter
- * Thin HTTP proxy to the standalone Flask proctoring service (port 5000).
+ * Thin HTTP proxy to the FastAPI proctoring service (port 5000).
  *
  * Why an adapter?
  *   The proctoring service uses OpenCV camera capture and a PyTorch CNN
@@ -8,8 +8,8 @@
  *   the Express server, we forward requests so the React client only
  *   talks to one backend origin (port 5001).
  *
- * Flask endpoints consumed:
- *   GET  /status          → { looking_away, consecutive_away, alert_triggered, … }
+ * Proctoring service endpoints consumed:
+ *   GET  /status          → { status, reason, faces_detected, ... }
  *   POST /start           → { status: "started" }
  *   POST /stop            → { status: "stopped" }
  *   GET  /video_feed      → multipart/x-mixed-replace MJPEG stream
@@ -33,7 +33,7 @@ async function getStatus(req, res) {
       return res.status(503).json({
         success: false,
         error: 'Proctoring service is not running',
-        hint: 'Start it with: cd proctoring && python server.py'
+        hint: 'Start it with: cd proctoring_fastapi && python server.py'
       });
     }
     res.status(502).json({ success: false, error: err.message });
@@ -42,7 +42,7 @@ async function getStatus(req, res) {
 
 /**
  * POST /api/proctoring/start
- * Tells the Flask service to begin camera capture + inference.
+ * Tells the proctoring service to begin camera capture + inference.
  */
 async function startProctoring(req, res) {
   try {
@@ -61,7 +61,7 @@ async function startProctoring(req, res) {
 
 /**
  * POST /api/proctoring/stop
- * Tells the Flask service to stop camera capture.
+ * Tells the proctoring service to stop camera capture.
  */
 async function stopProctoring(req, res) {
   try {
@@ -80,7 +80,7 @@ async function stopProctoring(req, res) {
 
 /**
  * GET /api/proctoring/video
- * Pipes the MJPEG stream from Flask to the client.
+ * Pipes the MJPEG stream from the proctoring service to the client.
  */
 async function videoFeed(req, res) {
   try {

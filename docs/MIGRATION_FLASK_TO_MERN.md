@@ -1,5 +1,7 @@
 # 🚀 Migration Plan: Flask → MERN Stack (SecureProctor AI)
 
+> Status Update (April 2026): This file is a historical migration plan. The target architecture is now implemented in current project flow. For current runtime/deployment details, see `README.md`, `RUN_GUIDE.md`, and live app `https://www.skillwise.live`.
+
 ## Complete Documentation for Migrating the Proctoring Dashboard
 
 ---

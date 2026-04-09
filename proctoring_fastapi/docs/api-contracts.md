@@ -314,20 +314,41 @@ Response 200:
 
 ---
 
-## 4. Proctoring Flask API (Standalone)
+## 4. Proctoring FastAPI API (Integrated via Express Adapter)
+
+### 4.1 Client-facing routes (through Express, port 5001)
+
+| Method | Path | Response |
+|--------|------|----------|
+| GET | `/api/proctoring/status` | `{ success: true, data: { status: "SAFE"|"ALERT", reason: string, ... } }` |
+| POST | `/api/proctoring/start` | `{ success: true, data: { message: "Proctoring started" } }` |
+| POST | `/api/proctoring/stop` | `{ success: true, data: { message: "Proctoring stopped", reports: ... } }` |
+| POST | `/api/proctoring/process_frame` | `{ success: true, data: { status, reason, faces_detected, gaze_direction, cellphone_detected } }` |
+| POST | `/api/proctoring/session/meta` | `{ success: true, data: { candidate_name, roll_number, subject, exam_id } }` |
+| GET | `/api/proctoring/report` | `{ success: true, data: { json, csv, video, snapshots, download } }` |
+| GET | `/api/proctoring/video` | Proxied MJPEG stream |
+| GET | `/api/proctoring/download/csv` | CSV download stream |
+| GET | `/api/proctoring/download/video` | MP4 download stream |
+| GET | `/api/proctoring/download/package` | ZIP download stream |
+
+### 4.2 Proctoring service routes (FastAPI, port 5000)
 
 | Method | Path | Response |
 |--------|------|----------|
 | GET | `/` | HTML dashboard |
-| GET | `/status` | `{ "looking_away": bool, "looking_away_duration": float, "warnings": int, ... }` |
-| GET | `/start` | `{ "message": "Proctoring started" }` |
-| GET | `/stop` | `{ "message": "Proctoring stopped" }` |
-| GET | `/cameras` | `{ "cameras": [0, 1, ...] }` |
-| GET | `/set_camera/<n>` | `{ "message": "Camera switched to <n>", "camera": int }` |
-| GET | `/video_feed` | MJPEG stream (`multipart/x-mixed-replace`) |
-| GET | `/frame` | Single JPEG frame (200) or empty (204) |
+| GET | `/docs` | Swagger UI |
+| GET | `/status` | Runtime status (`SAFE`/`ALERT`) |
+| GET/POST | `/start` | Start proctoring thread |
+| GET/POST | `/stop` | Stop proctoring and return report links |
+| POST | `/process_frame` | Analyze single base64 frame |
+| GET/POST | `/session/meta` | Get/update candidate metadata |
+| GET | `/report/latest` | Latest report manifest |
+| GET | `/report/download/{json|csv|video}` | Artifact download |
+| GET | `/report/download/package` | ZIP package download |
+| GET | `/video_feed` | MJPEG stream |
+| GET | `/frame` | Single JPEG frame |
 
-**Note:** Proctoring is currently standalone with no adapter connecting it to the Express server. To integrate, an adapter in the Express server would need to forward proctoring status/start/stop to `http://localhost:5000`.
+**Note:** Proctoring is already integrated in the current MERN flow through `server/src/adapters/proctoringAdapter.js`.
 
 ---
 

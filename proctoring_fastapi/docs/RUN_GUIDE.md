@@ -31,9 +31,9 @@
                               └─────────────────┘         └─────────────────┘
 
 ┌──────────────────────┐
-│  Proctoring (Flask)  │  ← Standalone, optional
-│  Port: 5000          │
-│  proctoring/         │
+│ Proctoring (FastAPI) │  ← Integrated for full report flow
+│ Port: 5000           │
+│ proctoring_fastapi/  │
 └──────────────────────┘
 ```
 
@@ -86,7 +86,10 @@ npm install
 #   PORT=5001
 #   MONGODB_URI=mongodb+srv://...  (or mongodb://localhost:27017/interviewer_bot)
 #   ML_SERVICE_URL=http://localhost:8000
+#   PROCTOR_URL=http://localhost:5000
 #   GEMINI_API_KEY=your_key_here
+#   GEMINI_API_KEYS=key1,key2,key3   (optional)
+#   GEMINIAPIKEY1=key1               (optional numbered format)
 #   CLIENT_URL=http://localhost:3000
 
 # Seed the question bank (first time only)
@@ -115,7 +118,8 @@ npm install
 
 # Configure environment
 # Edit client/.env:
-#   VITE_API_URL=http://localhost:5001
+#   VITE_API_URL=http://localhost:5001/api
+#   VITE_PROCTOR_FRAME_INTERVAL_MS=500
 
 # Start the dev server
 npm run dev
@@ -125,13 +129,13 @@ npm run dev
 
 ---
 
-## 4. Proctoring Setup (Optional — Flask)
+## 4. Proctoring Setup (FastAPI)
 
-The proctoring system is standalone and runs separately.
+The proctoring system runs as a separate service and is used by the merged report flow.
 
 ```powershell
-# Navigate to proctoring
-cd proctoring
+# Navigate to proctoring service
+cd proctoring_fastapi
 
 # Create virtual environment (first time only)
 python -m venv venv
@@ -142,7 +146,7 @@ python -m venv venv
 # Install dependencies
 pip install -r requirements.txt
 
-# Start the Flask server
+# Start the FastAPI server
 python server.py
 ```
 
@@ -154,14 +158,14 @@ python server.py
 
 ## 5. Start Everything (Quick)
 
-Open **3 terminal windows** (4 if using proctoring):
+Open **4 terminal windows**:
 
 | Terminal | Command | Working Dir |
 |----------|---------|-------------|
 | 1 — ML | `cd ml-service; .\venv\Scripts\Activate.ps1; uvicorn main:app --reload --port 8000` | `ml-service/` |
 | 2 — Server | `cd server; npm run dev` | `server/` |
 | 3 — Client | `cd client; npm run dev` | `client/` |
-| 4 — Proctoring *(optional)* | `cd proctoring; .\venv\Scripts\Activate.ps1; python server.py` | `proctoring/` |
+| 4 — Proctoring | `cd proctoring_fastapi; .\venv\Scripts\Activate.ps1; python server.py` | `proctoring_fastapi/` |
 
 Or use the smoke-check script:
 ```powershell
@@ -179,14 +183,16 @@ NODE_ENV=development
 MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/interviewer-bot
 CLIENT_URL=http://localhost:3000
 ML_SERVICE_URL=http://localhost:8000
-GEMINI_API_KEY=AIzaSy...
+GEMINI_API_KEY=your-gemini-key
 GEMINI_API_KEYS="key1, key2, key3"       # Optional: key rotation pool
 SESSION_SECRET=your_secret_here
+PROCTOR_URL=http://localhost:5000
 ```
 
 ### client/.env
 ```env
-VITE_API_URL=http://localhost:5001
+VITE_API_URL=http://localhost:5001/api
+VITE_PROCTOR_FRAME_INTERVAL_MS=500
 ```
 
 ### ml-service (config.py defaults)
@@ -208,7 +214,15 @@ HOST=0.0.0.0   # optional override
 | Microphone not working | Use Chrome/Edge. Grant mic permissions. Localhost only (HTTPS required for remote). |
 | MongoDB connection error | Check `MONGODB_URI` in `server/.env`. Ensure MongoDB is running or Atlas URI is correct. |
 | Gemini question generation fails | Check `GEMINI_API_KEY` in `server/.env`. Free tier has rate limits. |
-| Port 5000 already in use (proctoring) | Windows may use 5000 for system services. Change Flask port in `proctoring/server.py`. |
+| Port 5000 already in use (proctoring) | Close conflicting process or change port in `proctoring_fastapi/server.py`, then update `PROCTOR_URL` in `server/.env`. |
+
+---
+
+## 9. Deployment Notes
+
+- Production frontend is live at `https://www.skillwise.live`.
+- In split deployment (Vercel + Hugging Face), backend updates require push to Hugging Face remote.
+- Restarting Hugging Face Space alone does not pull fresh GitHub commits.
 
 ---
 

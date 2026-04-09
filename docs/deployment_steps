@@ -54,9 +54,9 @@ git push huggingface integration-version:main
 
 Go to the **Settings** tab in your Hugging Face space, scroll down to **Variables and secrets**, and add these as **Secrets**:
 *   **`MONGODBURI`**: `mongodb+srv://...`
-*   **`GEMINIAPIKEY1`**: `AIzaSy...`
-*   **`GEMINIAPIKEY2`**: `AIzaSy...` (optional fallback)
-*   **`GEMINIAPIKEY3`**: `AIzaSy...` (optional fallback)
+*   **`GEMINIAPIKEY1`**: `your-gemini-key-1`
+*   **`GEMINIAPIKEY2`**: `your-gemini-key-2` (optional fallback)
+*   **`GEMINIAPIKEY3`**: `your-gemini-key-3` (optional fallback)
 
 Also add this as a standard **Variable**:
 *   **`CLIENTURL`**: `https://your-vercel.vercel.app` (The URL where you hosted the Vercel frontend).

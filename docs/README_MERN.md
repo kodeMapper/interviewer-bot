@@ -1,5 +1,10 @@
 # AI Smart Interviewer - MERN Stack Migration
 
+## Live Application
+
+- Production frontend: https://www.skillwise.live
+- Backend/API host: https://username-skillwise.hf.space
+
 ## Architecture Overview
 
 This project has been migrated from a Python CLI application to a modern MERN stack.
@@ -9,36 +14,24 @@ This project has been migrated from a Python CLI application to a modern MERN st
 ┌─────────────────────────────────────────────────────────────┐
 │                        Client (React)                       │
 │                          Port: 3000                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │
-│  │ Web Speech   │  │   Socket.io  │  │   React Router   │   │
-│  │ API (STT/TTS)│  │    Client    │  │    + Pages       │   │
-│  └──────────────┘  └──────────────┘  └──────────────────┘   │
+│  Web Speech API + Socket.io + Setup/Interview/Report pages  │
 └───────────────────────────┬─────────────────────────────────┘
                             │ HTTP/WebSocket
 ┌───────────────────────────▼─────────────────────────────────┐
 │                   Server (Express.js)                       │
 │                         Port: 5001                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │
-│  │   REST API   │  │  Socket.io   │  │  Interview State │   │
-│  │   Routes     │  │   Server     │  │     Machine      │   │
-│  └──────────────┘  └──────────────┘  └──────────────────┘   │
-└───────────────────────────┬─────────────────────────────────┘
-                            │ HTTP
-┌───────────────────────────▼─────────────────────────────────┐
-│           ML Service (FastAPI WRAPPER)                      │
-│                         Port: 8000                          │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  IMPORTS FROM backend/ (original Python code)        │   │
-│  │  - backend/ml/training/intent_predictor.py           │   │
-│  │  - backend/core/answer_evaluator.py                  │   │
-│  │  - backend/ml/models/saved/intent_model.pth          │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│                       MongoDB                               │
-│                      Port: 27017                            │
-│         Sessions │ Questions │ Resume Data                  │
+│  Interview flow, resume APIs, report merge, proctor proxy   │
+└───────────────┬─────────────────────────────┬───────────────┘
+                │ HTTP                        │ HTTP
+┌───────────────▼───────────────┐   ┌─────────▼───────────────┐
+│     ML Service (FastAPI)      │   │ Proctoring (FastAPI)    │
+│           Port: 8000          │   │       Port: 5000        │
+│ Intent + Answer evaluation API │   │ Camera alerts + artifacts│
+└───────────────┬───────────────┘   └─────────────────────────┘
+                │
+┌───────────────▼─────────────────────────────────────────────┐
+│                        MongoDB                              │
+│                         Sessions/Data                       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -46,7 +39,7 @@ This project has been migrated from a Python CLI application to a modern MERN st
 
 ### Prerequisites
 - Node.js >= 18.0.0
-- Python >= 3.9
+- Python >= 3.10
 - MongoDB (local or Atlas)
 - npm or yarn
 
@@ -86,7 +79,7 @@ npm run seed
 
 ### 4. Start All Services
 
-Open 3 terminals:
+Open 4 terminals:
 
 **Terminal 1 - ML Service:**
 ```bash
@@ -94,13 +87,19 @@ cd ml-service
 uvicorn main:app --reload --port 8000
 ```
 
-**Terminal 2 - Backend Server:**
+**Terminal 2 - Proctoring Service:**
+```bash
+cd proctoring_fastapi
+python server.py
+```
+
+**Terminal 3 - Backend Server:**
 ```bash
 cd server
 npm run dev
 ```
 
-**Terminal 3 - Frontend Client:**
+**Terminal 4 - Frontend Client:**
 ```bash
 cd client
 npm run dev
@@ -109,8 +108,10 @@ npm run dev
 ### 5. Access the Application
 
 - Frontend: http://localhost:3000
+- Production: https://www.skillwise.live
 - Backend API: http://localhost:5001/api
 - Backend Health: http://localhost:5001/health
+- Proctoring Docs: http://localhost:5000/docs
 - ML Service Docs: http://localhost:8000/docs
 - **Swagger Documentation API Guide**: See [docs/swagger-user-guide.md](docs/swagger-user-guide.md)
 
@@ -156,6 +157,15 @@ npm run dev
 - `GET /api/session/stats/summary` - Get statistics
 - `DELETE /api/session/:id` - Delete session
 
+### Proctoring Proxy
+- `GET /api/proctoring/status`
+- `POST /api/proctoring/start`
+- `POST /api/proctoring/stop`
+- `POST /api/proctoring/process_frame`
+- `GET /api/proctoring/download/csv`
+- `GET /api/proctoring/download/video`
+- `GET /api/proctoring/download/package`
+
 ## WebSocket Events
 
 ### Client → Server
@@ -187,6 +197,11 @@ npm run dev
 - Socket.io
 - Mongoose (MongoDB)
 - Multer (file uploads)
+
+### Proctoring Service (FastAPI)
+- FastAPI + OpenCV + PyTorch
+- Camera status and alert engine
+- Report assets (CSV/video/package)
 
 ### ML/Deep Learning (UNCHANGED - Python)
 **⚠️ The ML/DL code remains in the ORIGINAL Python implementation!**

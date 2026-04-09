@@ -1276,3 +1276,26 @@ Very short viva script you can say:
 
 ### Q: What was the final working deployment fix for Hugging Face in this case?
 **A:** We created a clean one-commit deployment snapshot from latest code, tracked binary/model files with Git LFS, and then force-updated Space `main` using `--force-with-lease`. This kept latest app code while satisfying Space repository checks.
+
+### Q: How should we update README and RUN_GUIDE when implementation changes?
+**A:** Keep old useful content, but always add a clear "Current Implementation" section first. Then update runtime-critical items: service ports, env variable names, startup order, deployment sync behavior (GitHub vs Hugging Face), and health-check URLs. Use simple language so anyone can run the project without guessing.
+
+### Q: In this project, what are the most important run-guide details that must stay accurate?
+**A:** Four things are critical: (1) all 4 services and correct ports (3000/5000/5001/8000), (2) exact env keys (`MONGODB_URI`, `CLIENT_URL`, `PROCTOR_URL`, Gemini keys, `VITE_API_URL`), (3) 4-terminal startup order, and (4) deployment sync note that Hugging Face does not auto-pull from GitHub.
+
+### Q: How should README be written for visitors/beginners, not only for deep-learning evaluators?
+**A:** Keep a beginner-first structure at the top: what the product does, who should use it, quick flow, service map, local run pointer, and production URL. Deep technical sections can stay below, but the first screen must answer "What is this and how do I try it?" in simple language.
+
+### Q: We have historical migration docs. How to keep them useful without confusing readers?
+**A:** Add a clear status banner at the top (for example, "historical plan" + "current implementation is already live") and point readers to current docs (`README.md`, `RUN_GUIDE.md`) plus the deployed app (`https://www.skillwise.live`). This preserves depth while preventing outdated interpretation.
+
+### Q: Should we keep backend URL public in the main README?
+**A:** For beginner/public README, show only the product URL (`https://www.skillwise.live`). Most visitors should not call backend directly. Keep backend host details in technical docs (`RUN_GUIDE.md`, deployment docs) for developers and debugging only.
+
+### Q: How do we keep files, secrets, folders, docs, dependencies, and run guide always up to date?
+**A:** Use a fixed audit checklist after every major change:
+1. Verify folder tree and service ports in `README.md` and `RUN_GUIDE.md`.
+2. Sync env keys in docs with runtime config (`server/src/config/environment.js`) and all `*.env.example` templates.
+3. Sync dependency lists with `requirements.txt` and `package.json` files.
+4. Remove stale words like "standalone/planned" when feature is already integrated.
+5. Keep public README beginner-safe (no unnecessary internal endpoint exposure).
