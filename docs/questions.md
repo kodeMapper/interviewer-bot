@@ -1201,3 +1201,6 @@ Very short viva script you can say:
 
 ### Q: Should we commit to GitHub while Hugging Face is still building? Are GitHub and Hugging Face Git states different?
 **A:** Yes, committing now is safe and recommended. Hugging Face build runs from the snapshot already pushed to the Space, so new local/GitHub commits do not disturb the ongoing build. Also yes, GitHub and Hugging Face are currently different: GitHub branch `integration-version` and Hugging Face `main` are on different commit IDs/history. They can have similar content, but they are not the same commit graph right now.
+
+### Q: Why did one new docs file stay unpushed, and why does the Git graph look distorted after Hugging Face integration?
+**A:** The new docs file stayed unpushed because we intentionally committed only deployment-fix files (`Dockerfile` and `docs/questions.md`) to avoid accidentally committing a partial docs rename (one file deleted, one new file untracked). The graph looks branched because we merged Hugging Face with `--allow-unrelated-histories`, so Git shows two independent roots joined by a merge commit. This is normal and safe, but visually less clean.
